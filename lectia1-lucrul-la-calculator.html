@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecția 1 · Lucrul la calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0E2038;
+    --navy2:#173257;
+    --navy3:#1F3E68;
+    --cloud:#F5F8FC;
+    --paper:#FFFFFF;
+    --teal:#22BFAE;
+    --teal-dark:#169484;
+    --coral:#FF6657;
+    --coral-dark:#E14E40;
+    --amber:#FFB238;
+    --violet:#7C6FF0;
+    --ink:#132038;
+    --muted:#5E7290;
+    --radius-lg:28px;
+    --radius-md:18px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:var(--cloud);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;}
+  p{line-height:1.55;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+  section{padding:64px 0;}
+  img,svg{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ---------- NAV ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(14,32,56,0.92);
+    backdrop-filter:blur(6px);
+    color:#fff;padding:12px 20px;
+    display:flex;align-items:center;justify-content:space-between;
+    font-weight:800;font-size:14px;letter-spacing:.02em;
+  }
+  .topbar span.tag{
+    background:var(--amber);color:var(--navy);
+    padding:4px 10px;border-radius:999px;font-size:12px;
+  }
+
+  /* ---------- HERO / ID PASS ---------- */
+  .hero{
+    background:radial-gradient(circle at 15% 20%, #1B3F6B 0%, var(--navy) 55%, #081428 100%);
+    color:#fff;padding:56px 0 80px;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.35) 0, transparent 60%),
+      radial-gradient(2px 2px at 70% 15%, rgba(255,255,255,.25) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 85% 60%, rgba(255,255,255,.3) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 40% 80%, rgba(255,255,255,.2) 0, transparent 60%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;
+    letter-spacing:.03em;margin-bottom:20px;
+  }
+  .hero h1{
+    font-size:clamp(32px,7vw,52px);line-height:1.05;margin:0 0 14px;font-weight:800;
+  }
+  .hero h1 em{font-style:normal;color:var(--amber);}
+  .hero p.lead{font-size:17px;color:#C9D6E8;max-width:56ch;margin:0 0 32px;}
+
+  .pass-card{
+    position:relative;z-index:1;
+    background:linear-gradient(155deg,#FFFFFF, #EEF3FA 70%);
+    color:var(--ink);border-radius:var(--radius-lg);
+    padding:26px 26px 22px;
+    box-shadow:0 30px 60px -25px rgba(0,0,0,.55);
+    max-width:420px;
+    border:1px solid rgba(255,255,255,.6);
+    transform:rotate(-2deg);
+  }
+  .pass-card .pass-top{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    border-bottom:2px dashed #D6E0EE;padding-bottom:14px;margin-bottom:14px;
+  }
+  .pass-top .pass-label{font-size:11px;letter-spacing:.08em;color:var(--muted);font-weight:800;text-transform:uppercase;}
+  .pass-top .pass-title{font-family:'Baloo 2';font-weight:800;font-size:19px;margin-top:2px;}
+  .pass-icon{
+    width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(155deg,var(--teal),var(--teal-dark));
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .pass-body{display:flex;gap:16px;align-items:center;}
+  .pass-field{font-size:13px;color:var(--muted);font-weight:700;}
+  .pass-field b{display:block;color:var(--ink);font-size:15px;font-weight:800;font-family:'Baloo 2';}
+  .pass-strip{
+    margin-top:16px;background:var(--navy);color:#fff;border-radius:10px;
+    padding:8px 12px;font-size:12px;font-weight:700;letter-spacing:.05em;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .pass-strip .barcode{
+    display:flex;gap:2px;
+  }
+  .pass-strip .barcode i{width:2px;height:16px;background:var(--amber);display:block;}
+  .pass-strip .barcode i:nth-child(3n){height:11px;}
+
+  .hero-cta{
+    margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:800;font-size:15px;padding:13px 24px;border-radius:999px;
+    border:none;text-decoration:none;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--amber);color:var(--navy);box-shadow:0 10px 24px -10px rgba(255,178,56,.6);}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.35);}
+  .btn-ghost:hover{background:rgba(255,255,255,.16);}
+
+  /* ---------- SECTION HEADERS ---------- */
+  .kicker{
+    font-weight:800;color:var(--teal-dark);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  }
+  .kicker::before{content:"";width:20px;height:3px;background:var(--teal-dark);border-radius:3px;display:inline-block;}
+  .sec-title{font-size:clamp(24px,4.4vw,34px);font-weight:800;margin:0 0 14px;}
+  .sec-intro{color:var(--muted);font-size:16px;max-width:62ch;margin:0 0 36px;}
+
+  /* ---------- DEFINITIONS ---------- */
+  .defs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:44px;}
+  .def-card{
+    background:var(--paper);border-radius:var(--radius-md);padding:18px 18px 16px;
+    border:1px solid #E4EAF3;
+  }
+  .def-card .def-term{font-family:'Baloo 2';font-weight:700;color:var(--navy);font-size:16px;margin-bottom:6px;}
+  .def-card p{font-size:13.5px;color:var(--muted);margin:0;}
+
+  /* ---------- RULES (ACCESS PERMIT) ---------- */
+  .rules-panel{
+    background:var(--navy);border-radius:var(--radius-lg);padding:36px 30px;color:#fff;position:relative;overflow:hidden;
+  }
+  .rules-panel::after{
+    content:"ACCES AUTORIZAT";
+    position:absolute;right:-40px;top:26px;
+    font-family:'Baloo 2';font-weight:800;font-size:13px;letter-spacing:.15em;
+    color:rgba(34,191,174,.35);
+    border:2px solid rgba(34,191,174,.35);
+    padding:4px 46px;transform:rotate(8deg);
+  }
+  .rules-list{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;}
+  .rule{
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:16px 16px 15px;display:flex;gap:12px;align-items:flex-start;
+  }
+  .rule .num{
+    font-family:'Baloo 2';font-weight:800;font-size:15px;
+    background:var(--teal);color:var(--navy);
+    width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .rule p{margin:0;font-size:14px;color:#DCE6F4;line-height:1.5;}
+  .rule.warn .num{background:var(--coral);}
+
+  .stamp-row{margin-top:26px;display:flex;align-items:center;gap:10px;font-size:13px;color:#9FB2CC;font-weight:700;}
+  .stamp-row .dot{width:8px;height:8px;border-radius:50%;background:var(--amber);}
+
+  /* ---------- ERGONOMICS ---------- */
+  .ergo-wrap{background:var(--paper);border-radius:var(--radius-lg);padding:36px 30px;border:1px solid #E4EAF3;}
+  .ergo-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px;
+  }
+  .petal{
+    background:linear-gradient(155deg,#EAF7F5,#F5FBFA);
+    border:2px solid transparent;
+    border-radius:60% 40% 30% 70% / 60% 30% 70% 40%;
+    padding:22px 16px;text-align:center;cursor:pointer;
+    transition:transform .2s ease, border-color .2s ease, border-radius .2s ease;
+    min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  }
+  .petal:hover{transform:translateY(-3px);}
+  .petal .emoji{font-size:30px;}
+  .petal .title{font-family:'Baloo 2';font-weight:700;font-size:14px;color:var(--navy);}
+  .petal.active{
+    border-color:var(--teal);border-radius:24px;
+    background:linear-gradient(155deg,#fff,#EAF7F5);
+  }
+  .petal-detail{
+    grid-column:1/-1;
+    background:var(--cloud);border:1px dashed #BFD3EA;border-radius:16px;
+    padding:18px 20px;font-size:14.5px;color:var(--ink);display:none;
+    animation:fade .25s ease;
+  }
+  .petal-detail.show{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+  .petal-detail b{color:var(--teal-dark);}
+
+  .dn-block{margin-top:34px;padding-top:30px;border-top:1px solid #E4EAF3;}
+  .dn-heading{font-family:'Baloo 2';font-weight:800;font-size:19px;color:var(--navy);margin:0 0 4px;}
+  .dn-sub{color:var(--muted);font-size:14px;margin:0 0 22px;}
+  .dn-pair{margin-bottom:24px;}
+  .dn-pair:last-child{margin-bottom:0;}
+  .dn-pair-label{font-family:'Baloo 2';font-weight:700;font-size:15px;color:var(--navy);margin-bottom:10px;}
+  .dn-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .dn-card{position:relative;border-radius:16px;padding:14px 12px 12px;border:2px solid;}
+  .dn-card.good{background:#EAF9F6;border-color:#BFE8E0;}
+  .dn-card.bad{background:#FFF0EE;border-color:#FFD1CB;}
+  .dn-badge{position:absolute;top:10px;right:10px;font-family:'Baloo 2';font-weight:800;font-size:10.5px;padding:3px 9px;border-radius:999px;color:#fff;letter-spacing:.03em;}
+  .dn-badge.good{background:var(--teal-dark);}
+  .dn-badge.bad{background:var(--coral-dark);}
+  .dn-card svg{width:100%;height:110px;}
+  .dn-card p{margin:6px 0 0;font-size:12px;color:var(--muted);text-align:center;line-height:1.4;}
+
+  .tip-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+  .tip{border-radius:16px;padding:18px;font-size:14px;}
+  .tip.good{background:#EAF9EF;border:1px solid #BEE6C9;}
+  .tip.rest{background:#FFF3E3;border:1px solid #FFDDA8;}
+  .tip .tip-head{font-family:'Baloo 2';font-weight:700;font-size:14.5px;margin-bottom:6px;display:flex;gap:8px;align-items:center;}
+
+  /* ---------- QUIZ ---------- */
+  .quiz-wrap{
+    background:linear-gradient(165deg,var(--navy2), var(--navy) 80%);
+    border-radius:var(--radius-lg);padding:34px 28px;color:#fff;
+  }
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px;font-weight:800;color:#B9C9E0;}
+  .progress-bar{height:8px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:26px;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));width:0%;transition:width .3s ease;}
+
+  .q-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:22px 20px;}
+  .q-text{font-family:'Baloo 2';font-size:19px;font-weight:700;margin:0 0 18px;line-height:1.3;}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);
+    color:#fff;padding:13px 16px;border-radius:12px;font-size:15px;font-weight:700;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .opt:hover:not(:disabled){background:rgba(255,255,255,.16);}
+  .opt.correct{background:rgba(34,191,174,.25);border-color:var(--teal);}
+  .opt.wrong{background:rgba(255,102,87,.25);border-color:var(--coral);}
+  .opt:disabled{cursor:default;opacity:.85;}
+
+  .feedback{margin-top:14px;font-size:14px;font-weight:700;min-height:20px;}
+  .feedback.ok{color:var(--teal);}
+  .feedback.no{color:#FF9B90;}
+
+  .next-btn{margin-top:18px;display:none;}
+  .next-btn.show{display:inline-flex;}
+
+  /* result / badge */
+  .result{display:none;text-align:center;padding:10px 0 4px;}
+  .result.show{display:block;}
+  .badge-circle{
+    width:120px;height:120px;border-radius:50%;margin:0 auto 18px;
+    background:conic-gradient(var(--amber) calc(var(--pct,0)*1%), rgba(255,255,255,.12) 0);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .badge-circle::before{
+    content:"";position:absolute;inset:8px;border-radius:50%;background:var(--navy2);
+  }
+  .badge-circle span{position:relative;font-family:'Baloo 2';font-size:26px;font-weight:800;}
+  .result h3{font-family:'Baloo 2';font-size:22px;margin:0 0 8px;}
+  .result p{color:#C9D6E8;max-width:44ch;margin:0 auto 22px;}
+  .retry{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3);padding:11px 22px;border-radius:999px;font-weight:800;}
+
+  footer{padding:34px 0 50px;text-align:center;color:var(--muted);font-size:13px;}
+
+  @media (max-width:760px){
+    .defs{grid-template-columns:1fr;}
+    .rules-list{grid-template-columns:1fr;}
+    .ergo-grid{grid-template-columns:repeat(2,1fr);}
+    .tip-row{grid-template-columns:1fr;}
+    .rules-panel::after{display:none;}
+    section{padding:44px 0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>💻 Informatică și TIC</span>
+  <span class="tag">Clasa a V-a</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">🔐 Unitatea 1 · Utilizarea calculatorului</div>
+    <h1>Permisul tău de<br><em>acces</em> în laborator</h1>
+    <p class="lead">Înainte să lucrezi la calculator, ai nevoie de trei lucruri: să cunoști regulile laboratorului, să știi să stai corect la calculator (ergonomia) și... puțin curaj pentru jocul final!</p>
+
+    <div class="pass-card">
+      <div class="pass-top">
+        <div>
+          <div class="pass-label">Lecția 1</div>
+          <div class="pass-title">Lucrul la calculator</div>
+        </div>
+        <div class="pass-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="13" rx="2" stroke="#fff" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="pass-body">
+        <div class="pass-field">Deținător<br><b>Elev clasa a V-a</b></div>
+      </div>
+      <div class="pass-strip">
+        <span>VALABIL PE TOT ANUL ȘCOLAR</span>
+        <span class="barcode">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#reguli" class="btn btn-primary">Începe misiunea ⬇</a>
+      <a href="#joc" class="btn btn-ghost">Sari direct la joc 🎮</a>
+    </div>
+  </div>
+</header>
+
+<!-- DEFINITIONS -->
+<section class="wrap">
+  <div class="kicker">Noțiuni de bază</div>
+  <h2 class="sec-title">Ce înseamnă cuvintele astea, de fapt?</h2>
+  <p class="sec-intro">Trei cuvinte pe care le vei folosi tot anul — hai să le lămurim de la început.</p>
+  <div class="defs">
+    <div class="def-card">
+      <div class="def-term">🧭 Informatică și TIC</div>
+      <p>Disciplina care studiază cum prelucrăm, transmitem și stocăm date și informații cu ajutorul tehnologiei.</p>
+    </div>
+    <div class="def-card">
+      <div class="def-term">🏫 Laboratorul de informatică</div>
+      <p>Sala specială, dotată cu calculatoare, unde se desfășoară orele — și unde se aplică reguli clare de siguranță.</p>
+    </div>
+    <div class="def-card">
+      <div class="def-term">🧘 Ergonomia</div>
+      <p>Știința care se ocupă de organizarea spațiului de lucru, astfel încât corpul tău să obosească cât mai puțin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RULES -->
+<section class="wrap" id="reguli">
+  <div class="kicker">Partea 1</div>
+  <h2 class="sec-title">Regulile oficiale ale laboratorului</h2>
+  <p class="sec-intro">Ca să primești acces la calculator, trebuie să respecți aceste norme de securitate și protecție a muncii.</p>
+
+  <div class="rules-panel">
+    <div class="rules-list">
+      <div class="rule">
+        <div class="num">1</div>
+        <p>Intri în laborator <b>numai cu acordul și în prezența profesorului.</b></p>
+      </div>
+      <div class="rule warn">
+        <div class="num">2</div>
+        <p>Ești responsabil de calculatorul tău, dar <b>nu ai voie</b> să atingi componentele interne — pericol de electrocutare!</p>
+      </div>
+      <div class="rule">
+        <div class="num">3</div>
+        <p>Dacă găsești o defecțiune, <b>anunți profesorul</b> — nu încerci s-o repari singur.</p>
+      </div>
+      <div class="rule warn">
+        <div class="num">4</div>
+        <p><b>Nu mănânci și nu bei</b> nimic în laborator — lichidele pot strica dispozitivele.</p>
+      </div>
+      <div class="rule">
+        <div class="num">5</div>
+        <p>Instalezi sau ștergi aplicații <b>doar cu acordul profesorului.</b></p>
+      </div>
+      <div class="rule">
+        <div class="num">6</div>
+        <p>Accesezi internetul <b>doar cu voie</b>, și navighezi numai pe site-uri recomandate.</p>
+      </div>
+      <div class="rule warn">
+        <div class="num">7</div>
+        <p><b>Nu alerga, nu fi violent</b> — respectă munca ta și a colegilor tăi.</p>
+      </div>
+    </div>
+    <div class="stamp-row"><span class="dot"></span> Reține aceste reguli — apar în jocul final!</div>
+  </div>
+</section>
+
+<!-- ERGONOMICS -->
+<section class="wrap" id="ergonomie">
+  <div class="kicker">Partea 2</div>
+  <h2 class="sec-title">Poziția corectă la calculator</h2>
+  <p class="sec-intro">Atinge fiecare "petală" ca să afli ce trebuie să faci pentru a evita durerile de spate, de cap sau tulburările de vedere.</p>
+
+  <div class="ergo-wrap">
+    <div class="ergo-grid" id="ergoGrid">
+      <!-- petals injected by JS -->
+      <div class="petal-detail" id="petalDetail"></div>
+    </div>
+
+    <div class="dn-block">
+      <div class="dn-heading">Așa DA / Așa NU</div>
+      <p class="dn-sub">Compară cele două poziții din fiecare pereche — pe care o ai tu chiar acum?</p>
+
+      <div class="dn-pair">
+        <div class="dn-pair-label">1. Poziția la birou</div>
+        <div class="dn-cards">
+          <div class="dn-card good">
+            <span class="dn-badge good">DA ✓</span>
+            <svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="80" r="62" fill="#DFF4EF"/>
+              <rect x="12" y="92" width="46" height="5" rx="2" fill="#5E7290"/>
+              <rect x="16" y="97" width="4" height="28" fill="#5E7290"/>
+              <rect x="50" y="97" width="4" height="28" fill="#5E7290"/>
+              <rect x="20" y="56" width="34" height="28" rx="3" fill="none" stroke="#5E7290" stroke-width="3"/>
+              <line x1="37" y1="84" x2="37" y2="92" stroke="#5E7290" stroke-width="3"/>
+              <rect x="96" y="45" width="5" height="55" rx="2.5" fill="#9FB2CC"/>
+              <rect x="88" y="100" width="42" height="5" rx="2" fill="#9FB2CC"/>
+              <line x1="90" y1="105" x2="90" y2="128" stroke="#9FB2CC" stroke-width="4" stroke-linecap="round"/>
+              <line x1="124" y1="105" x2="124" y2="128" stroke="#9FB2CC" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="98" cy="42" r="9" fill="none" stroke="#132038" stroke-width="3"/>
+              <rect x="90" y="53" width="16" height="42" rx="8" fill="none" stroke="#22BFAE" stroke-width="3.5"/>
+              <line x1="90" y1="60" x2="56" y2="70" stroke="#132038" stroke-width="3" stroke-linecap="round"/>
+              <line x1="98" y1="95" x2="90" y2="100" stroke="#22BFAE" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="90" y1="100" x2="90" y2="128" stroke="#132038" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <p>Spate drept, lipit de scaun. Monitorul e la nivelul ochilor.</p>
+          </div>
+          <div class="dn-card bad">
+            <span class="dn-badge bad">NU ✗</span>
+            <svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="80" r="62" fill="#FDE8E5"/>
+              <rect x="12" y="92" width="46" height="5" rx="2" fill="#5E7290"/>
+              <rect x="16" y="97" width="4" height="28" fill="#5E7290"/>
+              <rect x="50" y="97" width="4" height="28" fill="#5E7290"/>
+              <rect x="20" y="56" width="34" height="28" rx="3" fill="none" stroke="#5E7290" stroke-width="3"/>
+              <line x1="37" y1="84" x2="37" y2="92" stroke="#5E7290" stroke-width="3"/>
+              <rect x="96" y="45" width="5" height="55" rx="2.5" fill="#9FB2CC"/>
+              <rect x="88" y="100" width="42" height="5" rx="2" fill="#9FB2CC"/>
+              <line x1="90" y1="105" x2="90" y2="128" stroke="#9FB2CC" stroke-width="4" stroke-linecap="round"/>
+              <line x1="124" y1="105" x2="124" y2="128" stroke="#9FB2CC" stroke-width="4" stroke-linecap="round"/>
+              <g transform="rotate(-32 92 100)">
+                <circle cx="70" cy="52" r="9" fill="none" stroke="#132038" stroke-width="3"/>
+                <rect x="84" y="60" width="16" height="42" rx="8" fill="none" stroke="#FF6657" stroke-width="3.5"/>
+                <line x1="84" y1="66" x2="56" y2="72" stroke="#132038" stroke-width="3" stroke-linecap="round"/>
+                <line x1="92" y1="102" x2="90" y2="100" stroke="#FF6657" stroke-width="3.5" stroke-linecap="round"/>
+                <line x1="90" y1="100" x2="90" y2="128" stroke="#132038" stroke-width="3" stroke-linecap="round"/>
+              </g>
+              <path d="M72 30 q6 6 0 12" stroke="#E14E40" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+            <p>Spate încovoiat, cap aplecat spre ecran — apar dureri de gât și spate.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dn-pair">
+        <div class="dn-pair-label">2. Mâna pe tastatură</div>
+        <div class="dn-cards">
+          <div class="dn-card good">
+            <span class="dn-badge good">DA ✓</span>
+            <svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="55" r="50" fill="#DFF4EF"/>
+              <rect x="70" y="70" width="50" height="16" rx="3" fill="none" stroke="#5E7290" stroke-width="3"/>
+              <line x1="30" y1="60" x2="70" y2="60" stroke="#132038" stroke-width="5" stroke-linecap="round"/>
+              <line x1="70" y1="60" x2="90" y2="60" stroke="#22BFAE" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="26" cy="60" r="7" fill="none" stroke="#132038" stroke-width="3"/>
+            </svg>
+            <p>Mâna, încheietura și antebrațul stau pe aceeași linie dreaptă.</p>
+          </div>
+          <div class="dn-card bad">
+            <span class="dn-badge bad">NU ✗</span>
+            <svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="55" r="50" fill="#FDE8E5"/>
+              <rect x="70" y="70" width="50" height="16" rx="3" fill="none" stroke="#5E7290" stroke-width="3"/>
+              <line x1="30" y1="66" x2="68" y2="66" stroke="#132038" stroke-width="5" stroke-linecap="round"/>
+              <line x1="68" y1="66" x2="90" y2="50" stroke="#FF6657" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="26" cy="66" r="7" fill="none" stroke="#132038" stroke-width="3"/>
+              <path d="M96 38 q6 5 0 10" stroke="#E14E40" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <p>Încheietura este îndoită în sus — apar amorțeli și dureri.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dn-pair">
+        <div class="dn-pair-label">3. Tableta sau telefonul</div>
+        <div class="dn-cards">
+          <div class="dn-card good">
+            <span class="dn-badge good">DA ✓</span>
+            <svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="55" r="50" fill="#DFF4EF"/>
+              <line x1="25" y1="90" x2="115" y2="90" stroke="#5E7290" stroke-width="3" stroke-linecap="round"/>
+              <path d="M55 90 L70 55 L85 90 Z" fill="none" stroke="#9FB2CC" stroke-width="3" stroke-linejoin="round"/>
+              <rect x="45" y="35" width="50" height="34" rx="4" fill="none" stroke="#22BFAE" stroke-width="3.5" transform="rotate(-6 70 52)"/>
+            </svg>
+            <p>Dispozitivul stă pe un suport — mâinile și gâtul stau relaxate.</p>
+          </div>
+          <div class="dn-card bad">
+            <span class="dn-badge bad">NU ✗</span>
+            <svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="55" r="50" fill="#FDE8E5"/>
+              <rect x="46" y="30" width="48" height="34" rx="4" fill="none" stroke="#FF6657" stroke-width="3.5"/>
+              <path d="M40 88 Q46 60 60 62" stroke="#132038" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M100 88 Q94 60 80 62" stroke="#132038" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M104 22 q6 5 0 10" stroke="#E14E40" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <p>Ținut(ă) direct în mâini — obosesc brațele și încheieturile.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-row">
+      <div class="tip good">
+        <div class="tip-head">✅ Mâinile, corect</div>
+        Mâna, încheietura și antebrațul stau fixate pe aceeași linie — fără îndoituri în sus, în jos sau în lateral.
+      </div>
+      <div class="tip rest">
+        <div class="tip-head">⏱️ Pauze obligatorii</div>
+        După <b>40–50 de minute</b> de activitate, ia o pauză de <b>10 minute</b>: rotește umerii, brațele, capul și întinde picioarele.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="wrap" id="joc">
+  <div class="kicker">Partea 3 · Misiunea finală</div>
+  <h2 class="sec-title">Ai înțeles? Demonstrează!</h2>
+  <p class="sec-intro">8 întrebări. Răspunde corect ca să-ți iei ecusonul de "Expert în siguranță digitală".</p>
+
+  <div class="quiz-wrap">
+    <div class="quiz-top">
+      <span id="qCounter">Întrebarea 1 din 8</span>
+      <span id="qScore">Scor: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="q-box" id="qBox">
+      <p class="q-text" id="qText"></p>
+      <div class="opts" id="qOpts"></div>
+      <div class="feedback" id="qFeedback"></div>
+      <button class="btn btn-primary next-btn" id="nextBtn">Următoarea →</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="badge-circle" id="badgeCircle" style="--pct:0"><span id="badgeScore">0/8</span></div>
+      <h3 id="resultTitle">Rezultat</h3>
+      <p id="resultText"></p>
+      <button class="retry" id="retryBtn">🔁 Joacă din nou</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Informatică și TIC · Manual pentru clasa a V-a · Unitatea 1, Lecția 1
+</footer>
+
+<script>
+/* ---------------- ERGONOMICS PETALS ---------------- */
+const petals = [
+  {emoji:"🦴", title:"Coloana", text:"<b>Coloana vertebrală</b> este dreaptă, iar spatele este lipit de spătarul scaunului."},
+  {emoji:"🙂", title:"Cap și gât", text:"<b>Capul și gâtul</b> sunt drepte, coatele sunt relaxate, iar coapsele sunt paralele cu solul."},
+  {emoji:"🦵", title:"Umeri și picioare", text:"<b>Umerii</b> sunt relaxați, iar <b>picioarele</b> se sprijină pe podea."},
+  {emoji:"🖥️", title:"Monitorul", text:"<b>Monitorul</b> este poziționat la o lungime de braț — brațul întins nu trebuie să-l atingă."},
+  {emoji:"⌨️", title:"Tastatura", text:"Când scrii la <b>tastatură</b>, palmele stau în prelungirea antebrațelor."},
+  {emoji:"🖱️", title:"Mouse-ul", text:"Când folosești <b>mouse-ul</b>, miști tot brațul, nu doar încheietura sau cotul."},
+  {emoji:"💡", title:"Lumina", text:"<b>Sursa de lumină</b> stă în stânga sau în dreapta ta — niciodată spre tine sau spre monitor."},
+  {emoji:"🪑", title:"Scaunul", text:"<b>Scaunul și biroul</b> sunt reglabile, astfel încât poziția ta să fie mereu confortabilă."},
+];
+
+const grid = document.getElementById('ergoGrid');
+const detailBox = document.getElementById('petalDetail');
+
+petals.forEach((p, i) => {
+  const el = document.createElement('div');
+  el.className = 'petal';
+  el.innerHTML = `<div class="emoji">${p.emoji}</div><div class="title">${p.title}</div>`;
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.petal').forEach(pt => pt.classList.remove('active'));
+    el.classList.add('active');
+    detailBox.innerHTML = `${p.emoji} ${p.text}`;
+    detailBox.classList.add('show');
+  });
+  grid.insertBefore(el, detailBox);
+});
+
+/* ---------------- QUIZ ---------------- */
+const questions = [
+  {
+    q: "Cine îți poate permite accesul în laboratorul de informatică?",
+    opts: ["Orice coleg mai mare", "Doar profesorul, prin acord și prezență", "Poți intra oricând, e liber acces"],
+    correct: 1
+  },
+  {
+    q: "Poți demonta prizele sau dispozitivele din laborator în timpul orei?",
+    opts: ["Da, dacă ești atent", "Nu, niciodată"],
+    correct: 1
+  },
+  {
+    q: "Ai voie să accesezi componentele interne ale calculatoarelor din laborator?",
+    opts: ["Da, sunt ale tale cât timp lucrezi", "Nu — există pericol de electrocutare"],
+    correct: 1
+  },
+  {
+    q: "În laboratorul de informatică ai voie să mănânci sau să bei?",
+    opts: ["Da, discret", "Nu, este interzis"],
+    correct: 1
+  },
+  {
+    q: "Cum trebuie să fie spatele tău când stai la calculator?",
+    opts: ["Aplecat spre ecran", "Drept, lipit de spătarul scaunului", "Răsucit într-o parte"],
+    correct: 1
+  },
+  {
+    q: "La ce distanță trebuie poziționat monitorul față de tine?",
+    opts: ["Foarte aproape de ochi", "La o lungime de braț", "Distanța nu contează"],
+    correct: 1
+  },
+  {
+    q: "După cât timp de lucru la calculator ar trebui să faci o pauză de 10 minute?",
+    opts: ["După 40–50 de minute", "După 3–4 ore", "Nu ai nevoie de pauze"],
+    correct: 0
+  },
+  {
+    q: "Cum e sănătos să ții tableta sau telefonul când lucrezi?",
+    opts: ["Ținută tot timpul în mâini", "Așezată pe un suport", "Nu contează cum o ții"],
+    correct: 1
+  }
+];
+
+let current = 0, score = 0;
+const qText = document.getElementById('qText');
+const qOpts = document.getElementById('qOpts');
+const qFeedback = document.getElementById('qFeedback');
+const nextBtn = document.getElementById('nextBtn');
+const qCounter = document.getElementById('qCounter');
+const qScore = document.getElementById('qScore');
+const progressFill = document.getElementById('progressFill');
+const qBox = document.getElementById('qBox');
+const result = document.getElementById('result');
+
+function renderQuestion(){
+  const item = questions[current];
+  qText.textContent = item.q;
+  qOpts.innerHTML = "";
+  qFeedback.textContent = "";
+  nextBtn.classList.remove('show');
+  qCounter.textContent = `Întrebarea ${current+1} din ${questions.length}`;
+  qScore.textContent = `Scor: ${score}`;
+  progressFill.style.width = `${(current/questions.length)*100}%`;
+
+  item.opts.forEach((optText, idx) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = optText;
+    b.addEventListener('click', () => selectAnswer(idx));
+    qOpts.appendChild(b);
+  });
+}
+
+function selectAnswer(idx){
+  const item = questions[current];
+  const buttons = qOpts.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+
+  if(idx === item.correct){
+    buttons[idx].classList.add('correct');
+    qFeedback.textContent = "✅ Corect! Bravo.";
+    qFeedback.className = 'feedback ok';
+    score++;
+  } else {
+    buttons[idx].classList.add('wrong');
+    buttons[item.correct].classList.add('correct');
+    qFeedback.textContent = "❌ Nu chiar — răspunsul corect e marcat cu verde.";
+    qFeedback.className = 'feedback no';
+  }
+  qScore.textContent = `Scor: ${score}`;
+  nextBtn.classList.add('show');
+}
+
+nextBtn.addEventListener('click', () => {
+  current++;
+  if(current < questions.length){
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+
+function showResult(){
+  qBox.style.display = 'none';
+  result.classList.add('show');
+  progressFill.style.width = '100%';
+
+  const pct = Math.round((score/questions.length)*100);
+  document.getElementById('badgeCircle').style.setProperty('--pct', pct);
+  document.getElementById('badgeScore').textContent = `${score}/${questions.length}`;
+
+  let title, text;
+  if(score === questions.length){
+    title = "🏆 Expert în siguranță digitală!";
+    text = "Ai răspuns perfect! Cunoști toate regulile laboratorului și poziția corectă la calculator.";
+  } else if(score >= questions.length - 2){
+    title = "🌟 Foarte bine!";
+    text = "Aproape perfect — mai recitește o dată regulile pe care le-ai greșit.";
+  } else if(score >= questions.length/2){
+    title = "💪 Bine, dar mai exersează";
+    text = "Ești pe drumul cel bun. Recitește secțiunile de mai sus și mai încearcă o dată.";
+  } else {
+    title = "📖 Recitește regulile";
+    text = "Nicio grijă — parcurge din nou lecția de mai sus, apoi încearcă jocul din nou.";
+  }
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultText').textContent = text;
+}
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  current = 0; score = 0;
+  qBox.style.display = 'block';
+  result.classList.remove('show');
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+
+</body>
+</html>
