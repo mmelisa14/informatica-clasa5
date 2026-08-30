@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecția 3 · Organizarea informațiilor cu calculatorul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0E2038;
+    --navy2:#173257;
+    --navy3:#1F3E68;
+    --cloud:#F5F8FC;
+    --paper:#FFFFFF;
+    --teal:#22BFAE;
+    --teal-dark:#169484;
+    --coral:#FF6657;
+    --coral-dark:#E14E40;
+    --amber:#FFB238;
+    --violet:#7C6FF0;
+    --ink:#132038;
+    --muted:#5E7290;
+    --radius-lg:28px;
+    --radius-md:18px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:var(--cloud);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;}
+  p{line-height:1.6;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+  section{padding:60px 0;}
+  img,svg{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(14,32,56,0.92);
+    backdrop-filter:blur(6px);
+    color:#fff;padding:12px 20px;
+    display:flex;align-items:center;justify-content:space-between;
+    font-weight:800;font-size:14px;letter-spacing:.02em;
+  }
+  .topbar a{color:#C9D6E8;text-decoration:none;font-weight:700;font-size:13px;}
+  .topbar a:hover{color:#fff;}
+
+  .hero{
+    background:radial-gradient(circle at 15% 20%, #1B3F6B 0%, var(--navy) 55%, #081428 100%);
+    color:#fff;padding:56px 0 80px;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.35) 0, transparent 60%),
+      radial-gradient(2px 2px at 70% 15%, rgba(255,255,255,.25) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 85% 60%, rgba(255,255,255,.3) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 40% 80%, rgba(255,255,255,.2) 0, transparent 60%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;
+    letter-spacing:.03em;margin-bottom:20px;
+  }
+  .hero h1{
+    font-size:clamp(30px,6.6vw,48px);line-height:1.08;margin:0 0 14px;font-weight:800;
+  }
+  .hero h1 em{font-style:normal;color:var(--amber);}
+  .hero p.lead{font-size:17px;color:#C9D6E8;max-width:58ch;margin:0 0 32px;}
+
+  .hero-cta{margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:800;font-size:15px;padding:13px 24px;border-radius:999px;
+    border:none;text-decoration:none;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--amber);color:var(--navy);box-shadow:0 10px 24px -10px rgba(255,178,56,.6);}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.35);}
+  .btn-ghost:hover{background:rgba(255,255,255,.16);}
+  .btn:disabled{opacity:.5;cursor:default;transform:none;}
+
+  .kicker{
+    font-weight:800;color:var(--teal-dark);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  }
+  .kicker::before{content:"";width:20px;height:3px;background:var(--teal-dark);border-radius:3px;display:inline-block;}
+  .sec-title{font-size:clamp(24px,4.4vw,34px);font-weight:800;margin:0 0 14px;}
+  .sec-intro{color:var(--muted);font-size:16px;max-width:64ch;margin:0 0 30px;}
+
+  .def-box{
+    border:2px solid #BFD3EA;border-radius:var(--radius-md);
+    background:var(--paper);padding:22px 24px;margin-bottom:30px;font-size:15px;
+  }
+  .def-box b{color:var(--teal-dark);}
+
+  .chip-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:30px;}
+  .chip{
+    background:var(--paper);border:1px solid #E4EAF3;border-radius:16px;
+    padding:18px 10px;text-align:center;font-size:12.5px;font-weight:700;color:var(--navy);
+  }
+  .chip .em{font-size:26px;display:block;margin-bottom:8px;}
+
+  .info-box{
+    background:#FFF3E3;border:1px solid #FFDDA8;border-radius:var(--radius-md);
+    padding:20px 22px;font-size:14.5px;margin-bottom:30px;
+  }
+  .info-box .info-title{font-family:'Baloo 2';font-weight:700;font-size:15px;margin-bottom:8px;color:var(--navy);}
+  .info-box.blue{background:#EAF2FF;border-color:#C9DCFA;}
+  .info-box.green{background:#EAFBF6;border-color:#BFEBDF;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:30px;}
+  .card{border-radius:var(--radius-md);padding:24px;color:#fff;}
+  .card.dark{background:linear-gradient(155deg,#1F3E68,var(--navy));}
+  .card.light{background:linear-gradient(155deg,#5B4FD0,var(--violet));}
+  .card .icon{font-size:34px;margin-bottom:12px;}
+  .card h3{font-size:19px;margin:0 0 12px;font-weight:800;}
+  .card p{font-size:14px;color:rgba(255,255,255,.9);margin:0;line-height:1.6;}
+  .card .examples{margin-top:14px;font-size:13px;color:rgba(255,255,255,.75);font-weight:700;}
+
+  .types-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:26px;}
+  .type-card{
+    background:var(--paper);border:1px solid #E4EAF3;border-radius:var(--radius-md);
+    padding:22px;
+  }
+  .type-card .icon{font-size:32px;margin-bottom:12px;}
+  .type-card h4{font-family:'Baloo 2';font-size:17px;margin:0 0 10px;color:var(--navy);font-weight:800;}
+  .type-card p{font-size:14px;color:var(--muted);margin:0;line-height:1.6;}
+
+  .story-section{
+    background:linear-gradient(165deg,var(--navy2), var(--navy) 85%);
+    border-radius:var(--radius-lg);padding:34px 28px;color:#fff;margin-bottom:30px;
+  }
+  .story-steps{display:flex;flex-direction:column;gap:18px;}
+  .story-step{
+    display:flex;gap:16px;align-items:flex-start;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;padding:18px;
+  }
+  .story-step .step-icon{
+    font-size:24px;width:46px;height:46px;border-radius:10px;flex-shrink:0;
+    background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;
+  }
+  .story-step h4{margin:0 0 6px;font-family:'Baloo 2';font-size:16px;font-weight:800;}
+  .story-step p{margin:0;font-size:14px;color:#DCE6F4;line-height:1.6;}
+
+  /* extension chips */
+  .ext-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:30px;}
+  .ext-chip{background:var(--paper);border:1px solid #E4EAF3;border-radius:14px;padding:14px 6px;text-align:center;}
+  .ext-chip .ext{font-family:'Baloo 2';font-weight:800;color:var(--teal-dark);font-size:14px;display:block;margin-bottom:4px;}
+  .ext-chip .what{font-size:11px;color:var(--muted);font-weight:700;}
+
+  /* operations grid */
+  .op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:30px;}
+  .op-card{background:var(--paper);border:1px solid #E4EAF3;border-radius:14px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;}
+  .op-card .op-icon{font-size:22px;flex-shrink:0;}
+  .op-card b{display:block;font-size:14.5px;color:var(--navy);margin-bottom:2px;}
+  .op-card span{font-size:13px;color:var(--muted);line-height:1.5;}
+
+  /* explorer mockup illustrating where the path shows up */
+  .explorer-mock{
+    margin-top:14px;background:#fff;border-radius:12px;overflow:hidden;
+    border:1px solid #D9E2EF;box-shadow:0 8px 20px -12px rgba(15,30,60,.25);
+  }
+  .explorer-titlebar{
+    background:#EDF1F8;padding:9px 12px;display:flex;align-items:center;gap:6px;
+    border-bottom:1px solid #D9E2EF;
+  }
+  .tb-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .tb-title{margin-left:8px;font-size:12px;font-weight:700;color:var(--navy);}
+  .explorer-address{
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#F7F9FC;
+    padding:9px 12px;border-bottom:1px solid #E4EAF3;font-size:12.5px;font-weight:700;
+    color:var(--navy);
+  }
+  .addr-seg{background:#EAF2FF;border:1px solid #C9DCFA;padding:4px 10px;border-radius:6px;}
+  .addr-seg.current{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .addr-arrow{color:var(--muted);font-weight:800;}
+  .explorer-body{display:flex;gap:18px;padding:14px 16px;flex-wrap:wrap;}
+  .ex-file{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--navy);width:70px;text-align:center;}
+  .ex-file span{word-break:break-word;}
+  .explorer-callout{
+    background:#FFF3E3;border-top:1px dashed #FFDDA8;padding:10px 14px;font-size:12.5px;
+    font-weight:700;color:var(--navy);
+  }
+
+  /* path breadcrumb */
+  .path-demo{
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--navy);
+    color:#fff;border-radius:14px;padding:16px 18px;font-weight:700;font-size:14.5px;margin-top:14px;
+  }
+  .path-demo .seg{background:rgba(255,255,255,.1);padding:6px 12px;border-radius:8px;}
+  .path-demo .arrow{color:var(--amber);}
+
+  /* GAME: messy vs clean desktop */
+  .game-wrap{
+    background:linear-gradient(165deg,var(--navy2), var(--navy) 85%);
+    border-radius:var(--radius-lg);padding:30px 24px;color:#fff;margin-bottom:20px;
+  }
+  .game-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
+  .game-status{font-weight:800;font-size:15px;color:#C9D6E8;}
+  .timer-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 18px;font-family:'Baloo 2';font-weight:700;font-size:15px;}
+  .desktop-frame{
+    position:relative;background:linear-gradient(160deg,#3A6EA5,#1B3F6B);
+    border-radius:16px;border:1px solid rgba(255,255,255,.2);
+    min-height:340px;padding:14px;overflow:hidden;
+  }
+  .messy-grid{display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;justify-content:flex-start;pointer-events:none;opacity:.5;transition:opacity .3s ease;}
+  .messy-grid.active{pointer-events:auto;opacity:1;}
+  .icon-btn{
+    width:78px;text-align:center;background:none;border:none;color:#fff;
+    padding:8px 4px;border-radius:10px;transition:background .15s ease;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,.12);}
+  .icon-btn .glyph{font-size:26px;display:block;margin-bottom:4px;}
+  .icon-btn .lbl{font-size:10px;font-weight:700;line-height:1.2;word-break:break-word;display:block;}
+  .icon-btn.shake{animation:shake .3s ease;}
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-4px);}
+    75%{transform:translateX(4px);}
+  }
+  .icon-btn.found{background:rgba(34,191,174,.35);outline:2px solid var(--teal);}
+  .game-msg{margin-top:14px;font-size:14.5px;font-weight:700;min-height:20px;color:#7FE0D4;}
+
+  .clean-desktop{
+    display:none;background:linear-gradient(160deg,#3A6EA5,#1B3F6B);
+    border-radius:16px;border:1px solid rgba(255,255,255,.2);
+    padding:20px;margin-top:18px;
+  }
+  .clean-desktop.show{display:block;}
+  .clean-row{display:flex;gap:16px;flex-wrap:wrap;}
+  .folder-btn{
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;
+    color:#fff;padding:14px 16px;text-align:center;width:110px;font-weight:700;font-size:12.5px;
+  }
+  .folder-btn:hover{background:rgba(255,255,255,.16);}
+  .folder-btn .glyph{font-size:30px;display:block;margin-bottom:6px;}
+  .reveal-file{
+    margin-top:14px;background:rgba(34,191,174,.2);border:1px solid var(--teal);border-radius:12px;
+    padding:14px 16px;font-weight:700;font-size:14px;display:none;align-items:center;gap:10px;
+  }
+  .reveal-file.show{display:flex;}
+  .compare-box{
+    margin-top:20px;display:none;grid-template-columns:1fr 1fr;gap:14px;
+  }
+  .compare-box.show{display:grid;}
+  .compare-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:16px;text-align:center;}
+  .compare-card .num{font-family:'Baloo 2';font-size:28px;font-weight:800;color:var(--amber);}
+  .compare-card .lbl{font-size:12.5px;color:#C9D6E8;font-weight:700;margin-top:4px;}
+
+  /* activity section */
+  .activity-section{
+    background:linear-gradient(165deg,var(--navy2), var(--navy) 80%);
+    border-radius:var(--radius-lg);padding:34px 28px;color:#fff;
+  }
+  .cerinta-box{
+    background:rgba(255,178,56,.15);border:1px solid rgba(255,178,56,.4);border-radius:16px;
+    padding:20px 22px;margin-bottom:26px;
+  }
+  .cerinta-box .cerinta-title{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .cerinta-box ol{margin:0;padding-left:20px;font-size:14.5px;line-height:1.8;}
+  .cerinta-box ol li b{color:var(--amber);}
+
+  .guide-step{
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:20px 22px;margin-bottom:16px;
+  }
+  .guide-step .g-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .guide-step .g-num{
+    width:32px;height:32px;border-radius:50%;background:var(--teal);color:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-family:'Baloo 2';font-weight:800;font-size:15px;flex-shrink:0;
+  }
+  .guide-step h4{margin:0;font-family:'Baloo 2';font-size:16.5px;font-weight:800;}
+  .guide-step p{margin:0 0 8px;font-size:14.5px;color:#DCE6F4;line-height:1.65;}
+  .guide-step .example-box{
+    background:rgba(34,191,174,.12);border:1px dashed rgba(34,191,174,.5);border-radius:10px;
+    padding:12px 14px;font-size:13.5px;color:#B9EDE3;margin-top:8px;
+  }
+  .guide-step .example-box b{color:var(--teal);}
+
+  footer{padding:34px 0 50px;text-align:center;color:var(--muted);font-size:13px;}
+
+  @media (max-width:760px){
+    .chip-grid{grid-template-columns:repeat(3,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .types-grid{grid-template-columns:1fr;}
+    .ext-grid{grid-template-columns:repeat(3,1fr);}
+    .op-grid{grid-template-columns:1fr;}
+    .compare-box.show{grid-template-columns:1fr;}
+    section{padding:44px 0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>💻 Informatică și TIC</span>
+  <a href="lectia2.html">← Lecția 2</a>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">📖 Unitatea 1 · Lecția 3</div>
+    <h1>Organizarea <em>informațiilor</em> cu calculatorul</h1>
+    <p class="lead">Ai avut vreodată un desktop plin cu zeci de fișiere aruncate la întâmplare? Astăzi învățăm cum să punem ordine — și chiar ne creăm propriile fișiere și foldere, pas cu pas.</p>
+    <div class="hero-cta">
+      <a href="#joc" class="btn btn-primary">Începe cu jocul ↓</a>
+      <a href="#activitate" class="btn btn-ghost">Sari la activitatea practică</a>
+    </div>
+  </div>
+</header>
+
+<!-- 0. JOC INTRODUCTIV -->
+<section class="wrap" id="joc">
+  <div class="kicker">Partea 1</div>
+  <h2 class="sec-title">De ce contează organizarea?</h2>
+  <p class="sec-intro">Înainte de teorie, hai să simțim pe pielea noastră diferența. Mai jos ai un desktop dezordonat. Misiunea ta: găsește cât mai repede fișierul <b>Tema_Romana.docx</b>.</p>
+
+  <div class="game-wrap">
+    <div class="game-top">
+      <span class="game-status" id="gameStatus">Apasă „Start joc" și caută fișierul cerut.</span>
+      <span class="timer-pill">⏱️ <span id="timerVal">0.0</span>s</span>
+    </div>
+
+    <div class="desktop-frame">
+      <div class="messy-grid" id="messyGrid"></div>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" id="startGameBtn">▶️ Start joc</button>
+      <button class="btn btn-ghost" id="showOrgBtn" style="display:none;">Vezi varianta organizată →</button>
+    </div>
+
+    <p class="game-msg" id="gameMsg"></p>
+
+    <div class="clean-desktop" id="cleanDesktop">
+      <p style="margin:0 0 14px;font-size:14px;color:#C9D6E8;">Acum același fișier, dar organizat într-o structură de foldere. Dă click pe foldere, în ordine, ca să ajungi la el.</p>
+      <div class="clean-row" id="cleanRow">
+        <button class="folder-btn" id="folderTeme" data-step="1"><span class="glyph">📁</span>Teme</button>
+      </div>
+      <div class="reveal-file" id="revealFile">📄 <span>Tema_Romana.docx — găsit instant!</span></div>
+
+      <div class="compare-box" id="compareBox">
+        <div class="compare-card">
+          <div class="num" id="compareMessy">–</div>
+          <div class="lbl">secunde pe desktopul dezordonat</div>
+        </div>
+        <div class="compare-card">
+          <div class="num">2 click-uri</div>
+          <div class="lbl">pe desktopul organizat, fără căutare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box green">
+    <div class="info-title">Ce am observat?</div>
+    Când fișierele stau claie peste grămadă, creierul tău pierde timp scanând vizual fiecare pictogramă. Când sunt grupate logic în foldere cu nume clare, găsești orice ai nevoie în câteva secunde. Exact asta înseamnă <b>organizarea informațiilor</b>.
+  </div>
+</section>
+
+<!-- 1. TEORIE: FISIERE SI FOLDERE -->
+<section class="wrap" id="teorie">
+  <div class="kicker">Partea 2</div>
+  <h2 class="sec-title">Fișiere, foldere și directoare</h2>
+
+  <div class="def-box">
+    <b>Organizarea informațiilor</b> înseamnă felul în care structurăm datele create sau prelucrate cu calculatorul, direct pe dispozitiv sau într-un spațiu virtual extern (de exemplu, în cloud).
+  </div>
+
+  <div class="two-col">
+    <div class="card dark">
+      <div class="icon">📄</div>
+      <h3>Fișierul</h3>
+      <p>Este unitatea de bază în care sunt stocate datele: text, imagine, audio, video sau un program. Unele fișiere nu conțin date de prelucrat, ci sunt chiar aplicații.</p>
+      <div class="examples">Ex: poza.jpg, tema.docx, cantec.mp3</div>
+    </div>
+    <div class="card light">
+      <div class="icon">📁</div>
+      <h3>Folderul (directorul / dosarul)</h3>
+      <p>Este „recipientul" în care grupăm mai multe fișiere de același tip sau pe aceeași temă, ca să le găsim ușor mai târziu.</p>
+      <div class="examples">Ex: folderul „Portofoliu digital", „Teme"</div>
+    </div>
+  </div>
+
+  <div class="info-box blue">
+    <div class="info-title">Structura arborescentă</div>
+    Un folder poate conține la rândul lui un alt folder, numit <b>subfolder</b>. Așa se formează o structură asemănătoare unui copac, cu ramuri — de aceea se numește <b>structură arborescentă</b>. De exemplu: <i>Contul meu Drive → Clasa a V-a → Informatică și TIC → Portofoliu digital → Subfolder</i>.
+  </div>
+</section>
+
+<!-- 2. PROPRIETATI -->
+<section class="wrap" id="proprietati">
+  <div class="kicker">Partea 3</div>
+  <h2 class="sec-title">Proprietățile fișierelor și directoarelor</h2>
+  <p class="sec-intro">Indiferent de sistemul de operare, orice fișier sau folder are patru proprietăți esențiale:</p>
+
+  <div class="types-grid">
+    <div class="type-card">
+      <div class="icon">🏷️</div>
+      <h4>Numele</h4>
+      <p>O denumire scurtă și reprezentativă pentru conținut. Poate avea maximum 255 de caractere, litere mari sau mici, inclusiv diacritice (ă, â, î, ș, ț), cifre și unele caractere speciale. Nu poți folosi însă: <b>/ : * " &lt; &gt; |</b></p>
+    </div>
+    <div class="type-card">
+      <div class="icon">🔖</div>
+      <h4>Tipul (extensia)</h4>
+      <p>Este specific fiecărui fișier și este dat automat de aplicația cu care a fost creat. Extensia apare după numele fișierului, separată de un punct, și arată calculatorului cu ce program să îl deschidă.</p>
+    </div>
+    <div class="type-card">
+      <div class="icon">📏</div>
+      <h4>Dimensiunea</h4>
+      <p>Este cantitatea de date conținută de fișier sau director, măsurată în <b>Bytes (B)</b>. Datele sunt stocate în format binar (șiruri de 0 și 1). 1 KB (KiloByte) = 2¹⁰ Bytes ≈ 1024 Bytes.</p>
+    </div>
+    <div class="type-card">
+      <div class="icon">🗺️</div>
+      <h4>Calea (locația)</h4>
+      <p>Este descrierea completă a locului unde se află fișierul sau folderul, adică drumul prin foldere pe care trebuie să-l parcurgi ca să ajungi la el.</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="info-title">Exemplu de cale</div>
+    Ca să ajungi la fișierul <b>bicicleta.txt</b>, salvat în folderul „Transport" din „Portofoliu digital", de pe Desktop, calea arată astfel:
+    <div class="path-demo">
+      <span class="seg">Acest PC</span><span class="arrow">›</span>
+      <span class="seg">Desktop</span><span class="arrow">›</span>
+      <span class="seg">Portofoliu digital</span><span class="arrow">›</span>
+      <span class="seg">Transport</span><span class="arrow">›</span>
+      <span class="seg">bicicleta.txt</span>
+    </div>
+  </div>
+
+  <div class="info-box blue">
+    <div class="info-title">Unde vezi exact calea, pe calculator?</div>
+    De fiecare dată când deschizi un folder (sau salvezi ceva), calea apare chiar în partea de sus a ferestrei, sub forma unei „benzi" cu săgeți. Iată cum arată:
+    <div class="explorer-mock">
+      <div class="explorer-titlebar">
+        <span class="tb-dot" style="background:#FF6657;"></span>
+        <span class="tb-dot" style="background:#FFB238;"></span>
+        <span class="tb-dot" style="background:#22BFAE;"></span>
+        <span class="tb-title">Transport</span>
+      </div>
+      <div class="explorer-address">
+        <span class="addr-seg">🖥️ Acest PC</span><span class="addr-arrow">›</span>
+        <span class="addr-seg">Desktop</span><span class="addr-arrow">›</span>
+        <span class="addr-seg">Portofoliu digital</span><span class="addr-arrow">›</span>
+        <span class="addr-seg current">Transport</span>
+      </div>
+      <div class="explorer-body">
+        <div class="ex-file">📄<span>bicicleta.txt</span></div>
+        <div class="ex-file">🖼️<span>vapor.png</span></div>
+        <div class="ex-file">🎬<span>avion.mp4</span></div>
+      </div>
+      <div class="explorer-callout">👆 Aceasta este bara de adresă — aici citești, în orice moment, calea completă a locului în care te afli.</div>
+    </div>
+  </div>
+
+  <p class="sec-intro" style="margin-bottom:14px;">Câteva extensii comune și ce tip de fișier arată:</p>
+  <div class="ext-grid">
+    <div class="ext-chip"><span class="ext">.docx</span><span class="what">document Word</span></div>
+    <div class="ext-chip"><span class="ext">.txt</span><span class="what">fișier text</span></div>
+    <div class="ext-chip"><span class="ext">.png / .jpg</span><span class="what">imagine</span></div>
+    <div class="ext-chip"><span class="ext">.mp4</span><span class="what">fișier video</span></div>
+    <div class="ext-chip"><span class="ext">.mp3</span><span class="what">fișier audio</span></div>
+    <div class="ext-chip"><span class="ext">.sys</span><span class="what">fișier de sistem</span></div>
+  </div>
+
+  <div class="info-box blue">
+    <div class="info-title">Reține!</div>
+    Într-un folder nu pot exista două fișiere cu exact același nume <i>și</i> aceeași extensie. Dar două foldere aflate în aceeași locație nu pot avea niciodată același nume.
+  </div>
+</section>
+
+<!-- 3. OPERATII -->
+<section class="wrap" id="operatii">
+  <div class="kicker">Partea 4</div>
+  <h2 class="sec-title">Principalele operații cu fișiere și directoare</h2>
+  <p class="sec-intro">Astea sunt „verbele" pe care le vei folosi tot timpul când lucrezi cu fișiere:</p>
+
+  <div class="op-grid">
+    <div class="op-card"><span class="op-icon">🆕</span><div><b>Creare</b><span>Generarea unui fișier sau folder nou, într-o locație anume.</span></div></div>
+    <div class="op-card"><span class="op-icon">🖱️</span><div><b>Selectare</b><span>Marcarea fișierului sau folderului, în vederea realizării unei acțiuni.</span></div></div>
+    <div class="op-card"><span class="op-icon">💾</span><div><b>Salvare</b><span>Memorarea fișierului într-o anumită locație, pe disc sau în cloud.</span></div></div>
+    <div class="op-card"><span class="op-icon">✏️</span><div><b>Redenumire</b><span>Schimbarea sau modificarea denumirii actuale a fișierului/folderului.</span></div></div>
+    <div class="op-card"><span class="op-icon">🔍</span><div><b>Căutare</b><span>Localizarea unui fișier/folder după nume, tip, dimensiune sau dată.</span></div></div>
+    <div class="op-card"><span class="op-icon">📋</span><div><b>Copiere și lipire</b><span>Conținutul e transferat în altă locație, dar rămâne și în locul inițial.</span></div></div>
+    <div class="op-card"><span class="op-icon">✂️</span><div><b>Mutare și lipire</b><span>Conținutul e transferat în altă locație, fără să rămână în locul inițial.</span></div></div>
+    <div class="op-card"><span class="op-icon">🗑️</span><div><b>Ștergere</b><span>Fișierele merg în Coșul de reciclare, de unde pot fi recuperate până sunt șterse definitiv.</span></div></div>
+  </div>
+
+  <div class="story-section">
+    <p style="font-size:16px;margin:0 0 20px;">Cum arată, pas cu pas, crearea unui folder nou pe desktop:</p>
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-icon">🖱️</div>
+        <div><h4>1. Click dreapta pe desktop</h4><p>Apasă cu butonul din dreapta al mouse-ului pe o zonă liberă a desktopului. Se deschide un meniu.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="step-icon">📁</div>
+        <div><h4>2. Alege New → Folder</h4><p>Din meniu selectezi „New" (Nou), apoi „Folder". Va apărea un folder galben, cu numele „untitled" sau „New folder", gata de redenumire.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="step-icon">⌨️</div>
+        <div><h4>3. Scrie numele și apasă Enter</h4><p>Textul e deja selectat automat — scrii direct noul nume și apeși Enter. Poți redenumi oricând un folder existent apăsând click dreapta → Rename (Redenumire).</p></div>
+      </div>
+      <div class="story-step">
+        <div class="step-icon">🧐</div>
+        <div><h4>4. Verifici proprietățile</h4><p>Click dreapta pe folder → Properties (Proprietăți) îți arată tipul, dimensiunea totală și locul exact (calea) unde se află.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. ACTIVITATE PRACTICA GHIDATA -->
+<section class="wrap" id="activitate">
+  <div class="kicker">Partea 5</div>
+  <h2 class="sec-title">Hai să lucrăm împreună!</h2>
+  <p class="sec-intro">Acum aplicăm tot ce am învățat. Lucrăm direct pe calculatorul tău, pas cu pas. Nu mai avem test grilă la final — de data asta, rezultatul e chiar munca ta, salvată pe desktop.</p>
+
+  <div class="activity-section">
+    <div class="cerinta-box">
+      <div class="cerinta-title">📝 Cerință</div>
+      <ol>
+        <li>Creează pe desktop un <b>folder</b> denumit cu <b>numele și prenumele tău</b>.</li>
+        <li>În interiorul acestui folder, creează un <b>subfolder</b> denumit <b>„Lecția 3"</b>.</li>
+        <li>În folderul „Lecția 3", salvează o <b>poză</b> căutată pe internet, pe o temă la alegere.</li>
+        <li>Tot în folderul „Lecția 3", creează un fișier <b>Notepad</b> în care scrii câteva propoziții despre tema aleasă.</li>
+      </ol>
+    </div>
+
+    <p style="font-size:14.5px;color:#C9D6E8;margin-bottom:20px;">Mai jos facem exact asta împreună, folosind ca exemplu tema <b>„Animalul meu preferat"</b>. Tu poți alege orice altă temă îți place — pașii sunt identici.</p>
+
+    <div class="guide-step">
+      <div class="g-head"><span class="g-num">1</span><h4>Creează folderul cu numele tău</h4></div>
+      <p>Click dreapta pe desktop → <b>New → Folder</b>. Un folder nou apare, cu numele selectat automat. Scrie <b>Nume_Prenume</b> (fără spații, cu underscore _ în loc de spațiu) și apasă Enter.</p>
+      <div class="example-box"><b>Exemplu:</b> dacă te cheamă Popescu Andrei, folderul se va numi <b>Popescu_Andrei</b></div>
+    </div>
+
+    <div class="guide-step">
+      <div class="g-head"><span class="g-num">2</span><h4>Intră în folderul tău și creează subfolderul „Lecția 3"</h4></div>
+      <p>Fă dublu click pe folderul cu numele tău, ca să intri în el (calea va fi acum <b>Desktop → Nume_Prenume</b> — o vezi în bara de adresă, exact ca în exemplul de mai sus). Odată intrat, click dreapta în interior → <b>New → Folder</b>, apoi scrie <b>Lectia 3</b> și apasă Enter. Acum ai un subfolder în interiorul folderului tău — asta este structura arborescentă din teorie, aplicată de tine!</p>
+      <div class="example-box"><b>Calea completă acum:</b> Desktop › Popescu_Andrei › Lectia 3</div>
+    </div>
+
+    <div class="guide-step">
+      <div class="g-head"><span class="g-num">3</span><h4>Alege o temă și caută o poză pe internet</h4></div>
+      <p>Deschide un motor de căutare (de exemplu Google) și tastează în bara de căutare tema aleasă, urmată de cuvântul „imagini". Alege o poză care îți place, apasă click dreapta pe ea și selectează <b>„Save image as..."</b> (Salvează imaginea ca...).</p>
+      <div class="example-box"><b>Exemplu pentru tema „Animalul meu preferat":</b> cauți „pisica imagini", alegi o poză cu o pisică și o salvezi.</div>
+      <p>Când se deschide fereastra de salvare, navighează până pe <b>Desktop → Nume_Prenume → Lectia 3</b> (urmărește bara de adresă din fereastră, ca în mockup-ul de mai sus) și apasă Save. Poți redenumi fișierul, de exemplu <b>pisica.jpg</b>.</p>
+    </div>
+
+    <div class="guide-step">
+      <div class="g-head"><span class="g-num">4</span><h4>Scrie câteva rânduri în Notepad</h4></div>
+      <p>Deschide aplicația <b>Notepad</b> (o cauți în bara de căutare de lângă butonul Start). Scrie 3-4 propoziții despre tema aleasă. Apoi mergi la <b>File → Save As</b>, navighează la <b>Desktop → Nume_Prenume → Lectia 3</b>, denumește fișierul (de exemplu „descriere.txt") și apasă Save.</p>
+      <div class="example-box"><b>Exemplu de text pentru tema „Animalul meu preferat":</b><br>
+      „Animalul meu preferat este pisica. Îmi place pentru că este blândă și jucăușă. Pisicile dorm foarte mult, uneori chiar și 16 ore pe zi. Cred că sunt animale foarte inteligente și independente."</div>
+    </div>
+
+    <div class="guide-step">
+      <div class="g-head"><span class="g-num">5</span><h4>Verifică rezultatul final</h4></div>
+      <p>Deschide folderul cu numele tău de pe desktop. Ar trebui să conțină un singur subfolder, <b>Lectia 3</b>. Intră în el: acolo trebuie să găsești exact două fișiere — poza (.jpg sau .png) și fișierul text cu descrierea (.txt).</p>
+      <div class="example-box">💡 <b>Verificare rapidă:</b> click dreapta pe folderul „Lectia 3" → Properties. Dacă vezi „Contains: 2 Files", ai reușit! Structura completă e: <b>Desktop → Nume_Prenume → Lectia 3 → (poză + text)</b></div>
+    </div>
+  </div>
+</section>
+
+<footer>Informatică și TIC · Manual pentru clasa a V-a · Unitatea 1, Lecția 3</footer>
+
+<script>
+// ---------- JOC: desktop dezordonat vs organizat ----------
+const filler = [
+  {g:"📄",l:"Doc1.docx"},{g:"🖼️",l:"poza_veche.png"},{g:"📄",l:"notite.txt"},
+  {g:"🎵",l:"melodie.mp3"},{g:"📄",l:"caiet.docx"},{g:"🎬",l:"video1.mp4"},
+  {g:"📄",l:"Tema_Matematica.docx"},{g:"🖼️",l:"IMG_2033.jpg"},{g:"📄",l:"lista.txt"},
+  {g:"📊",l:"Grafic.xlsx"},{g:"📄",l:"copie(2).docx"},{g:"🎬",l:"clip_scurt.mp4"},
+  {g:"📄",l:"Tema_Romana.docx",target:true},{g:"🖼️",l:"wallpaper.png"},{g:"📄",l:"draft.docx"},
+  {g:"🎵",l:"song_final.mp3"},{g:"📄",l:"nou(1).txt"},{g:"📦",l:"arhiva.zip"},
+  {g:"📄",l:"Tema_Romana_v2.docx"},{g:"🖼️",l:"screenshot.png"},{g:"📄",l:"idei.txt"},
+  {g:"🎬",l:"proiect.mp4"},{g:"📄",l:"final(3).docx"},{g:"📊",l:"buget.xlsx"},
+  {g:"🖼️",l:"poza_veche2.png"},{g:"📄",l:"vechi.txt"},{g:"📦",l:"backup.zip"}
+];
+
+const messyGrid = document.getElementById('messyGrid');
+let startTime = null, timerInterval = null, gameActive = false, foundTarget = false;
+
+function renderMessyGrid(){
+  messyGrid.innerHTML = "";
+  filler.forEach(item => {
+    const b = document.createElement('button');
+    b.className = 'icon-btn';
+    b.innerHTML = `<span class="glyph">${item.g}</span><span class="lbl">${item.l}</span>`;
+    b.addEventListener('click', () => handleIconClick(b, item));
+    messyGrid.appendChild(b);
+  });
+}
+renderMessyGrid();
+
+function handleIconClick(btn, item){
+  if(!gameActive || foundTarget) return;
+  if(item.target){
+    foundTarget = true;
+    btn.classList.add('found');
+    clearInterval(timerInterval);
+    const elapsed = ((Date.now() - startTime)/1000).toFixed(1);
+    document.getElementById('timerVal').textContent = elapsed;
+    document.getElementById('gameStatus').textContent = "L-ai găsit!";
+    document.getElementById('gameMsg').textContent = `✓ Bravo! Ai găsit fișierul în ${elapsed} secunde, căutând printre toate pictogramele.`;
+    document.getElementById('showOrgBtn').style.display = 'inline-flex';
+    document.getElementById('compareMessy').textContent = elapsed;
+  } else {
+    btn.classList.add('shake');
+    setTimeout(() => btn.classList.remove('shake'), 300);
+  }
+}
+
+document.getElementById('startGameBtn').addEventListener('click', () => {
+  gameActive = true;
+  foundTarget = false;
+  startTime = Date.now();
+  messyGrid.classList.add('active');
+  document.getElementById('gameStatus').textContent = "Caută: Tema_Romana.docx";
+  document.getElementById('gameMsg').textContent = "";
+  document.getElementById('startGameBtn').disabled = true;
+  timerInterval = setInterval(() => {
+    document.getElementById('timerVal').textContent = ((Date.now()-startTime)/1000).toFixed(1);
+  }, 100);
+});
+
+document.getElementById('showOrgBtn').addEventListener('click', () => {
+  document.getElementById('cleanDesktop').classList.add('show');
+  document.getElementById('showOrgBtn').style.display = 'none';
+});
+
+document.getElementById('folderTeme').addEventListener('click', () => {
+  document.getElementById('revealFile').classList.add('show');
+  document.getElementById('compareBox').classList.add('show');
+});
+</script>
+
+</body>
+</html>
