@@ -1,0 +1,709 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lumea Paint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: o foaie de lucru cu sectiuni late, o bara de navigare lipicioasa si imagini din manual folosite ca ecrane interactive. */
+:root {
+  --bg: #f2f5fa;
+  --surface: #ffffff;
+  --surface-2: #e7edf7;
+  --fg: #14213d;
+  --muted: #4d5a78;
+  --line: #cfd8e8;
+  --accent: #2b62d9;
+  --accent-ink: #ffffff;
+  --red: #e5432f;
+  --yellow: #f6c21a;
+  --green: #25a35a;
+  --ok: #17803f;
+  --bad: #c5301f;
+  --font-display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "DM Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1627; --surface: #18223a; --surface-2: #222e4b; --fg: #eaf0ff; --muted: #a5b2d0;
+    --line: #2f3d60; --accent: #6b9bff; --accent-ink: #0c1325; --red: #ff7058; --yellow: #ffd34d; --green: #46cf80;
+    --ok: #5fdc93; --bad: #ff8a77; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1627; --surface: #18223a; --surface-2: #222e4b; --fg: #eaf0ff; --muted: #a5b2d0;
+  --line: #2f3d60; --accent: #6b9bff; --accent-ink: #0c1325; --red: #ff7058; --yellow: #ffd34d; --green: #46cf80;
+  --ok: #5fdc93; --bad: #ff8a77; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.6; padding-inline: 16px; padding-block: 0 4rem; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: 0.005em; }
+p { margin: 0; }
+.wrap { max-width: 62rem; margin-inline: auto; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* header */
+.hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2rem; align-items: center; padding-block: 2.5rem 2rem; }
+.hero h1 { font-size: clamp(2.6rem, 8vw, 4.6rem); font-weight: 700; margin-block: 0.5rem 1rem; }
+.hero h1 span { display: inline-block; }
+.hero .lead { color: var(--muted); max-width: 34rem; font-size: 1.15rem; }
+.dots { display: flex; gap: 0.4rem; margin-top: 1.4rem; }
+.dots i { width: 1.1rem; height: 1.1rem; border-radius: 50%; display: block; }
+.hero figure { margin: 0; position: relative; }
+.hero figure img { display: block; width: 100%; border-radius: 1.2rem; border: 3px solid var(--fg); box-shadow: 8px 8px 0 var(--accent); }
+.hero figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 0.9rem; }
+
+/* nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-block: 1px solid var(--line); margin-inline: -16px; padding-inline: 16px; }
+.nav .wrap { display: flex; gap: 0.35rem; overflow-x: auto; padding-block: 0.55rem; scrollbar-width: thin; }
+.nav a { white-space: nowrap; text-decoration: none; color: var(--fg); font-weight: 700; font-size: 0.9rem; padding: 0.35rem 0.85rem; border-radius: 99px; border: 1.5px solid transparent; }
+.nav a:hover { border-color: var(--line); background: var(--surface); }
+.nav a.end { background: var(--fg); color: var(--bg); }
+
+/* sections */
+section { padding-block: 3.2rem 0.5rem; }
+.sec-head { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.4rem; }
+.sec-head h2 { font-size: clamp(1.7rem, 4.6vw, 2.4rem); }
+.sec-head p { color: var(--muted); max-width: 42rem; }
+.card { background: var(--surface); border: 1.5px solid var(--line); border-radius: 1rem; padding: 1.25rem; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip { font-family: var(--font-mono); font-size: 0.82rem; padding: 0.3rem 0.7rem; border-radius: 0.5rem; background: var(--surface-2); border: 1px solid var(--line); }
+.chip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.chip { cursor: pointer; }
+.tag { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 0.35rem; background: var(--yellow); color: #14213d; font-weight: 500; }
+h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+
+/* hotspot viewer */
+.viewer { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+.shot { position: relative; border-radius: 0.8rem; overflow: hidden; border: 1.5px solid var(--line); background: #fff; }
+.shot img { display: block; width: 100%; height: auto; }
+.hs { position: absolute; border: 2.5px solid transparent; background: transparent; border-radius: 0.4rem; padding: 0; transition: background 0.15s, border-color 0.15s; }
+.hs:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+.hs.on { border-color: var(--red); background: color-mix(in srgb, var(--red) 22%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 40%, transparent); }
+.hs.pulse::after { content: ""; position: absolute; inset: -6px; border-radius: 0.6rem; border: 2px solid var(--accent); animation: pulse 1.8s ease-out 3; }
+@keyframes pulse { from { opacity: 0.9; transform: scale(0.96); } to { opacity: 0; transform: scale(1.12); } }
+.info { position: sticky; top: 4.6rem; }
+.info h3 { color: var(--accent); }
+.info .hint { font-size: 0.85rem; color: var(--muted); margin-top: 0.8rem; }
+.parts { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+
+/* file types */
+.seg { display: inline-flex; border: 1.5px solid var(--fg); border-radius: 99px; overflow: hidden; margin-bottom: 1rem; }
+.seg button { background: transparent; border: 0; padding: 0.45rem 1.1rem; font-weight: 700; }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.zoomrow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-block: 1rem; }
+.zoomrow figure { margin: 0; text-align: center; }
+.zoomrow canvas { width: 100%; max-width: 15rem; aspect-ratio: 1; border-radius: 0.7rem; border: 1.5px solid var(--line); background: #fff; image-rendering: pixelated; }
+.zoomrow figcaption { font-weight: 700; margin-top: 0.4rem; }
+.zoomrow figcaption small { display: block; font-weight: 400; color: var(--muted); font-size: 0.82rem; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.rangeline { display: flex; align-items: center; gap: 0.8rem; }
+.rangeline output { font-family: var(--font-mono); min-width: 3.2rem; text-align: right; }
+
+/* steps */
+.stepper { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: 1.2rem; }
+.steplist { display: flex; flex-direction: column; gap: 0.4rem; }
+.steplist button { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 0.7rem; padding: 0.6rem 0.8rem; font-weight: 700; display: flex; gap: 0.6rem; align-items: baseline; }
+.steplist button span { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.steplist button[aria-selected="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.stepbody { min-height: 14rem; display: flex; flex-direction: column; gap: 1rem; }
+.stepbody img { border-radius: 0.7rem; border: 1.5px solid var(--line); max-height: 17rem; width: auto; align-self: flex-start; }
+.stepnav { display: flex; gap: 0.6rem; margin-top: auto; }
+.btn { background: var(--fg); color: var(--bg); border: 0; border-radius: 0.7rem; padding: 0.55rem 1.1rem; font-weight: 800; }
+.btn.alt { background: transparent; color: var(--fg); border: 1.5px solid var(--fg); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+/* rgb */
+.rgb { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+.sliders { display: flex; flex-direction: column; gap: 0.9rem; }
+.sl { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) 3rem; gap: 0.7rem; align-items: center; font-family: var(--font-mono); }
+.sl label { font-weight: 500; }
+#sw { height: 9rem; border-radius: 0.9rem; border: 2px solid var(--fg); }
+.mix { font-family: var(--font-mono); font-size: 0.9rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.presets { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.8rem; }
+.presets button { width: 2.3rem; height: 2.3rem; border-radius: 50%; border: 2px solid var(--fg); }
+
+/* draw */
+.paintbox { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem; }
+.tools { display: flex; flex-direction: column; gap: 0.5rem; }
+.swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; }
+.swatches button { aspect-ratio: 1; border-radius: 0.4rem; border: 2px solid var(--line); }
+.swatches button[aria-pressed="true"] { border-color: var(--fg); box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--fg); }
+.tools .toolbtn { padding: 0.4rem 0.2rem; font-size: 0.8rem; border-radius: 0.5rem; background: var(--surface-2); border: 1.5px solid var(--line); font-weight: 700; }
+.tools .toolbtn[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+#pad { width: 100%; aspect-ratio: 3 / 2; touch-action: none; background: #fff; border: 2px solid var(--fg); border-radius: 0.6rem; cursor: crosshair; display: block; }
+
+/* quiz */
+.q { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; padding-block: 0.9rem; border-bottom: 1px solid var(--line); }
+.q:last-of-type { border-bottom: 0; }
+.q p b { font-family: var(--font-mono); margin-right: 0.4rem; }
+.q .ans { display: flex; gap: 0.4rem; }
+.q .ans button { width: 2.8rem; height: 2.8rem; border-radius: 50%; border: 2px solid var(--fg); background: var(--surface); font-weight: 800; }
+.q .why { grid-column: 1 / -1; font-size: 0.92rem; color: var(--muted); }
+.q.right .ans button.pick { background: var(--ok); border-color: var(--ok); color: #fff; }
+.q.wrong .ans button.pick { background: var(--bad); border-color: var(--bad); color: #fff; }
+.q .verdict { font-weight: 800; }
+.q.right .verdict { color: var(--ok); }
+.q.wrong .verdict { color: var(--bad); }
+.score { font-family: var(--font-display); font-size: 1.3rem; margin-top: 0.8rem; }
+
+/* gallery */
+.gal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.gal figure { margin: 0; background: var(--surface); border: 1.5px solid var(--line); border-radius: 0.9rem; overflow: hidden; }
+.gal img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.gal figcaption { padding: 0.7rem 0.8rem; font-size: 0.9rem; }
+.gal figcaption b { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); font-weight: 500; }
+
+/* final task */
+.task { background: var(--fg); color: var(--bg); border-radius: 1.6rem; padding: clamp(1.4rem, 4vw, 2.6rem); position: relative; overflow: hidden; }
+.task .eyebrow { color: var(--yellow); }
+.task h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin-block: 0.4rem 0.8rem; }
+.task .intro { max-width: 40rem; opacity: 0.92; }
+.task .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem; margin-top: 1.8rem; }
+.task .panel { background: color-mix(in srgb, var(--bg) 10%, transparent); border: 1.5px solid color-mix(in srgb, var(--bg) 28%, transparent); border-radius: 1.1rem; padding: 1.2rem; min-width: 0; }
+.task h3 { color: var(--yellow); }
+.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+.checks label { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0.65rem; align-items: start; cursor: pointer; }
+.checks input { width: 1.25rem; height: 1.25rem; margin-top: 0.25rem; accent-color: var(--yellow); }
+.bar { height: 0.7rem; border-radius: 99px; background: color-mix(in srgb, var(--bg) 22%, transparent); overflow: hidden; margin-top: 1rem; }
+.bar i { display: block; height: 100%; width: 0; background: var(--yellow); transition: width 0.25s; }
+.barlabel { font-family: var(--font-mono); font-size: 0.85rem; margin-top: 0.4rem; }
+.gen { display: flex; flex-direction: column; gap: 0.8rem; }
+.idea { font-family: var(--font-display); font-size: 1.45rem; line-height: 1.25; min-height: 5.4rem; }
+.idea small { display: block; font-family: var(--font-body); font-size: 0.9rem; opacity: 0.85; margin-top: 0.4rem; }
+.task .btn { background: var(--yellow); color: #14213d; align-self: flex-start; }
+.rules { margin-top: 1.4rem; font-size: 0.95rem; opacity: 0.92; }
+.rules b { color: var(--yellow); }
+.savebox { font-family: var(--font-mono); font-size: 0.9rem; background: color-mix(in srgb, var(--bg) 14%, transparent); padding: 0.6rem 0.8rem; border-radius: 0.6rem; margin-top: 1rem; word-break: break-word; }
+
+footer { margin-top: 3rem; color: var(--muted); font-size: 0.85rem; }
+
+@media (max-width: 52rem) {
+  .hero, .viewer, .stepper, .rgb, .task .cols { grid-template-columns: minmax(0, 1fr); }
+  .info { position: static; }
+  .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid3 { grid-template-columns: minmax(0, 1fr); }
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .hero figure { max-width: 22rem; }
+  .steplist { flex-direction: row; overflow-x: auto; }
+  .steplist button { white-space: nowrap; }
+}
+@media (max-width: 30rem) {
+  .paintbox { grid-template-columns: minmax(0, 1fr); }
+  .tools { flex-direction: row; flex-wrap: wrap; }
+  .swatches { grid-template-columns: repeat(6, 1fr); width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hs.pulse::after { animation: none; } .bar i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Informatică și TIC · clasa a V-a · Lecția 5</p>
+      <h1>Lumea <span style="color: var(--accent)">Paint</span></h1>
+      <p class="lead">Aici descoperi cum lucrează un editor grafic: ce butoane are, ce fișiere creează și cum îți transformi ideile în desene. La final te așteaptă o provocare pentru toată clasa.</p>
+      <div class="dots" aria-hidden="true"><i style="background: var(--red)"></i><i style="background: var(--yellow)"></i><i style="background: var(--green)"></i><i style="background: var(--accent)"></i></div>
+    </div>
+    <figure>
+      <img src="img/p1_photo.jpg" alt="Un designer desenează pe o tabletă grafică, lângă un laptop și mostre de culori" width="416" height="427">
+      <figcaption>Imagine din manual, pagina 22.</figcaption>
+    </figure>
+  </header>
+</div>
+
+<nav class="nav" aria-label="Secțiuni">
+  <div class="wrap">
+    <a href="#ce-sunt">Ce sunt</a>
+    <a href="#paint3d">Paint 3D</a>
+    <a href="#paint2d">Paint 2D</a>
+    <a href="#fisiere">Tipuri de fișiere</a>
+    <a href="#operatii">Cum desenezi</a>
+    <a href="#culori">Culori RGB</a>
+    <a href="#incearca">Încearcă singur</a>
+    <a href="#quiz">Verifică-te</a>
+    <a href="#galerie">Galerie</a>
+    <a href="#mascota" class="end">Provocarea finală</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="ce-sunt">
+  <div class="sec-head">
+    <p class="eyebrow">Începem</p>
+    <h2>Ce sunt editoarele grafice</h2>
+    <p>Un editor grafic este o aplicație cu care creezi, modifici și salvezi desene sau fotografii în format digital, sub formă de fișiere grafice.</p>
+  </div>
+  <div class="grid3">
+    <div class="card">
+      <h3>Unde le găsești</h3>
+      <p>Unele sunt incluse în sistemul de operare. Altele trebuie instalate pe dispozitivul cu care lucrezi. Există și aplicații online, dar verifică dacă sunt gratuite.</p>
+    </div>
+    <div class="card">
+      <h3>Exemple de editoare</h3>
+      <div class="chips" role="group" aria-label="Exemple de editoare grafice">
+        <span class="chip">Microsoft Paint</span><span class="chip">Adobe Photoshop</span><span class="chip">Adobe InDesign</span><span class="chip">Corel Draw</span><span class="chip">Gimp</span><span class="chip">Paint.NET</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Ce îți trebuie</h3>
+      <p>Timp de lucru, imaginație și creativitate. Un peisaj, un afiș sau o felicitare reușită cere răbdare.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top: 1rem;">
+    <p><b>Paint</b> este instalat în Windows. În funcție de versiunea sistemului, are două variante: <span class="tag">Paint 2D</span> și <span class="tag">Paint 3D</span>, amândouă cu interfețe prietenoase. Mai jos le explorezi pe rând, chiar pe imaginile din manual.</p>
+  </div>
+</section>
+
+<section id="paint3d">
+  <div class="sec-head">
+    <p class="eyebrow">Explorează interfața</p>
+    <h2>Paint 3D</h2>
+    <p>Apasă pe o zonă din imagine sau pe un buton de sub ea. În dreapta apare explicația.</p>
+  </div>
+  <div class="viewer">
+    <div class="shot" id="shot3d"><img src="img/p1_paint3d.png" alt="Interfața editorului grafic Paint 3D, cu un peisaj cu palmieri și un leu" width="1397" height="856"></div>
+    <aside class="card info" aria-live="polite">
+      <p class="eyebrow">Ai selectat</p>
+      <h3 id="t3d"></h3>
+      <p id="d3d"></p>
+      <div class="parts" id="p3d"></div>
+      <p class="hint">Pe telefon, folosește butoanele de mai sus.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="paint2d">
+  <div class="sec-head">
+    <p class="eyebrow">Explorează interfața</p>
+    <h2>Paint 2D</h2>
+    <p>Aceeași idee, altă fereastră. Aici ai o panglică cu grupuri de butoane în partea de sus.</p>
+  </div>
+  <div class="viewer">
+    <div class="shot" id="shot2d"><img src="img/p2_paint2d.png" alt="Interfața editorului grafic Paint 2D, cu un desen cu soare și copaci" width="1400" height="806"></div>
+    <aside class="card info" aria-live="polite">
+      <p class="eyebrow">Ai selectat</p>
+      <h3 id="t2d"></h3>
+      <p id="d2d"></p>
+      <div class="parts" id="p2d"></div>
+    </aside>
+  </div>
+</section>
+
+<section id="fisiere">
+  <div class="sec-head">
+    <p class="eyebrow">Studiază și descoperă</p>
+    <h2>Tipuri de fișiere grafice</h2>
+    <p>Imaginile digitale sunt făcute din elemente foarte mici numite <b>pixeli</b>. Fiecare pixel are propria culoare, opacitate (transparență) și poziție.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <span class="tag">2D</span>
+      <h3 style="margin-top: 0.5rem;">Rastru sau vectorial</h3>
+      <div class="seg" role="group" aria-label="Alege tipul">
+        <button type="button" id="seg-r" aria-pressed="true">Rastru</button>
+        <button type="button" id="seg-v" aria-pressed="false">Vectorial</button>
+      </div>
+      <p id="seg-text"></p>
+      <div class="chips" id="seg-ext" style="margin-top: 0.9rem;"></div>
+    </div>
+    <div class="card">
+      <span class="tag">3D</span>
+      <h3 style="margin-top: 0.5rem;">Modele tridimensionale</h3>
+      <img src="img/p2_lion.jpg" alt="Un leu 3D într-un peisaj, văzut în Paint 3D" width="499" height="496" style="width: 9rem; border-radius: 0.7rem; float: right; margin: 0 0 0.5rem 1rem;">
+      <p>Stochează informații despre culoare, texturi, surse de lumină și geometrie. Se folosesc în arhitectură, medicină, efecte de film și jocuri.</p>
+      <div class="chips" style="margin-top: 0.9rem; clear: both;"><span class="chip">.3ds</span><span class="chip">.glb</span><span class="chip">.obj</span><span class="chip">.stp</span><span class="chip">.ma</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top: 1rem;">
+    <h3>Mărește imaginea și vezi diferența</h3>
+    <p>Trage cursorul. Inima din stânga e făcută din pixeli, cea din dreapta din linii descrise prin formule matematice.</p>
+    <div class="zoomrow">
+      <figure><canvas id="cr" width="200" height="200"></canvas><figcaption>Rastru<small>devine pixelată</small></figcaption></figure>
+      <figure><canvas id="cv" width="200" height="200" style="image-rendering:auto"></canvas><figcaption>Vectorial<small>își păstrează calitatea</small></figcaption></figure>
+    </div>
+    <div class="rangeline"><label for="zoom">Mărire</label><input id="zoom" type="range" min="1" max="12" step="0.1" value="1"><output id="zoomv" for="zoom">×1</output></div>
+    <p style="margin-top: 1rem; color: var(--muted); font-size: 0.95rem;">Rezoluția unei imagini rastru este numărul de pixeli pe lungime și pe lățime. Cu cât rezoluția e mai mare, cu atât imaginea are o dimensiune mai mare.</p>
+  </div>
+</section>
+
+<section id="operatii">
+  <div class="sec-head">
+    <p class="eyebrow">Pas cu pas</p>
+    <h2>Cum realizezi un desen</h2>
+    <p>Alege un pas din listă sau folosește butoanele Înapoi și Înainte.</p>
+  </div>
+  <div class="stepper">
+    <div class="steplist" id="steplist" role="tablist" aria-label="Pașii desenării"></div>
+    <div class="card stepbody" id="stepbody" role="tabpanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="culori">
+  <div class="sec-head">
+    <p class="eyebrow">Particularizarea culorilor</p>
+    <h2>Amestecă roșu, verde și albastru</h2>
+    <p>Modelul RGB (Red, Green, Blue) este folosit pentru a reprezenta imaginile în sistem digital. Mută cursoarele și vezi ce culoare obții.</p>
+  </div>
+  <div class="rgb">
+    <div class="card">
+      <div class="sliders">
+        <div class="sl"><label for="cr-r" style="color: var(--red)">R</label><input id="cr-r" type="range" min="0" max="255" value="227"><output id="o-r">227</output></div>
+        <div class="sl"><label for="cr-g" style="color: var(--green)">G</label><input id="cr-g" type="range" min="0" max="255" value="102"><output id="o-g">102</output></div>
+        <div class="sl"><label for="cr-b" style="color: var(--accent)">B</label><input id="cr-b" type="range" min="0" max="255" value="142"><output id="o-b">142</output></div>
+      </div>
+      <div class="presets" id="presets" aria-label="Culori rapide"></div>
+    </div>
+    <div class="card">
+      <div id="sw" role="img" aria-label="Culoarea obținută"></div>
+      <div class="mix"><span id="mixrgb"></span><span id="mixhex"></span></div>
+      <p style="margin-top: 0.8rem; font-size: 0.95rem; color: var(--muted);">În Paint 2D, <b>Culoare1</b> este culoarea cu care desenează instrumentul ales. <b>Culoare2</b> este culoarea fundalului, când faci o selecție.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top: 1rem;">
+    <figure class="card" style="margin: 0;"><img src="img/p4_rgb.png" alt="Fereastra Editare culori din Paint, cu paleta și valorile Roșu, Verde, Albastru" width="374" height="278" style="width: 100%; border-radius: 0.5rem;"><figcaption style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem;">Fereastra Editare culori. Aici adaugi culorile tale la paletă.</figcaption></figure>
+    <figure class="card" style="margin: 0;"><img src="img/p3_palette.png" alt="Paleta de culori din Paint cu Culoare1 și Culoare2, deasupra unui desen cu un copac" width="363" height="394" style="width: 100%; max-width: 15rem; border-radius: 0.5rem;"><figcaption style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem;">Paleta cu Culoare1 și Culoare2.</figcaption></figure>
+  </div>
+</section>
+
+<section id="incearca">
+  <div class="sec-head">
+    <p class="eyebrow">Încălzire</p>
+    <h2>Încearcă singur</h2>
+    <p>Un Paint în miniatură, doar pentru exersat. Desenează cu degetul sau cu mouse-ul. Desenul de aici nu se salvează, așa că cel adevărat îl faci în Paint.</p>
+  </div>
+  <div class="card paintbox">
+    <div class="tools">
+      <div class="swatches" id="sws"></div>
+      <button type="button" class="toolbtn" id="tl-pen" aria-pressed="true">Pensulă</button>
+      <button type="button" class="toolbtn" id="tl-er" aria-pressed="false">Radieră</button>
+      <label for="sz" style="font-size: 0.8rem; font-weight: 700;">Grosime</label>
+      <input id="sz" type="range" min="2" max="40" value="8">
+      <button type="button" class="toolbtn" id="clr">Șterge tot</button>
+    </div>
+    <canvas id="pad" width="900" height="600" aria-label="Zonă de desenat"></canvas>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="sec-head">
+    <p class="eyebrow">Fișa de lucru</p>
+    <h2>Adevărat sau fals?</h2>
+    <p>Apasă <b>A</b> pentru adevărat sau <b>F</b> pentru fals.</p>
+  </div>
+  <div class="card" id="quizbox"></div>
+</section>
+
+<section id="galerie">
+  <div class="sec-head">
+    <p class="eyebrow">Inspirație</p>
+    <h2>Lucrări din manual</h2>
+    <p>Desene realizate în Paint, cu forme, pensule și culori particularizate.</p>
+  </div>
+  <div class="gal">
+    <figure><img src="img/p4_sea.jpg" alt="Balene și delfini într-un peisaj marin" width="342" height="210"><figcaption><b>Mediul_marin</b>Peisaj desenat cu creionul.</figcaption></figure>
+    <figure><img src="img/p4_env.jpg" alt="O navă care poluează marea cu fum și petrol" width="342" height="183"><figcaption><b>Protejarea_mediului</b>Un desen care transmite un mesaj.</figcaption></figure>
+    <figure><img src="img/p4_game.jpg" alt="Un scenariu digital de joc cu personaje și puncte galbene" width="310" height="210"><figcaption><b>Joc</b>Forme conturate, colorate și redimensionate.</figcaption></figure>
+    <figure><img src="img/p4_mountain.jpg" alt="Un peisaj de munte cu brazi, o casă și un lac" width="310" height="221"><figcaption><b>Peisaj</b>Pensule diferite și culori particularizate.</figcaption></figure>
+  </div>
+  <div class="grid2" style="margin-top: 1rem;">
+    <figure class="card" style="margin: 0;"><img src="img/p3_house.jpg" alt="O casă galbenă cu acoperiș roșu, între munți și brazi, sub un cer înstelat" width="552" height="406" style="width: 100%; border-radius: 0.5rem;"><figcaption style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem;">Forme geometrice rotite, colorate și puse una lângă alta.</figcaption></figure>
+    <figure class="card" style="margin: 0;"><img src="img/p3_hearts.jpg" alt="Inimi cu linii concentrice, alb-negru" width="562" height="273" style="width: 100%; border-radius: 0.5rem;"><figcaption style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem;">O formă copiată, lipită și redimensionată de mai multe ori.</figcaption></figure>
+  </div>
+</section>
+
+<section id="mascota">
+  <div class="task">
+    <p class="eyebrow">Provocarea finală</p>
+    <h2>Mascota clasei</h2>
+    <p class="intro">Fiecare clasă are o poveste, iar povestea are nevoie de un chip. Creează în Paint mascota clasei tale: un personaj nou, inventat de tine, pe care colegii să-l recunoască de la distanță.</p>
+
+    <div class="cols">
+      <div class="panel">
+        <h3>Ce trebuie să conțină desenul</h3>
+        <ul class="checks" id="checks"></ul>
+        <div class="bar" aria-hidden="true"><i id="barfill"></i></div>
+        <p class="barlabel" id="barlabel">0 din 8 cerințe bifate</p>
+      </div>
+      <div class="panel gen">
+        <h3>Nu ai idei? Cere una</h3>
+        <div class="idea" id="idea" aria-live="polite">Apasă butonul și primești un punct de plecare.</div>
+        <button type="button" class="btn" id="genbtn">Dă-mi o idee</button>
+        <p style="font-size: 0.9rem; opacity: 0.85;">Ideea e doar o scânteie. Schimbă-o cum vrei.</p>
+      </div>
+    </div>
+
+    <p class="rules"><b>Reguli.</b> Mascota trebuie să fie creația ta: nu copia un personaj din desene animate, jocuri sau filme. Lucrează singur sau în echipă, dar toată clasa votează la final.</p>
+    <p class="savebox">Salvează fișierul cu numele <b>Mascota_clasei</b>, în folderul <b>Portofoliu digital</b>.</p>
+  </div>
+</section>
+
+<footer>
+  Imaginile și informațiile provin din manualul de Informatică și TIC pentru clasa a V-a, Lecția 5, paginile 22–25.
+</footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- hotspot viewers ---------- */
+  function buildViewer(cfg) {
+    var box = $(cfg.shot), parts = $(cfg.parts), title = $(cfg.title), desc = $(cfg.desc);
+    var btns = {}, chips = {};
+    cfg.items.slice().sort(function (a, b) { return b.r[2] * b.r[3] - a.r[2] * a.r[3]; }).forEach(function (it) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "hs"; b.setAttribute("aria-label", it.name);
+      b.style.left = (it.r[0] / cfg.w * 100) + "%"; b.style.top = (it.r[1] / cfg.h * 100) + "%";
+      b.style.width = (it.r[2] / cfg.w * 100) + "%"; b.style.height = (it.r[3] / cfg.h * 100) + "%";
+      b.addEventListener("click", function () { select(it.id); });
+      box.appendChild(b); btns[it.id] = b;
+    });
+    cfg.items.forEach(function (it) {
+      var c = document.createElement("button");
+      c.type = "button"; c.className = "chip"; c.textContent = it.name;
+      c.addEventListener("click", function () { select(it.id); });
+      parts.appendChild(c); chips[it.id] = c;
+    });
+    function select(id) {
+      cfg.items.forEach(function (it) {
+        var on = it.id === id;
+        btns[it.id].classList.toggle("on", on); chips[it.id].classList.toggle("on", on);
+        if (on) { title.textContent = it.name; desc.textContent = it.text; }
+      });
+    }
+    select(cfg.first);
+    btns[cfg.first].classList.add("pulse");
+  }
+
+  buildViewer({
+    shot: "shot3d", parts: "p3d", title: "t3d", desc: "d3d", w: 1397, h: 856, first: "zl",
+    items: [
+      { id: "mp", name: "Meniu principal", r: [325, 138, 120, 62], text: "Aici începi un proiect nou, deschizi un fișier existent sau salvezi ce ai lucrat." },
+      { id: "f3", name: "Forme 3D", r: [618, 150, 56, 42], text: "Aduci în zona de lucru forme tridimensionale. Fiecare formă selectată poate fi mărită, micșorată și rotită." },
+      { id: "tx", name: "Text", r: [778, 150, 56, 42], text: "Instrumentul Text, butonul cu litera T. Îl folosești când scrii un mesaj pe o felicitare sau pe un afiș." },
+      { id: "ef", name: "Efecte", r: [858, 150, 56, 42], text: "Schimbi lumina și atmosfera desenului, ca să arate ca la apus sau ca într-o noapte senină." },
+      { id: "pz", name: "Pânză", r: [938, 150, 56, 42], text: "Aici stabilești dimensiunile zonei de lucru: lungimea și lățimea, exprimate în pixeli." },
+      { id: "bb", name: "Bibliotecă cu obiecte 3D", r: [1018, 150, 56, 42], text: "O colecție de obiecte 3D gata făcute. Le adaugi în desen și le așezi unde vrei." },
+      { id: "id", name: "Instrumente de desenare", r: [1103, 245, 270, 128], text: "Pensule și creioane de mai multe feluri. Pentru fiecare alegi grosimea și culoarea." },
+      { id: "zl", name: "Zonă de lucru", r: [320, 316, 756, 470], text: "Aici apare desenul tău. Înainte să începi, e bine să stabilești dimensiunile zonei." },
+      { id: "ob", name: "Obiect din bibliotecă", r: [352, 588, 195, 192], text: "Leul este un obiect luat din biblioteca 3D. Poate fi rotit, mărit sau micșorat, ca orice formă selectată." }
+    ]
+  });
+
+  buildViewer({
+    shot: "shot2d", parts: "p2d", title: "t2d", desc: "d2d", w: 1572, h: 906, first: "zl",
+    items: [
+      { id: "pg", name: "Panglică cu grupuri de butoane", r: [88, 215, 1075, 112], text: "Panglica adună butoanele pe grupuri: Clipboard, Imagine, Instrumente, Pensule, Forme, Culori. Filele Fișier, Pornire și Vizualizare îi schimbă conținutul." },
+      { id: "mp", name: "Meniu principal", r: [88, 188, 66, 30], text: "Meniul Fișier. De aici creezi un fișier nou (opțiunea Nou), deschizi, salvezi și intri la Proprietăți ca să stabilești dimensiunile zonei de lucru." },
+      { id: "os", name: "Opțiuni selectate", r: [180, 225, 72, 80], text: "Butonul Selectare. Poți alege o porțiune din desen, o poți copia, lipi, redimensiona sau roti. Selecția transparentă te ajută la îmbinări." },
+      { id: "in", name: "Instrumente", r: [288, 225, 96, 96], text: "Creion, găleată cu vopsea, text (litera A), radieră, pipetă și lupă." },
+      { id: "gf", name: "Grup Forme", r: [452, 222, 92, 100], text: "Linii închise și deschise, figuri geometrice și simboluri. Le aduci în zona de lucru, le conturezi și le colorezi." },
+      { id: "c1", name: "Culoare de desenare", r: [642, 222, 52, 80], text: "Culoare1 este culoarea vizibilă, cu care desenează instrumentul ales." },
+      { id: "c2", name: "Culoare de fundal", r: [697, 222, 50, 80], text: "Culoare2 este culoarea fundalului, când realizezi o selecție." },
+      { id: "e3", name: "Buton Editare 3D", r: [1068, 225, 76, 82], text: "Trimite desenul în Paint 3D, unde îl poți continua cu obiecte tridimensionale." },
+      { id: "mn", name: "Minimizare", r: [1012, 156, 30, 24], text: "Ascunde fereastra în bara de activități, fără să închidă desenul." },
+      { id: "mx", name: "Maximizare / Restaurare", r: [1066, 158, 28, 24], text: "Mărește fereastra pe tot ecranul sau o aduce la dimensiunea anterioară." },
+      { id: "cl", name: "Închidere", r: [1118, 158, 32, 24], text: "Închide programul. Salvează desenul înainte să apeși aici." },
+      { id: "zl", name: "Zona de lucru", r: [92, 333, 750, 476], text: "Spațiul în care desenezi. Dimensiunile lui, în pixeli, se văd în bara de jos, de exemplu 1263 × 802 px." },
+      { id: "ca", name: "Colț activ", r: [828, 796, 24, 24], text: "Prinzi punctul cu mouse-ul și tragi, ca să schimbi dimensiunea zonei de lucru. Punctele active apar și la o selecție sau la o formă." },
+      { id: "vd", name: "Vizualizare dimensiune imagine", r: [900, 866, 245, 30], text: "Cursorul de zoom, în dreapta jos. Mărește sau micșorează imaginea pe ecran, fără să-i schimbe dimensiunea reală." }
+    ]
+  });
+
+  /* ---------- raster vs vector ---------- */
+  var seg = {
+    r: { text: "Imaginea este formată dintr-o mulțime de pixeli așezați unul lângă altul. Cu cât sunt mai mulți pixeli, cu atât calitatea e mai bună. Dacă o mărești prea mult, devine pixelată.", ext: [".png", ".bmp", ".jpg", ".jpeg", ".gif"] },
+    v: { text: "Imaginea este formată dintr-o multitudine de linii, reținute cu ajutorul unor formule matematice. Își păstrează calitatea când e redimensionată.", ext: [".svg", ".eps", ".cdr", ".ai"] }
+  };
+  function setSeg(k) {
+    $("seg-r").setAttribute("aria-pressed", String(k === "r"));
+    $("seg-v").setAttribute("aria-pressed", String(k === "v"));
+    $("seg-text").textContent = seg[k].text;
+    var e = $("seg-ext"); e.textContent = "";
+    seg[k].ext.forEach(function (x) { var s = document.createElement("span"); s.className = "chip"; s.textContent = x; e.appendChild(s); });
+  }
+  $("seg-r").addEventListener("click", function () { setSeg("r"); });
+  $("seg-v").addEventListener("click", function () { setSeg("v"); });
+  setSeg("r");
+
+  function heartPath(c, cx, cy, s) {
+    c.beginPath();
+    c.moveTo(cx, cy + 0.9 * s);
+    c.bezierCurveTo(cx - 1.5 * s, cy - 0.1 * s, cx - 1.2 * s, cy - 1.3 * s, cx, cy - 0.5 * s);
+    c.bezierCurveTo(cx + 1.2 * s, cy - 1.3 * s, cx + 1.5 * s, cy - 0.1 * s, cx, cy + 0.9 * s);
+    c.closePath();
+  }
+  var tiny = document.createElement("canvas"); tiny.width = 32; tiny.height = 32;
+  (function () {
+    var t = tiny.getContext("2d");
+    t.fillStyle = "#fff"; t.fillRect(0, 0, 32, 32);
+    t.fillStyle = "#e5432f"; heartPath(t, 16, 16, 9.5); t.fill();
+    t.lineWidth = 1.5; t.strokeStyle = "#14213d"; t.stroke();
+  })();
+  var cr = $("cr").getContext("2d"), cv = $("cv").getContext("2d");
+  function drawZoom(z) {
+    cr.imageSmoothingEnabled = false;
+    cr.fillStyle = "#fff"; cr.fillRect(0, 0, 200, 200);
+    var span = 32 / z, o = 16 - span / 2;
+    cr.drawImage(tiny, o, o, span, span, 0, 0, 200, 200);
+    cv.setTransform(1, 0, 0, 1, 0, 0);
+    cv.fillStyle = "#fff"; cv.fillRect(0, 0, 200, 200);
+    cv.setTransform(z, 0, 0, z, 100 - 100 * z, 100 - 100 * z);
+    cv.fillStyle = "#e5432f"; heartPath(cv, 100, 100, 59); cv.fill();
+    cv.lineWidth = 9 / 1; cv.strokeStyle = "#14213d"; cv.lineWidth = 3; cv.stroke();
+    cv.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  $("zoom").addEventListener("input", function (e) {
+    var z = parseFloat(e.target.value); $("zoomv").textContent = "×" + z.toFixed(1).replace(".0", "");
+    drawZoom(z);
+  });
+  drawZoom(1);
+
+  /* ---------- stepper ---------- */
+  var steps = [
+    { t: "Deschide un desen nou", b: "<p>Deschizi editorul grafic și alegi opțiunea <b>Nou</b>. Se deschide fereastra fișierului grafic.</p>" },
+    { t: "Stabilește dimensiunile", b: "<p>Alege lungimea și lățimea zonei de lucru, în pixeli, de exemplu <b>400 × 400 px</b>. În Paint 2D le găsești în meniul Fișier, la Proprietăți. În Paint 3D, în fila Pânză.</p>" },
+    { t: "Alege forme și instrumente", b: "<p>Editorul are linii închise și deschise, figuri geometrice și simboluri. Le aduci în zona de lucru, le conturezi și le colorezi. O formă selectată primește opt puncte active, cu care o măriți sau o micșorezi. O poți și roti.</p><img src=\"img/p3_house.jpg\" alt=\"Casă desenată din forme geometrice\" width=\"552\" height=\"406\">" },
+    { t: "Copiază și lipește", b: "<p>Selectezi o porțiune din desen, o copiezi și o lipești. Apoi o redimensionezi trăgând de cele opt puncte active. Selecția transparentă te ajută să îmbini bine toate părțile.</p><img src=\"img/p3_hearts.jpg\" alt=\"Inimi desenate prin copiere și redimensionare\" width=\"562\" height=\"273\">" },
+    { t: "Adaugă text", b: "<p>La o felicitare sau la un afiș, scrii un mesaj cu instrumentul <b>Text</b>. În Paint 2D este butonul cu litera <b>A</b>, în Paint 3D cel cu litera <b>T</b>.</p>" },
+    { t: "Șterge ce nu mai trebuie", b: "<p>Selectezi forma și apeși tasta <b>Delete</b> sau opțiunea <b>Ștergere</b>.</p>" },
+    { t: "Salvează", b: "<p>După ce ai terminat, salvează desenul cu un nume potrivit, în folderul <b>Portofoliu digital</b>. De exemplu: <b>Desenul_meu</b>.</p>" }
+  ];
+  var cur = 0, sl = $("steplist"), sb = $("stepbody");
+  steps.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.setAttribute("role", "tab");
+    b.innerHTML = "<span>" + (i + 1) + "</span>";
+    b.appendChild(document.createTextNode(s.t));
+    b.addEventListener("click", function () { go(i); });
+    sl.appendChild(b);
+  });
+  function go(i) {
+    cur = i;
+    Array.prototype.forEach.call(sl.children, function (b, j) { b.setAttribute("aria-selected", String(j === i)); });
+    sb.innerHTML = "<h3>" + steps[i].t + "</h3>" + steps[i].b +
+      "<div class=\"stepnav\"><button type=\"button\" class=\"btn alt\" id=\"sp\"" + (i === 0 ? " disabled" : "") + ">Înapoi</button><button type=\"button\" class=\"btn\" id=\"sn\"" + (i === steps.length - 1 ? " disabled" : "") + ">Înainte</button></div>";
+    $("sp").addEventListener("click", function () { go(cur - 1); });
+    $("sn").addEventListener("click", function () { go(cur + 1); });
+  }
+  go(0);
+
+  /* ---------- RGB mixer ---------- */
+  var rs = [$("cr-r"), $("cr-g"), $("cr-b")], os = [$("o-r"), $("o-g"), $("o-b")];
+  function hex(n) { return ("0" + n.toString(16)).slice(-2).toUpperCase(); }
+  function mix() {
+    var v = rs.map(function (r) { return parseInt(r.value, 10); });
+    os.forEach(function (o, i) { o.textContent = v[i]; });
+    $("sw").style.background = "rgb(" + v.join(",") + ")";
+    $("mixrgb").textContent = "Roșu " + v[0] + " · Verde " + v[1] + " · Albastru " + v[2];
+    $("mixhex").textContent = "#" + hex(v[0]) + hex(v[1]) + hex(v[2]);
+  }
+  rs.forEach(function (r) { r.addEventListener("input", mix); });
+  [["Roșu", 255, 0, 0], ["Verde", 0, 255, 0], ["Albastru", 0, 0, 255], ["Galben", 255, 255, 0], ["Turcoaz", 0, 255, 255], ["Roz", 255, 0, 255], ["Portocaliu", 255, 140, 0], ["Negru", 0, 0, 0]].forEach(function (p) {
+    var b = document.createElement("button");
+    b.type = "button"; b.title = p[0]; b.setAttribute("aria-label", p[0]);
+    b.style.background = "rgb(" + p[1] + "," + p[2] + "," + p[3] + ")";
+    b.addEventListener("click", function () { rs[0].value = p[1]; rs[1].value = p[2]; rs[2].value = p[3]; mix(); });
+    $("presets").appendChild(b);
+  });
+  mix();
+
+  /* ---------- mini paint ---------- */
+  var pad = $("pad"), pc = pad.getContext("2d");
+  pc.fillStyle = "#fff"; pc.fillRect(0, 0, pad.width, pad.height);
+  var cols = ["#14213d", "#e5432f", "#f58220", "#f6c21a", "#25a35a", "#2b62d9", "#8a3fb0", "#f48fb1", "#8d5a3b", "#9aa5b8", "#ffffff", "#19c3d6"];
+  var color = cols[0], tool = "pen", drawing = false, lx = 0, ly = 0;
+  cols.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.style.background = c; b.setAttribute("aria-label", "Culoare " + (i + 1)); b.setAttribute("aria-pressed", String(i === 0));
+    b.addEventListener("click", function () {
+      color = c; tool = "pen"; setTool();
+      Array.prototype.forEach.call($("sws").children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    });
+    $("sws").appendChild(b);
+  });
+  function setTool() { $("tl-pen").setAttribute("aria-pressed", String(tool === "pen")); $("tl-er").setAttribute("aria-pressed", String(tool === "er")); }
+  $("tl-pen").addEventListener("click", function () { tool = "pen"; setTool(); });
+  $("tl-er").addEventListener("click", function () { tool = "er"; setTool(); });
+  $("clr").addEventListener("click", function () { pc.fillStyle = "#fff"; pc.fillRect(0, 0, pad.width, pad.height); });
+  function pos(e) { var r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; }
+  function stroke(x, y) {
+    pc.strokeStyle = tool === "er" ? "#fff" : color; pc.fillStyle = pc.strokeStyle;
+    pc.lineWidth = parseInt($("sz").value, 10) * 1.5; pc.lineCap = "round"; pc.lineJoin = "round";
+    pc.beginPath(); pc.moveTo(lx, ly); pc.lineTo(x, y); pc.stroke(); lx = x; ly = y;
+  }
+  pad.addEventListener("pointerdown", function (e) {
+    drawing = true; pad.setPointerCapture(e.pointerId);
+    var p = pos(e); lx = p[0]; ly = p[1]; stroke(lx + 0.01, ly);
+  });
+  pad.addEventListener("pointermove", function (e) { if (drawing) { var p = pos(e); stroke(p[0], p[1]); } });
+  ["pointerup", "pointercancel"].forEach(function (n) { pad.addEventListener(n, function () { drawing = false; }); });
+
+  /* ---------- quiz ---------- */
+  var qs = [
+    { t: "Editoarele grafice sunt aplicații cu care poți crea și salva fișiere text.", a: false, w: "Fals. Cu ele creezi și salvezi desene sau fotografii, adică fișiere grafice." },
+    { t: "Fișierele grafice 2D pot fi de tip rastru sau vectorial.", a: true, w: "Adevărat. Rastru (de exemplu .png, .jpg) sau vectorial (de exemplu .svg)." },
+    { t: "Imaginile grafice digitale sunt formate din pixeli.", a: true, w: "Adevărat. Fiecare pixel are culoare, opacitate și poziție." },
+    { t: "Rezoluția unei imagini este determinată de numărul culorilor care apar în imagine.", a: false, w: "Fals. Rezoluția înseamnă numărul de pixeli pe lungime și pe lățime." }
+  ];
+  var qb = $("quizbox"), answered = {}, good = 0;
+  qs.forEach(function (q, i) {
+    var d = document.createElement("div"); d.className = "q";
+    d.innerHTML = "<p><b>" + "abcd".charAt(i) + ")</b>" + q.t + "</p><div class=\"ans\"><button type=\"button\" data-v=\"1\" aria-label=\"Adevărat\">A</button><button type=\"button\" data-v=\"0\" aria-label=\"Fals\">F</button></div><p class=\"why\" hidden></p>";
+    Array.prototype.forEach.call(d.querySelectorAll("button"), function (b) {
+      b.addEventListener("click", function () {
+        if (answered[i]) return;
+        var pick = b.getAttribute("data-v") === "1", ok = pick === q.a;
+        answered[i] = true; if (ok) good++;
+        b.classList.add("pick"); d.classList.add(ok ? "right" : "wrong");
+        var w = d.querySelector(".why"); w.hidden = false;
+        w.innerHTML = "<span class=\"verdict\">" + (ok ? "Corect. " : "Mai încearcă data viitoare. ") + "</span>" + q.w;
+        if (Object.keys(answered).length === qs.length) $("score").textContent = "Rezultat: " + good + " din " + qs.length;
+      });
+    });
+    qb.appendChild(d);
+  });
+  var sc = document.createElement("p"); sc.className = "score"; sc.id = "score"; sc.setAttribute("aria-live", "polite"); qb.appendChild(sc);
+
+  /* ---------- final task ---------- */
+  var req = [
+    "Zona de lucru are dimensiunile stabilite de tine, în pixeli (de exemplu 600 × 600 px).",
+    "Mascota are cel puțin trei forme diferite, conturate și colorate.",
+    "Cel puțin o formă este rotită sau redimensionată cu punctele active.",
+    "Ai copiat și lipit o parte din desen (de exemplu urechi, ochi sau labe).",
+    "Ai folosit cel puțin două pensule diferite.",
+    "Ai creat o culoare particularizată în fereastra Editare culori și ai adăugat-o în paletă.",
+    "Ai scris cu instrumentul Text numele mascotei sau un slogan al clasei.",
+    "Ai salvat fișierul cu numele Mascota_clasei, în Portofoliu digital."
+  ];
+  var cl = $("checks");
+  req.forEach(function (r, i) {
+    var li = document.createElement("li"), lab = document.createElement("label"), inp = document.createElement("input"), sp = document.createElement("span");
+    inp.type = "checkbox"; inp.id = "rq" + i; sp.textContent = r;
+    inp.addEventListener("change", tally);
+    lab.appendChild(inp); lab.appendChild(sp); li.appendChild(lab); cl.appendChild(li);
+  });
+  function tally() {
+    var n = cl.querySelectorAll("input:checked").length;
+    $("barfill").style.width = (n / req.length * 100) + "%";
+    $("barlabel").textContent = n === req.length ? "Gata! Toate cele " + req.length + " cerințe sunt bifate." : n + " din " + req.length + " cerințe bifate";
+  }
+  var who = ["o bufniță", "un arici", "un robot mic", "o veveriță", "un dragon prietenos", "o stea cu ochelari", "un pui de lup", "o vulpe", "un nor zâmbitor", "un cățel curajos"];
+  var trait = ["foarte curioasă", "mereu veselă", "pasionată de calculatoare", "cea mai sportivă din școală", "iubitoare de cărți", "plină de idei trăsnite", "bună la echipă", "mereu liniștită"];
+  var look = ["albastru și galben", "verde și portocaliu", "roșu și alb", "turcoaz și roz", "negru și auriu", "mov și verde-deschis"];
+  var feat = ["un accesoriu pe cap", "o eșarpă în culorile clasei", "ochi foarte mari", "o coadă care formează litera clasei", "o insignă cu numele clasei"];
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  $("genbtn").addEventListener("click", function () {
+    $("idea").innerHTML = "Mascota ta poate fi " + pick(who) + ", " + pick(trait) + ".<small>Culori principale: " + pick(look) + ". Detaliu special: " + pick(feat) + ".</small>";
+  });
+})();
+</script>
+
+</body></html>
