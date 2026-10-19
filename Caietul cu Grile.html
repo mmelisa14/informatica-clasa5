@@ -1,0 +1,567 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Caietul cu Grile</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Lexend:wght@400;500;600&family=Patrick+Hand&display=swap">
+<style>
+/* Layout: pagină de caiet cu pătrățele și margine roșie; grilele într-un singur card, desenul pe o foaie albă. */
+:root{
+  --bg:#f3f7fd; --grid:#d3e2f4; --panel:#ffffff; --ink:#1b2a4e; --ink-soft:#4a5a7d;
+  --pen:#1f4fd8; --on-pen:#ffffff; --margin:#d9363e; --line:#9fb4d6;
+  --ok:#177a4a; --ok-bg:#dff3e7; --bad:#c0262d; --bad-bg:#fde4e4; --sheet:#ffffff;
+  --c-fotbal:#1c7c4d; --c-roblox:#c2381f; --c-geo:#0e7490; --c-ist:#9a5400; --c-info:#4b3bd1;
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Patrick Hand","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1629; --grid:#1b2742; --panel:#17213b; --ink:#e6ecfb; --ink-soft:#9fb0d3;
+    --pen:#7da2ff; --on-pen:#0f1629; --margin:#ff6b72; --line:#34456b;
+    --ok:#5fd394; --ok-bg:#12372a; --bad:#ff8087; --bad-bg:#401a20;
+    --c-fotbal:#5fd394; --c-roblox:#ff8f78; --c-geo:#52c7e3; --c-ist:#f0b45a; --c-info:#a69bff;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1629; --grid:#1b2742; --panel:#17213b; --ink:#e6ecfb; --ink-soft:#9fb0d3;
+  --pen:#7da2ff; --on-pen:#0f1629; --margin:#ff6b72; --line:#34456b;
+  --ok:#5fd394; --ok-bg:#12372a; --bad:#ff8087; --bad-bg:#401a20;
+  --c-fotbal:#5fd394; --c-roblox:#ff8f78; --c-geo:#52c7e3; --c-ist:#f0b45a; --c-info:#a69bff;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  font-family:var(--f-body); font-size:16px; line-height:1.5; color:var(--ink);
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.wrap{max-width:860px;margin:0 auto;border-left:3px solid var(--margin);padding-left:clamp(12px,3vw,26px);min-width:0}
+.kicker{font-family:var(--f-hand);font-size:1.3rem;color:var(--ink-soft);margin:0 0 2px}
+h1{font:800 clamp(2.3rem,9vw,3.5rem)/1 var(--f-display);color:var(--pen);margin:0;text-wrap:balance}
+.sub{margin:10px 0 0;max-width:56ch;color:var(--ink-soft)}
+.note{font-family:var(--f-hand);font-size:1.2rem;color:var(--ink-soft);margin:10px 0 0}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.tab{font:700 1.1rem var(--f-display);min-height:46px;padding:6px 20px;border:2px solid var(--ink);border-radius:10px;background:var(--panel);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--pen);border-color:var(--pen);color:var(--on-pen)}
+.tab[aria-disabled="true"]{border-style:dashed;color:var(--ink-soft);cursor:not-allowed}
+:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+
+.meta{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin:22px 0 8px;font-size:.95rem}
+.meta strong{font-family:var(--f-display);font-size:1.2rem}
+.steps{display:grid;grid-template-columns:repeat(30,1fr);gap:2px;margin-bottom:16px}
+.steps i{height:10px;background:var(--panel);border:1.5px solid var(--line);border-radius:2px}
+.steps i.ok{background:var(--ok);border-color:var(--ok)}
+.steps i.bad{background:var(--bad);border-color:var(--bad)}
+.steps i.now{border-color:var(--pen);border-width:2.5px}
+
+.card{background:var(--panel);border:2px solid var(--ink);border-radius:12px;padding:clamp(14px,3.5vw,24px);box-shadow:5px 5px 0 var(--line);min-width:0}
+.chip{display:inline-block;font:600 .85rem var(--f-body);padding:2px 12px;border:2px solid var(--cx);color:var(--cx);border-radius:999px;margin-bottom:10px}
+.chip[data-s="fotbal"]{--cx:var(--c-fotbal)} .chip[data-s="roblox"]{--cx:var(--c-roblox)}
+.chip[data-s="geo"]{--cx:var(--c-geo)} .chip[data-s="ist"]{--cx:var(--c-ist)} .chip[data-s="info"]{--cx:var(--c-info)}
+h2.q{font:600 clamp(1.2rem,4.8vw,1.55rem)/1.3 var(--f-display);margin:0 0 16px;text-wrap:pretty}
+h2.q:focus{outline:none}
+.opts{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:2rem 1fr;gap:12px;align-items:start;width:100%;min-height:54px;text-align:left;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font:400 1rem/1.4 var(--f-body);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt .l{display:grid;place-items:center;width:2rem;height:2rem;border:2px solid var(--ink);border-radius:6px;font:700 1rem var(--f-display);background:var(--panel);color:var(--ink)}
+.opt .t{display:block;min-width:0;padding-top:2px;overflow-wrap:anywhere}
+.opt .tag{display:block;font-weight:600;font-size:.85rem;margin-top:2px}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ok .l{background:var(--ok);border-color:var(--ok);color:var(--on-pen)}
+.opt.ok .tag{color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt.bad .l{background:var(--bad);border-color:var(--bad);color:var(--on-pen)}
+.opt.bad .tag{color:var(--bad)}
+.opt.dim{opacity:.6}
+.fb{margin-top:16px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:.97rem}
+.fb:empty{display:none}
+.fb b{display:block;font:700 1.15rem var(--f-display)}
+.fb.ok b{color:var(--ok)} .fb.bad b{color:var(--bad)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.actions:empty{display:none}
+.btn{font:700 1.1rem var(--f-display);min-height:48px;padding:8px 22px;border-radius:10px;border:2px solid var(--pen);background:var(--pen);color:var(--on-pen);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--pen)}
+
+.score{font:800 clamp(3.6rem,19vw,6.2rem)/1 var(--f-display);color:var(--pen);margin:6px 0 0}
+.score small{font-size:.4em;color:var(--ink-soft);font-weight:600}
+.rmsg{font:600 1.3rem var(--f-display);margin:4px 0 0}
+.subj{list-style:none;margin:18px 0;padding:0;display:grid;gap:8px}
+.subj li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:8px;border-bottom:1.5px dashed var(--line)}
+.subj .chip{margin:0}
+details{margin:8px 0}
+summary{cursor:pointer;font-weight:600;min-height:32px}
+#revList{padding-left:1.2rem;display:grid;gap:10px}
+#revList small{display:block;color:var(--ink-soft)}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:14px 0 0}
+.grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+.glabel{font-family:var(--f-hand);font-size:1.15rem;color:var(--ink-soft)}
+.tbtn{min-height:44px;padding:6px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--panel);color:var(--ink);font:600 .95rem var(--f-body);cursor:pointer}
+.tbtn[aria-pressed="true"]{background:var(--pen);border-color:var(--pen);color:var(--on-pen)}
+.tbtn:disabled{opacity:.45;cursor:not-allowed}
+.palette{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 0}
+.sw{width:44px;height:44px;border-radius:50%;border:3px solid var(--panel);box-shadow:0 0 0 2px var(--line);background:var(--c);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 4px var(--ink);transform:scale(1.1)}
+.size{display:flex;align-items:center;gap:10px}
+.size input{width:min(180px,42vw);accent-color:var(--pen)}
+.size output{font-variant-numeric:tabular-nums;min-width:3.2ch}
+.board{position:relative;width:100%;max-width:800px;aspect-ratio:800/560;background:var(--sheet);border:2px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:5px 5px 0 var(--line);margin-top:16px;touch-action:none}
+.board canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#draw{cursor:crosshair;touch-action:none}
+.board[data-tool="fill"] #draw{cursor:cell}
+#outline{pointer-events:none}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="kicker">Clasa a V-a · cultură generală</p>
+    <h1>Caietul cu Grile</h1>
+    <p class="sub">30 de întrebări despre fotbal, Roblox, geografie, istorie și informatică. După ce termini, se deschide o pagină de desen și colorat.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Secțiuni">
+    <button class="tab" id="tabQuiz" role="tab" aria-selected="true" aria-controls="paneQuiz">Grile</button>
+    <button class="tab" id="tabDraw" role="tab" aria-selected="false" aria-controls="paneDraw" aria-disabled="true">Desen · după grile</button>
+  </div>
+  <p class="note" id="lockNote">Desenul se deschide după ce răspunzi la toate cele 30 de întrebări.</p>
+
+  <section id="paneQuiz" role="tabpanel" aria-labelledby="tabQuiz">
+    <div id="quizMain">
+      <div class="meta"><span>Întrebarea <strong id="qn">1</strong> din 30</span><span>Corecte: <strong id="sc">0</strong></span></div>
+      <div class="steps" id="steps" aria-hidden="true"></div>
+      <article class="card" id="card">
+        <span class="chip" id="chip" data-s="fotbal">Fotbal</span>
+        <h2 class="q" id="qtext" tabindex="-1">Se încarcă întrebarea…</h2>
+        <ul class="opts" id="opts"></ul>
+        <div class="fb" id="fb" role="status"></div>
+        <div class="actions"><button class="btn" id="next" hidden>Următoarea întrebare</button></div>
+      </article>
+    </div>
+
+    <div class="card" id="results" hidden style="margin-top:22px">
+      <p class="note" style="margin:0">Ai terminat grilele!</p>
+      <p class="score"><span id="rs">0</span><small> / 30</small></p>
+      <p class="rmsg" id="rmsg"></p>
+      <ul class="subj" id="subj"></ul>
+      <details id="rev"><summary>Ce am greșit</summary><ol id="revList"></ol></details>
+      <div class="actions">
+        <button class="btn" id="toDraw">Mergi la desen</button>
+        <button class="btn ghost" id="again">Încearcă din nou</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="paneDraw" role="tabpanel" aria-labelledby="tabDraw" hidden>
+    <p class="note" style="margin-top:22px">Bravo! Acum poți desena liber sau colora o planșă.</p>
+    <div class="tools">
+      <div class="grp" role="group" aria-label="Planșă">
+        <span class="glabel">Planșă:</span>
+        <button class="tbtn" data-tpl="free" aria-pressed="true">Pânză liberă</button>
+        <button class="tbtn" data-tpl="house" aria-pressed="false">Casă</button>
+        <button class="tbtn" data-tpl="ball" aria-pressed="false">Minge</button>
+        <button class="tbtn" data-tpl="robot" aria-pressed="false">Robot</button>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="grp" role="group" aria-label="Unealtă">
+        <button class="tbtn" data-tool="brush" aria-pressed="true">Pensulă</button>
+        <button class="tbtn" data-tool="eraser" aria-pressed="false">Radieră</button>
+        <button class="tbtn" data-tool="fill" aria-pressed="false">Umplere</button>
+      </div>
+      <div class="size">
+        <label for="size" class="glabel">Grosime</label>
+        <input type="range" id="size" min="2" max="40" value="10">
+        <output id="sizeOut" for="size">10 px</output>
+      </div>
+      <div class="grp">
+        <button class="tbtn" id="undo" disabled>Înapoi</button>
+        <button class="tbtn" id="clear">Șterge tot</button>
+      </div>
+    </div>
+    <div class="palette" id="palette" role="group" aria-label="Culori"></div>
+    <p class="note" id="hint">Ține apăsat și mișcă degetul sau mouse-ul ca să desenezi.</p>
+    <div class="board" id="board" data-tool="brush">
+      <canvas id="draw" width="800" height="560" aria-label="Zonă de desen"></canvas>
+      <canvas id="outline" width="800" height="560" aria-hidden="true"></canvas>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var SUBJ={fotbal:"Fotbal",roblox:"Roblox",geo:"Geografie",ist:"Istorie",info:"Informatică"};
+  var Q=[
+    {s:"fotbal",q:"Câți jucători are o echipă pe teren într-un meci de fotbal, cu tot cu portar?",o:["9","10","11","12"],a:2,e:"Pe teren sunt 11 jucători din fiecare echipă: 10 de câmp și un portar."},
+    {s:"fotbal",q:"Cât durează timpul regulamentar al unui meci de fotbal?",o:["60 de minute","80 de minute","90 de minute","120 de minute"],a:2,e:"Sunt două reprize de câte 45 de minute, fără prelungiri și fără minutele adăugate de arbitru."},
+    {s:"fotbal",q:"Ce echipă națională a câștigat Campionatul Mondial din 2022?",o:["Franța","Argentina","Brazilia","Croația"],a:1,e:"Argentina a câștigat finala cu Franța, la loviturile de departajare."},
+    {s:"fotbal",q:"Cine are voie să prindă mingea cu mâna în propriul careu?",o:["Orice jucător","Căpitanul","Portarul","Fundașul central"],a:2,e:"Portarul poate prinde mingea cu mâinile în careul lui. Ceilalți jucători nu au voie."},
+    {s:"fotbal",q:"Ce înseamnă când arbitrul arată cartonașul roșu?",o:["Jucătorul este eliminat din meci","Jucătorul primește un avertisment","Echipa primește un corner","Meciul se reia de la mijloc"],a:0,e:"Cartonașul roșu înseamnă eliminarea din joc. Cartonașul galben este doar avertisment."},
+
+    {s:"roblox",q:"Cum se numește moneda virtuală din Roblox?",o:["Robux","Gemuri","Credite","Pixeli"],a:0,e:"Robux se cumpără cu bani reali, așa că trebuie să întrebi un adult înainte să cumperi."},
+    {s:"roblox",q:"Cum se numește programul gratuit cu care poți crea propriile jocuri în Roblox?",o:["Roblox Studio","Roblox Paint","Roblox Maker","Roblox Editor"],a:0,e:"În Roblox Studio construiești lumi și scrii scripturi pentru jocul tău."},
+    {s:"roblox",q:"În ce limbaj de programare se scriu scripturile din Roblox Studio?",o:["Lua (varianta Luau)","Python","HTML","C++"],a:0,e:"Roblox folosește Luau, o variantă rapidă a limbajului Lua."},
+    {s:"roblox",q:"Un jucător necunoscut îți cere parola ca să-ți dea Robux gratis. Ce faci?",o:["Îi dau parola","Nu dau parola nimănui și îl blochez","Îi dau doar jumătate din parolă","Îi cer și eu parola lui"],a:1,e:"Parola nu se dă nimănui. Ofertele de Robux gratis sunt păcăleli pentru a-ți fura contul."},
+
+    {s:"geo",q:"Care este capitala României?",o:["Cluj-Napoca","București","Iași","Timișoara"],a:1,e:"București este capitala și cel mai mare oraș al României."},
+    {s:"geo",q:"Ce fluviu formează granița de sud a României și se varsă în Marea Neagră?",o:["Mureșul","Dunărea","Oltul","Prutul"],a:1,e:"Dunărea se varsă în Marea Neagră prin Delta Dunării."},
+    {s:"geo",q:"Cum se numește cel mai înalt vârf din România?",o:["Omu","Moldoveanu","Ceahlău","Negoiu"],a:1,e:"Vârful Moldoveanu din Munții Făgăraș are 2544 de metri."},
+    {s:"geo",q:"Pe ce continent se află piramidele de la Giza?",o:["Asia","Europa","Africa","America de Sud"],a:2,e:"Piramidele de la Giza sunt în Egipt, în nord-estul Africii."},
+    {s:"geo",q:"Care este cel mai mare ocean de pe Pământ?",o:["Atlantic","Indian","Pacific","Arctic"],a:2,e:"Oceanul Pacific este cel mai întins și acoperă o treime din suprafața planetei."},
+
+    {s:"ist",q:"Cine a fost ales domn al Moldovei și al Țării Românești în 1859, la Unirea Principatelor?",o:["Alexandru Ioan Cuza","Mihai Viteazul","Carol I","Ștefan cel Mare"],a:0,e:"Alexandru Ioan Cuza a fost ales domn în ambele țări și a pus bazele statului român modern."},
+    {s:"ist",q:"Care domnitor a unit pentru scurt timp Țara Românească, Moldova și Transilvania, în 1600?",o:["Vlad Țepeș","Mihai Viteazul","Mircea cel Bătrân","Ștefan cel Mare"],a:1,e:"Mihai Viteazul a realizat prima unire a celor trei țări românești, în anul 1600."},
+    {s:"ist",q:"Care domnitor al Moldovei a întemeiat Mănăstirea Putna?",o:["Ștefan cel Mare","Mihai Viteazul","Vlad Țepeș","Alexandru Ioan Cuza"],a:0,e:"Ștefan cel Mare a ridicat Putna în 1466 și a fost îngropat acolo."},
+    {s:"ist",q:"În ce an s-a făcut Marea Unire a tuturor românilor?",o:["1859","1877","1918","1945"],a:2,e:"La 1 Decembrie 1918 Transilvania s-a unit cu România. De aceea 1 Decembrie este Ziua Națională."},
+    {s:"ist",q:"Cine a fost primul rege al României?",o:["Carol I","Ferdinand I","Mihai I","Carol al II-lea"],a:0,e:"Carol I a fost încoronat rege în 1881."},
+
+    {s:"info",q:"Ce este un fișier pe calculator?",o:["O piesă din interiorul calculatorului","Un loc în care se păstrează informații sub un nume, de exemplu o poză sau un text","Un program care protejează calculatorul","Un cablu de rețea"],a:1,e:"Un fișier poate fi o poză, o melodie, un text sau un joc. Fiecare are un nume."},
+    {s:"info",q:"La ce folosește un dosar (folder)?",o:["Să repare calculatorul","Să grupeze fișierele, ca un sertar cu documente","Să mărească ecranul","Să te conecteze la internet"],a:1,e:"Dosarele ajută la ordine: poți pune pozele într-unul și temele în altul."},
+    {s:"info",q:"Care dintre aceste fișiere este, cel mai probabil, o poză?",o:["tema.docx","melodie.mp3","vacanta.jpg","joc.exe"],a:2,e:"Extensia .jpg este pentru imagini. .docx este document text, .mp3 este sunet, .exe este program."},
+    {s:"info",q:"Care este poziția corectă la calculator?",o:["Spatele drept, picioarele pe podea, ochii la nivelul ecranului","Aplecat spre ecran, cu picioarele încrucișate","Întins pe pat, cu laptopul pe burtă","Cu gâtul întors într-o parte"],a:0,e:"O poziție dreaptă te ferește de dureri de spate și de gât. Aceasta se numește ergonomie."},
+    {s:"info",q:"Cât de des e bine să faci o pauză când stai mult la calculator?",o:["La fiecare 30–60 de minute","O dată pe zi","Niciodată, ca să termini mai repede","Doar când te doare capul"],a:0,e:"O pauză scurtă îți odihnește ochii și spatele. Privește departe și mișcă-te puțin."},
+    {s:"info",q:"Ce înseamnă WWW?",o:["World Wide Web","Wireless Web Window","Web With Wires","World Web Wizard"],a:0,e:"World Wide Web înseamnă „rețeaua mondială”: site-urile pe care le deschizi în browser. E doar o parte din internet, alături de e-mail sau jocuri online."},
+    {s:"info",q:"Ce este o adresă IP?",o:["Un număr care identifică un dispozitiv într-o rețea","Parola de la Wi-Fi","Numele unui site","Un tip de virus"],a:0,e:"O adresă IP arată de exemplu așa: 192.168.1.10. Ajută ca informațiile să ajungă la dispozitivul potrivit."},
+    {s:"info",q:"Care este diferența dintre HTTP și HTTPS?",o:["HTTPS codează informațiile trimise, deci e mai sigur","HTTPS este doar pentru site-uri de jocuri","HTTP este mai nou și mai sigur","Nu există nicio diferență"],a:0,e:"Litera S vine de la „secure”. Pe site-urile HTTPS informațiile sunt codate și mai greu de furat."},
+    {s:"info",q:"În ce perioadă a fost construit ENIAC, unul dintre primele calculatoare electronice?",o:["Anii 1940","Anii 1960","Anii 1980","Anii 2000"],a:0,e:"ENIAC a fost terminat în 1945 și prezentat public în 1946, în SUA."},
+    {s:"info",q:"Cum arăta ENIAC față de calculatoarele de azi?",o:["Încăpea într-un buzunar","Ocupa o sală întreagă și cântărea circa 30 de tone","Avea mărimea unui telefon","Se purta la mână ca un ceas"],a:1,e:"ENIAC avea aproximativ 30 de tone și ocupa o încăpere mare."},
+    {s:"info",q:"Ce folosea ENIAC ca să facă calculele, în loc de cipurile de azi?",o:["Tuburi electronice","Baterii de telefon","Lupe și oglinzi","Roți de bicicletă"],a:0,e:"Avea aproape 18.000 de tuburi electronice, care se încălzeau și se defectau des."}
+  ];
+  var N=Q.length;
+
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+  /* ---------- Grile ---------- */
+  var order,idx,score,answers,locked,unlocked=false;
+  var LET=["A","B","C","D"];
+
+  function start(){
+    order=shuffle(Q).map(function(q){
+      return {s:q.s,q:q.q,e:q.e,opts:shuffle(q.o.map(function(t,i){return {t:t,ok:i===q.a};}))};
+    });
+    idx=0;score=0;answers=[];
+    $("#quizMain").hidden=false;$("#results").hidden=true;
+    renderQuestion();
+  }
+
+  function renderSteps(){
+    var h="";
+    for(var i=0;i<N;i++){
+      var c=answers[i]?(answers[i].ok?"ok":"bad"):(i===idx?"now":"");
+      h+='<i class="'+c+'"></i>';
+    }
+    $("#steps").innerHTML=h;
+  }
+
+  function renderQuestion(){
+    locked=false;
+    var q=order[idx];
+    $("#qn").textContent=idx+1;
+    $("#sc").textContent=score;
+    var chip=$("#chip");chip.textContent=SUBJ[q.s];chip.setAttribute("data-s",q.s);
+    $("#qtext").textContent=q.q;
+    var ul=$("#opts");ul.innerHTML="";
+    q.opts.forEach(function(o,i){
+      var li=document.createElement("li");
+      var b=document.createElement("button");
+      b.className="opt";b.type="button";
+      b.innerHTML='<span class="l">'+LET[i]+'</span><span class="t"></span>';
+      b.querySelector(".t").textContent=o.t;
+      b.addEventListener("click",function(){choose(i);});
+      li.appendChild(b);ul.appendChild(li);
+    });
+    var fb=$("#fb");fb.innerHTML="";fb.className="fb";
+    var nx=$("#next");nx.hidden=true;
+    renderSteps();
+  }
+
+  function tag(btn,txt){
+    var s=document.createElement("span");s.className="tag";s.textContent=txt;
+    btn.querySelector(".t").appendChild(s);
+  }
+
+  function choose(i){
+    if(locked)return;locked=true;
+    var q=order[idx];
+    var btns=document.querySelectorAll("#opts .opt");
+    var chosen=q.opts[i];
+    var correctIdx=q.opts.findIndex(function(o){return o.ok;});
+    btns.forEach(function(b,k){
+      b.disabled=true;
+      if(k===correctIdx){b.classList.add("ok");tag(b,"✓ Răspuns corect");}
+      else if(k===i){b.classList.add("bad");tag(b,"✗ Alegerea ta");}
+      else b.classList.add("dim");
+    });
+    if(chosen.ok)score++;
+    answers[idx]={ok:chosen.ok,s:q.s,q:q.q,right:q.opts[correctIdx].t,mine:chosen.t};
+    $("#sc").textContent=score;
+    var fb=$("#fb");
+    fb.className="fb "+(chosen.ok?"ok":"bad");
+    fb.innerHTML="<b></b><span></span>";
+    fb.querySelector("b").textContent=chosen.ok?"Corect!":"Nu e corect.";
+    fb.querySelector("span").textContent=q.e;
+    renderSteps();
+    var nx=$("#next");
+    nx.textContent=(idx===N-1)?"Vezi rezultatul":"Următoarea întrebare";
+    nx.hidden=false;nx.focus({preventScroll:true});
+    nx.scrollIntoView({block:"nearest"});
+  }
+
+  $("#next").addEventListener("click",function(){
+    idx++;
+    if(idx>=N){showResults();return;}
+    renderQuestion();
+    $("#card").scrollIntoView({block:"start"});
+    $("#qtext").focus({preventScroll:true});
+  });
+
+  function showResults(){
+    $("#quizMain").hidden=true;
+    var r=$("#results");r.hidden=false;
+    $("#rs").textContent=score;
+    var m=score>=27?"Excelent!":score>=21?"Foarte bine!":score>=15?"Bine! Mai exersează puțin.":"Mai încearcă, poți mai mult!";
+    $("#rmsg").textContent=m;
+    var tot={},ok={};
+    answers.forEach(function(a){tot[a.s]=(tot[a.s]||0)+1;if(a.ok)ok[a.s]=(ok[a.s]||0)+1;});
+    var h="";
+    Object.keys(SUBJ).forEach(function(k){
+      h+='<li><span class="chip" data-s="'+k+'">'+SUBJ[k]+'</span><span>'+(ok[k]||0)+' din '+(tot[k]||0)+'</span></li>';
+    });
+    $("#subj").innerHTML=h;
+    var wrong=answers.filter(function(a){return !a.ok;});
+    var rev=$("#rev");rev.hidden=wrong.length===0;
+    var list=$("#revList");list.innerHTML="";
+    wrong.forEach(function(a){
+      var li=document.createElement("li");
+      var q=document.createElement("span");q.textContent=a.q;
+      var sm=document.createElement("small");sm.textContent="Răspuns corect: "+a.right;
+      li.appendChild(q);li.appendChild(sm);list.appendChild(li);
+    });
+    unlockDraw();
+    r.scrollIntoView({block:"start"});
+  }
+
+  $("#again").addEventListener("click",function(){start();$("#paneQuiz").scrollIntoView({block:"start"});});
+  $("#toDraw").addEventListener("click",function(){showTab("draw");});
+
+  /* ---------- File ---------- */
+  function unlockDraw(){
+    unlocked=true;
+    var t=$("#tabDraw");t.setAttribute("aria-disabled","false");t.textContent="Desen";
+    $("#lockNote").hidden=true;
+  }
+  function showTab(which){
+    if(which==="draw"&&!unlocked){$("#lockNote").focus&&0;return;}
+    var q=which==="quiz";
+    $("#paneQuiz").hidden=!q;$("#paneDraw").hidden=q;
+    $("#tabQuiz").setAttribute("aria-selected",q);
+    $("#tabDraw").setAttribute("aria-selected",!q);
+    window.scrollTo(0,0);
+  }
+  $("#tabQuiz").addEventListener("click",function(){showTab("quiz");});
+  $("#tabDraw").addEventListener("click",function(){showTab("draw");});
+
+  /* ---------- Desen ---------- */
+  var W=800,H=560;
+  var dc=$("#draw"),oc=$("#outline");
+  var dctx=dc.getContext("2d",{willReadFrequently:true});
+  var octx=oc.getContext("2d",{willReadFrequently:true});
+  var COLORS=[["Roșu","#e63946"],["Portocaliu","#f77f00"],["Galben","#ffd23f"],["Verde deschis","#7bd34f"],["Verde","#1f9d55"],["Turcoaz","#1fc2b3"],["Albastru deschis","#5bb8ff"],["Albastru","#2f5fe8"],["Mov","#8a4fd6"],["Roz","#ff7eb6"],["Maro","#8a5a3b"],["Gri","#9aa3b2"],["Negru","#1d2433"]];
+  var color=COLORS[0][1],tool="brush",size=10,hist=[],drawing=false,last=null;
+  var HINTS={brush:"Ține apăsat și mișcă degetul sau mouse-ul ca să desenezi.",eraser:"Radiera șterge desenul tău, dar lasă conturul planșei.",fill:"Atinge o zonă a planșei ca s-o colorezi cu culoarea aleasă."};
+
+  var pal=$("#palette");
+  COLORS.forEach(function(c,i){
+    var b=document.createElement("button");
+    b.type="button";b.className="sw";b.style.setProperty("--c",c[1]);
+    b.setAttribute("aria-label",c[0]);b.title=c[0];
+    b.setAttribute("aria-pressed",i===0);
+    b.addEventListener("click",function(){
+      color=c[1];
+      pal.querySelectorAll(".sw").forEach(function(x){x.setAttribute("aria-pressed",x===b);});
+      if(tool==="eraser")setTool("brush");
+    });
+    pal.appendChild(b);
+  });
+
+  function setTool(t){
+    tool=t;
+    document.querySelectorAll("[data-tool]").forEach(function(b){
+      if(b.classList.contains("tbtn"))b.setAttribute("aria-pressed",b.getAttribute("data-tool")===t);
+    });
+    $("#board").setAttribute("data-tool",t);
+    $("#hint").textContent=HINTS[t];
+  }
+  document.querySelectorAll(".tbtn[data-tool]").forEach(function(b){
+    b.addEventListener("click",function(){setTool(b.getAttribute("data-tool"));});
+  });
+
+  $("#size").addEventListener("input",function(e){size=+e.target.value;$("#sizeOut").textContent=size+" px";});
+
+  function updateUndo(){$("#undo").disabled=hist.length===0;}
+  function pushHist(){
+    hist.push(dctx.getImageData(0,0,W,H));
+    if(hist.length>15)hist.shift();
+    updateUndo();
+  }
+  $("#undo").addEventListener("click",function(){
+    var h=hist.pop();if(h)dctx.putImageData(h,0,0);updateUndo();
+  });
+  $("#clear").addEventListener("click",function(){
+    pushHist();dctx.clearRect(0,0,W,H);
+  });
+
+  function pos(e){
+    var r=dc.getBoundingClientRect();
+    return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height];
+  }
+  function setupStroke(){
+    dctx.lineCap="round";dctx.lineJoin="round";dctx.lineWidth=size;
+    if(tool==="eraser"){dctx.globalCompositeOperation="destination-out";dctx.strokeStyle="#000";}
+    else{dctx.globalCompositeOperation="source-over";dctx.strokeStyle=color;}
+  }
+  function hexRgb(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+
+  function floodFill(sx,sy,rgb){
+    sx=Math.max(0,Math.min(W-1,Math.floor(sx)));sy=Math.max(0,Math.min(H-1,Math.floor(sy)));
+    var img=dctx.getImageData(0,0,W,H),dd=img.data;
+    var od=octx.getImageData(0,0,W,H).data;
+    var p0=sy*W+sx,i0=p0*4;
+    if(od[i0+3]>=128)return;
+    var sr=dd[i0],sg=dd[i0+1],sb=dd[i0+2],sa=dd[i0+3];
+    if(sa===255&&sr===rgb[0]&&sg===rgb[1]&&sb===rgb[2])return;
+    hist.push(new ImageData(new Uint8ClampedArray(dd),W,H));
+    if(hist.length>15)hist.shift();
+    var seedT=sa<128;
+    function matches(j){
+      if(od[j+3]>=128)return false;
+      if(seedT)return dd[j+3]<128;
+      if(dd[j+3]<128)return false;
+      return Math.abs(dd[j]-sr)+Math.abs(dd[j+1]-sg)+Math.abs(dd[j+2]-sb)<90;
+    }
+    var seen=new Uint8Array(W*H),stack=[p0];seen[p0]=1;
+    function tryPush(q){
+      if(seen[q])return;seen[q]=1;
+      if(matches(q*4))stack.push(q);
+    }
+    while(stack.length){
+      var p=stack.pop(),i=p*4;
+      dd[i]=rgb[0];dd[i+1]=rgb[1];dd[i+2]=rgb[2];dd[i+3]=255;
+      var x=p%W,y=(p/W)|0;
+      if(x>0)tryPush(p-1);
+      if(x<W-1)tryPush(p+1);
+      if(y>0)tryPush(p-W);
+      if(y<H-1)tryPush(p+W);
+    }
+    dctx.putImageData(img,0,0);
+    updateUndo();
+  }
+
+  dc.addEventListener("pointerdown",function(e){
+    if(e.pointerType==="mouse"&&e.button!==0)return;
+    e.preventDefault();
+    var p=pos(e);
+    if(tool==="fill"){floodFill(p[0],p[1],hexRgb(color));return;}
+    pushHist();
+    drawing=true;last=p;
+    try{dc.setPointerCapture(e.pointerId);}catch(_){}
+    setupStroke();
+    dctx.beginPath();dctx.moveTo(p[0],p[1]);dctx.lineTo(p[0]+0.01,p[1]);dctx.stroke();
+  });
+  dc.addEventListener("pointermove",function(e){
+    if(!drawing)return;
+    var evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+    if(!evs.length)evs=[e];
+    for(var k=0;k<evs.length;k++){
+      var p=pos(evs[k]);
+      dctx.beginPath();dctx.moveTo(last[0],last[1]);dctx.lineTo(p[0],p[1]);dctx.stroke();
+      last=p;
+    }
+  });
+  function endStroke(){drawing=false;last=null;}
+  dc.addEventListener("pointerup",endStroke);
+  dc.addEventListener("pointercancel",endStroke);
+
+  /* planșe de colorat */
+  function circle(c,x,y,r){c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();}
+  function line(c,a,b,x,y){c.beginPath();c.moveTo(a,b);c.lineTo(x,y);c.stroke();}
+  var T={
+    free:function(){},
+    house:function(c){
+      line(c,0,480,800,480);
+      c.strokeRect(200,280,300,200);
+      c.beginPath();c.moveTo(180,280);c.lineTo(350,160);c.lineTo(520,280);c.closePath();c.stroke();
+      c.beginPath();c.moveTo(430,216);c.lineTo(430,170);c.lineTo(470,170);c.lineTo(470,245);c.stroke();
+      c.strokeRect(320,380,60,100);
+      c.beginPath();c.arc(366,432,4,0,Math.PI*2);c.fill();
+      c.strokeRect(230,320,60,60);line(c,260,320,260,380);line(c,230,350,290,350);
+      c.strokeRect(410,320,60,60);line(c,440,320,440,380);line(c,410,350,470,350);
+      circle(c,680,100,48);
+      for(var k=0;k<8;k++){var a=k*Math.PI/4;line(c,680+62*Math.cos(a),100+62*Math.sin(a),680+88*Math.cos(a),100+88*Math.sin(a));}
+      c.beginPath();c.moveTo(610,407);c.lineTo(610,480);c.lineTo(650,480);c.lineTo(650,407);c.stroke();
+      circle(c,630,340,70);
+    },
+    ball:function(c){
+      var cx=400,cy=280,R=230,r1=70,r2=140,a0=-Math.PI/2,k,ang;
+      circle(c,cx,cy,R);
+      c.beginPath();
+      for(k=0;k<5;k++){
+        ang=a0+k*2*Math.PI/5;
+        var px=cx+r1*Math.cos(ang),py=cy+r1*Math.sin(ang);
+        if(k===0)c.moveTo(px,py);else c.lineTo(px,py);
+      }
+      c.closePath();c.stroke();
+      for(k=0;k<5;k++){
+        ang=a0+k*2*Math.PI/5;
+        var vx=cx+r1*Math.cos(ang),vy=cy+r1*Math.sin(ang);
+        var wx=cx+r2*Math.cos(ang),wy=cy+r2*Math.sin(ang);
+        line(c,vx,vy,wx,wy);
+        [-1,1].forEach(function(s){
+          var a2=ang+s*Math.PI/10;
+          line(c,wx,wy,cx+R*Math.cos(a2),cy+R*Math.sin(a2));
+        });
+      }
+    },
+    robot:function(c){
+      line(c,400,70,400,40);circle(c,400,28,12);
+      c.strokeRect(290,70,220,150);
+      c.strokeRect(268,110,22,60);c.strokeRect(510,110,22,60);
+      circle(c,350,125,24);circle(c,450,125,24);circle(c,350,125,9);circle(c,450,125,9);
+      c.strokeRect(340,170,120,32);line(c,370,170,370,202);line(c,400,170,400,202);line(c,430,170,430,202);
+      c.strokeRect(375,220,50,35);
+      c.strokeRect(270,255,260,200);
+      c.strokeRect(330,290,140,100);
+      circle(c,365,335,14);circle(c,400,335,14);circle(c,435,335,14);
+      line(c,350,372,450,372);
+      c.strokeRect(200,265,70,150);c.strokeRect(530,265,70,150);
+      circle(c,235,445,22);circle(c,565,445,22);
+      c.strokeRect(310,455,70,85);c.strokeRect(420,455,70,85);
+    }
+  };
+  function drawTemplate(name){
+    octx.clearRect(0,0,W,H);
+    octx.lineWidth=4;octx.lineJoin="round";octx.lineCap="round";
+    octx.strokeStyle="#1d2433";octx.fillStyle="#1d2433";
+    T[name](octx);
+  }
+  document.querySelectorAll(".tbtn[data-tpl]").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll(".tbtn[data-tpl]").forEach(function(x){x.setAttribute("aria-pressed",x===b);});
+      dctx.clearRect(0,0,W,H);hist=[];updateUndo();
+      drawTemplate(b.getAttribute("data-tpl"));
+      if(b.getAttribute("data-tpl")!=="free")setTool("fill");else setTool("brush");
+    });
+  });
+
+  start();
+})();
+</script>
+
+</body></html>
