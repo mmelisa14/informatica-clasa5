@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispozitive de stocare - Lecția 8</title>
+<style>
+:root{--blue:#2563eb;--dark:#1e293b;--orange:#f97316;--green:#16a34a;--red:#dc2626;--bg:#eef6ff;--card:#fff;--yellow:#fde047;--purple:#7c3aed}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.55;font-size:17px}
+header{background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#fff;text-align:center;padding:36px 16px 48px;position:relative;overflow:hidden}
+header h1{margin:6px 0;font-size:clamp(28px,6vw,48px);text-shadow:0 3px 0 rgba(0,0,0,.2)}
+header p{margin:0;font-size:19px;opacity:.95}
+.badge{display:inline-block;background:var(--yellow);color:#422006;padding:4px 16px;border-radius:999px;font-weight:bold}
+.bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.12);animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-18px)}}
+nav{position:sticky;top:0;z-index:10;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:8px}
+nav a{text-decoration:none;color:var(--blue);font-weight:bold;padding:6px 12px;border-radius:999px;font-size:15px}
+nav a:hover{background:#dbeafe}
+main{max-width:1000px;margin:0 auto;padding:16px}
+section{background:var(--card);border-radius:22px;padding:22px;margin:22px 0;box-shadow:0 6px 18px rgba(30,64,175,.1)}
+h2{margin-top:0;color:var(--blue);font-size:28px}
+.tip{background:#fef9c3;border-left:6px solid #eab308;padding:12px 16px;border-radius:12px;margin:14px 0}
+.retine{background:#ecfdf5;border:3px dashed var(--green);border-radius:18px;padding:14px 18px}
+.retine h3{margin:0 0 6px;color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.dev{border-radius:20px;padding:16px;color:#fff;transition:transform .2s;cursor:pointer}
+.dev:hover{transform:translateY(-5px) rotate(-.6deg)}
+.dev h3{margin:6px 0;font-size:22px}
+.dev .pic{background:rgba(255,255,255,.92);border-radius:14px;padding:6px;height:140px;display:flex;align-items:center;justify-content:center}
+.dev .pic svg{height:128px;width:auto;max-width:100%}
+.dev .more{display:none;background:rgba(0,0,0,.2);border-radius:12px;padding:8px 10px;margin-top:8px;font-size:15px}
+.dev.open .more{display:block}
+.hint{font-size:13px;opacity:.9}
+.c1{background:linear-gradient(135deg,#0ea5e9,#2563eb)}.c2{background:linear-gradient(135deg,#64748b,#334155)}
+.c3{background:linear-gradient(135deg,#a855f7,#6d28d9)}.c4{background:linear-gradient(135deg,#f59e0b,#ea580c)}
+.c5{background:linear-gradient(135deg,#10b981,#047857)}.c6{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px;overflow:hidden;border-radius:12px}
+th{background:var(--blue);color:#fff;padding:10px}
+td{padding:9px;text-align:center;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f1f5f9}
+td:first-child{font-weight:bold;text-align:left}
+.bars .row{display:flex;align-items:center;gap:8px;margin:6px 0}
+.bars .lbl{width:110px;font-weight:bold;font-size:14px}
+.bars .bar{height:22px;border-radius:11px;background:linear-gradient(90deg,#60a5fa,#7c3aed);color:#fff;font-size:12px;padding:0 8px;display:flex;align-items:center;min-width:34px}
+.defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.def{background:#eff6ff;border-radius:16px;padding:12px 14px}
+.def b{color:var(--blue)}
+.bus{background:#fff7ed;border-radius:16px;padding:14px;border:2px solid #fdba74}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:14px 0}
+.cat{border-radius:20px;padding:16px;color:#fff}
+.cat .big{font-size:42px;line-height:1}
+.cat h3{margin:6px 0;font-size:22px}
+.cat .ex{background:rgba(255,255,255,.22);border-radius:10px;padding:6px 10px;margin-top:8px;font-size:15px}
+.cat p{margin:6px 0;font-size:16px}
+.simple{background:#fff;color:#1e293b;border-radius:12px;padding:8px 10px;margin-top:8px;font-size:15px}
+.mini{background:#f0f9ff;border-radius:16px;padding:12px 16px;margin-top:10px}
+button{font-family:inherit;font-size:17px;cursor:pointer}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:999px;padding:10px 22px;font-weight:bold;box-shadow:0 4px 0 #1e3a8a}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.stage{text-align:center}
+.stage .pic{background:#f8fafc;border:3px solid #cbd5e1;border-radius:20px;max-width:320px;margin:10px auto;padding:10px}
+.stage .pic svg{width:100%;height:190px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+.opt{background:#fff;border:3px solid #bfdbfe;border-radius:14px;padding:10px;text-align:left;font-weight:bold;color:var(--dark)}
+.opt:hover:not(:disabled){background:#dbeafe}
+.opt.ok{background:#bbf7d0;border-color:var(--green)}
+.opt.bad{background:#fecaca;border-color:var(--red)}
+.fb{min-height:48px;font-weight:bold;margin:8px 0}
+.score{display:inline-block;background:var(--yellow);padding:4px 14px;border-radius:999px;font-weight:bold;margin:4px}
+.progress{height:12px;border-radius:6px;background:#e2e8f0;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);width:0;transition:width .4s}
+.q{font-weight:bold;font-size:19px;margin:6px 0 10px}
+.result{font-size:22px;text-align:center;padding:10px}
+.hidden{display:none}
+footer{text-align:center;padding:20px;color:#64748b;font-size:14px}
+@media(max-width:600px){body{font-size:16px}section{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="bubble" style="width:90px;height:90px;left:6%;top:20px"></div>
+ <div class="bubble" style="width:60px;height:60px;right:10%;top:60px;animation-delay:1s"></div>
+ <div class="bubble" style="width:120px;height:120px;right:25%;bottom:-40px;animation-delay:2s"></div>
+ <span class="badge">Informatică și TIC • Clasa a V-a • Lecția 8</span>
+ <h1>💾 Dispozitive de stocare 💽</h1>
+ <p>Unde își păstrează calculatorul poveștile, pozele și jocurile? Hai să aflăm!</p>
+</header>
+<nav>
+ <a href="#intro">🤔 De ce?</a><a href="#categorii">🗂️ Categorii</a><a href="#tipuri">🔍 Dispozitive</a><a href="#unitati">📏 Unități</a><a href="#caract">📊 Caracteristici</a>
+ <a href="#magistrale">🔌 Porturi</a><a href="#retine">📌 Rețin</a><a href="#joc">🎮 Joc</a><a href="#grile">📝 Grile</a>
+</nav>
+<main>
+
+<section id="intro">
+ <h2>🤔 De ce avem nevoie de memorie externă?</h2>
+ <p>Memoria internă a calculatorului lucrează așa: <b>ROM</b> permite doar citirea datelor, iar <b>RAM</b> <i>își uită</i> datele când oprești calculatorul. 😮 Deci unde păstrăm pozele, temele și jocurile? În <b>memoria externă</b>, adică în <b>dispozitivele de stocare</b>!</p>
+ <div class="tip">💡 Dispozitivele de stocare permit păstrarea <b>pe termen lung</b> a unor cantități mari de informații. Ele se împart în patru categorii: <b>cu cipuri</b>, <b>magnetice</b>, <b>optice</b> și <b>miniaturale</b>.</div>
+ <h3>Ce poți face cu ele?</h3>
+ <div class="defs">
+  <div class="def">🛡️ <b>Backup</b> – păstrarea în siguranță a datelor în afara calculatorului.</div>
+  <div class="def">🎒 <b>Transport</b> – duci datele acolo unde nu merge rețeaua sau internetul.</div>
+  <div class="def">🔄 <b>Restore</b> – recuperezi date pierdute accidental.</div>
+  <div class="def">⏳ <b>Păstrare</b> – ții datele un timp mai îndelungat.</div>
+ </div>
+</section>
+
+<section id="categorii">
+ <h2>🗂️ Cele 4 categorii de dispozitive de stocare</h2>
+ <p>Dispozitivele de stocare sunt multe, așa că le grupăm în <b>4 familii</b>, după <b>felul în care păstrează datele</b>. Gândește-te la ele ca la 4 tipuri de „dulapuri” în care ține calculatorul lucrurile importante. 🗄️</p>
+ <div class="cats">
+  <div class="cat" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)">
+   <div class="big">🧠</div><h3>1. Cu cipuri</h3>
+   <p>Datele sunt păstrate în <b>cipuri electronice</b> (piese mici, ca niște „creiere” de memorie). Nu se mișcă nimic înăuntru, deci sunt <b>rapide și liniștite</b>.</p>
+   <div class="ex">Exemplu: <b>SSD</b> 💾</div>
+  </div>
+  <div class="cat" style="background:linear-gradient(135deg,#64748b,#334155)">
+   <div class="big">🧲</div><h3>2. Magnetice</h3>
+   <p>Datele sunt scrise pe un <b>disc magnetic</b> care se învârte, ca un disc de vinil. Un „braț” mic citește datele de pe el.</p>
+   <div class="ex">Exemplu: <b>HDD</b> (discul dur) 🗄️</div>
+  </div>
+  <div class="cat" style="background:linear-gradient(135deg,#a855f7,#6d28d9)">
+   <div class="big">🔦</div><h3>3. Optice</h3>
+   <p>Datele sunt scrise și citite cu o <b>rază laser</b> (lumină). Discul se învârte, iar lumina „citește” desenul de pe el.</p>
+   <div class="ex">Exemple: <b>CD, DVD, Blu-Ray</b> 💿📀</div>
+  </div>
+  <div class="cat" style="background:linear-gradient(135deg,#10b981,#047857)">
+   <div class="big">🤏</div><h3>4. Miniaturale</h3>
+   <p>Sunt <b>foarte mici</b>, cât o monedă sau cât degetul tău. Le pui în buzunar și le conectezi la telefon, laptop sau aparat foto.</p>
+   <div class="ex">Exemple: <b>card de memorie, stick USB</b> 🃏🔑</div>
+  </div>
+ </div>
+ <div class="mini">
+  <b>🧩 Ca să nu încurci categoriile, ține minte cuvântul-cheie:</b><br>
+  Cipuri → <i>electronice</i> • Magnetice → <i>disc care se învârte</i> • Optice → <i>laser</i> • Miniaturale → <i>mici, de buzunar</i>
+ </div>
+  </section>
+
+<section id="tipuri">
+ <h2>🔍 Cunoaște dispozitivele</h2>
+ <p>Apasă pe fiecare card ca să afli mai multe! 👆</p>
+ <div class="grid" id="devgrid"></div>
+</section>
+
+<section id="unitati">
+ <h2>📏 Unități de măsură pentru memorie</h2>
+ <p>Cantitatea de informație se măsoară în <b>unități de măsură</b>, la fel cum lungimea se măsoară în metri și kilometri. Cea mai mică unitate este <b>bitul</b>, iar cele mai folosite sunt <b>octetul (Byte)</b> și multiplii lui.</p>
+ <table>
+  <tr><th>Unitate</th><th>Simbol</th><th>Cât înseamnă</th></tr>
+  <tr><td>Bit</td><td>b</td><td>cea mai mică unitate (0 sau 1)</td></tr>
+  <tr><td>Octet (Byte)</td><td>B</td><td>1 B = 8 biți</td></tr>
+  <tr><td>Kilooctet</td><td>KB</td><td>1 KB = 1024 B</td></tr>
+  <tr><td>Megaoctet</td><td>MB</td><td>1 MB = 1024 KB</td></tr>
+  <tr><td>Gigaoctet</td><td>GB</td><td>1 GB = 1024 MB</td></tr>
+  <tr><td>Teraoctet</td><td>TB</td><td>1 TB = 1024 GB</td></tr>
+ </table>
+ <div class="tip">📶 Scara crește așa: <b>B → KB → MB → GB → TB</b>. De fiecare dată înmulțim sau împărțim cu <b>1024</b>.</div>
+ <h3>🔁 Cum facem conversiile?</h3>
+ <div class="defs">
+  <div class="def">⬇️ <b>Spre o unitate mai mică</b> (de ex. GB → MB): <b>înmulțim</b> cu 1024.<br>Exemplu: 2 GB = 2 × 1024 = <b>2048 MB</b>.</div>
+  <div class="def">⬆️ <b>Spre o unitate mai mare</b> (de ex. MB → GB): <b>împărțim</b> la 1024.<br>Exemplu: 3072 MB = 3072 : 1024 = <b>3 GB</b>.</div>
+ </div>
+ <div class="tip">🧠 <b>Regulă de aur:</b> unitate mai mică → număr mai mare (înmulțim). Unitate mai mare → număr mai mic (împărțim).</div>
+ <p><b>Alte exemple:</b></p>
+ <ul>
+  <li>1 KB = 1024 B</li>
+  <li>5 MB = 5 × 1024 = 5120 KB</li>
+  <li>1 TB = 1024 GB</li>
+  <li>2 B = 2 × 8 = 16 biți</li>
+ </ul>
+ <p class="hint" style="font-size:14px">Notă: producătorii de dispozitive rotunjesc uneori la 1000, așa că dimensiunea văzută în calculator poate fi puțin diferită. La școală folosim 1024.</p>
+ <h3>❓ De ce 1024 și nu 1000?</h3>
+ <div class="bus">
+  <p>Calculatorul gândește doar cu <b>două cifre: 0 și 1</b> (sistemul binar). De aceea, pentru el, numerele „rotunde” sunt <b>puterile lui 2</b>, nu cele ale lui 10.</p>
+  <p><b>1024 = 2<sup>10</sup></b>, adică 2 înmulțit cu el însuși de 10 ori:</p>
+  <p style="font-size:15px">2<sup>1</sup>=2 • 2<sup>2</sup>=4 • 2<sup>3</sup>=8 • 2<sup>4</sup>=16 • 2<sup>5</sup>=32 • 2<sup>6</sup>=64 • 2<sup>7</sup>=128 • 2<sup>8</sup>=256 • 2<sup>9</sup>=512 • <b>2<sup>10</sup>=1024</b></p>
+  <p>1024 este cea mai apropiată putere a lui 2 de numărul 1000. De aceea „kilo” înseamnă aici 1024, nu 1000. Și <b>8 biți = 1 octet</b> pentru că 8 = 2<sup>3</sup>.</p>
+ </div>
+ <h3>🧮 Calculatorul de conversii</h3>
+ <div class="mini">
+  <p style="margin:0 0 8px">Scrie valoarea, alege unitatea ei și unitatea în care vrei s-o transformi, apoi apasă butonul.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+   <label>Valoare:<br><input id="cv" type="number" value="2" min="0" step="any" style="font-size:18px;padding:8px;border-radius:10px;border:2px solid #93c5fd;width:130px"></label>
+   <label>Din:<br><select id="cfrom" style="font-size:18px;padding:8px;border-radius:10px;border:2px solid #93c5fd"></select></label>
+   <label>În:<br><select id="cto" style="font-size:18px;padding:8px;border-radius:10px;border:2px solid #93c5fd"></select></label>
+  </div>
+  <p><button class="btn" id="cbtn">🧮 Calculează</button></p>
+  <div id="cout" style="font-size:17px"></div>
+ </div>
+</section>
+
+<section id="caract">
+ <h2>📊 Caracteristicile dispozitivelor</h2>
+ <div class="defs">
+  <div class="def">📦 <b>Capacitatea de stocare</b><br>cantitatea de informație care poate fi memorată.</div>
+  <div class="def">⏱️ <b>Timpul de acces</b><br>timpul din momentul cererii de citire/scriere până începe efectiv transferul datelor.</div>
+  <div class="def">🚀 <b>Rata de transfer</b><br>cantitatea de informație transferată într-o secundă.</div>
+ </div>
+ <table>
+  <tr><th>Dispozitiv</th><th>Capacitate</th><th>Timp de acces</th><th>Rata de transfer</th></tr>
+  <tr><td>💾 SSD</td><td>256 GB – 100 TB</td><td>300 ms</td><td>2500 – 3000 MB/s</td></tr>
+  <tr><td>🗄️ HDD</td><td>50 GB – 32 TB</td><td>2 ms</td><td>120 – 140 MB/s</td></tr>
+  <tr><td>📀 DVD</td><td>aprox. 50 GB</td><td>400 ms</td><td>2500 – 3000 KB/s</td></tr>
+  <tr><td>💿 CD</td><td>aprox. 700 MB</td><td>300 ms</td><td>2500 – 3000 KB/s</td></tr>
+  <tr><td>🃏 Card de memorie</td><td>16 MB – 1 TB</td><td colspan="2">miniatural, pentru dispozitive portabile</td></tr>
+  <tr><td>🔑 Stick USB</td><td>16 MB – 4 TB</td><td colspan="2">miniatural, conexiune USB</td></tr>
+ </table>
+ <p><i>Datele sunt cele din manual.</i></p>
+ <h3>🏁 Cine are cea mai mare capacitate maximă?</h3>
+ <div class="bars" id="bars"></div>
+ <p class="hint" style="font-size:14px">(Scara e doar orientativă: barele sunt comprimate ca să încapă toate.)</p>
+</section>
+
+<section id="magistrale">
+ <h2>🔌 Cum ajung datele la dispozitive?</h2>
+ <div class="bus">
+  <p>🚪 <b>Porturile</b> sunt canalele prin care conectăm dispozitivele externe la unitatea centrală.</p>
+  <p>🛣️ <b>Magistralele de date</b> sunt „drumurile” pe care circulă datele între microprocesor, memorie și dispozitivele de stocare.</p>
+  <p>📏 Caracteristica principală a unei magistrale este <b>lățimea de bandă</b>. Pe o bandă circulă un bit, deci vorbim de 32, 64, 128 de biți etc.</p>
+  <p>↔️ Magistralele sunt <b>bidirecționale</b>: datele intră și ies. De aceea dispozitivele de stocare se mai numesc și <b>dispozitive periferice de intrare/ieșire</b>.</p>
+ </div>
+</section>
+
+<section id="retine">
+ <h2>📌 Rețin!</h2>
+ <div class="retine">
+  <h3>Pe scurt:</h3>
+  <p>💾 <b>SSD</b> – dispozitiv cu cipuri electronice, fără piese în mișcare.<br>
+  🗄️ <b>HDD</b> – dispozitiv magnetic cu platane.<br>
+  💿 <b>CD</b> – dispozitiv optic de capacitate mică, deoarece se inscripționează doar pe o față.<br>
+  🔑 <b>Stick USB</b> – dispozitiv miniatural, folosit pentru stocarea informațiilor de pe dispozitive portabile.</p>
+ </div>
+ <div class="tip">🕰️ <b>Știai că?</b> Primul SSD a fost inventat în 1979 și se numea <i>Dataram Bulk Core</i>, iar primul HDD a fost inventat de IBM în 1956 și se numea <i>305 RAMAC</i>.</div>
+</section>
+
+<section id="joc">
+ <h2>🎮 Jocul detectivilor: Ce dispozitiv este?</h2>
+ <p>Privește imaginea și alege numele corect. Ai 8 runde. Răspunsurile corecte aduc puncte, iar 3 la rând aduc bonus! 🔥</p>
+ <div class="stage" id="gstage">
+  <div><span class="score">Runda: <span id="gr">0</span>/8</span><span class="score">Puncte: <span id="gp">0</span></span><span class="score">Serie: <span id="gs">0</span>🔥</span></div>
+  <div class="progress"><div id="gbar"></div></div>
+  <div class="pic" id="gpic"></div>
+  <div class="opts" id="gopts"></div>
+  <div class="fb" id="gfb"></div>
+  <button class="btn hidden" id="gnext">Următoarea ➡️</button>
+ </div>
+ <div class="result hidden" id="gres"></div>
+ <div style="text-align:center"><button class="btn" id="gstart">▶️ Începe jocul</button></div>
+</section>
+
+<section id="grile">
+ <h2>📝 Grile: testează-ți cunoștințele</h2>
+ <div class="stage" id="qstage">
+  <div><span class="score">Întrebarea: <span id="qn">0</span>/10</span><span class="score">Puncte: <span id="qp">0</span></span></div>
+  <div class="progress"><div id="qbar"></div></div>
+  <div class="q" id="qtext" style="text-align:left"></div>
+  <div class="opts" id="qopts"></div>
+  <div class="fb" id="qfb" style="text-align:left"></div>
+  <button class="btn hidden" id="qnext">Următoarea ➡️</button>
+ </div>
+ <div class="result hidden" id="qres"></div>
+ <div style="text-align:center"><button class="btn" id="qstart">▶️ Începe grilele</button></div>
+</section>
+
+</main>
+<footer>Lecție creată după manualul de Informatică și TIC, clasa a V-a, Lecția 8 – Dispozitive de stocare 💙</footer>
+
+<script>
+/* ---------- Ilustrații SVG ---------- */
+const W='<svg viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">';
+const IMG={
+ssd:W+`<defs><linearGradient id="gs1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#475569"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs>
+<rect x="15" y="20" width="130" height="72" rx="8" fill="url(#gs1)"/>
+<rect x="28" y="34" width="34" height="22" rx="3" fill="#16a34a"/><rect x="68" y="34" width="34" height="22" rx="3" fill="#16a34a"/>
+<rect x="108" y="34" width="26" height="22" rx="3" fill="#22c55e"/>
+<text x="80" y="82" font-size="16" font-weight="bold" fill="#fde047" text-anchor="middle" font-family="Arial">SSD</text>
+<rect x="20" y="92" width="120" height="6" fill="#eab308"/></svg>`,
+hdd:W+`<rect x="14" y="12" width="132" height="88" rx="8" fill="#cbd5e1" stroke="#64748b" stroke-width="3"/>
+<circle cx="70" cy="56" r="34" fill="#94a3b8" stroke="#475569" stroke-width="2"/>
+<circle cx="70" cy="56" r="24" fill="#e2e8f0"/><circle cx="70" cy="56" r="8" fill="#64748b"/>
+<path d="M130 24 L84 52" stroke="#f97316" stroke-width="6" stroke-linecap="round"/>
+<circle cx="132" cy="22" r="6" fill="#475569"/></svg>`,
+hddext:W+`<rect x="20" y="22" width="120" height="66" rx="14" fill="#1d4ed8"/>
+<rect x="28" y="30" width="104" height="50" rx="10" fill="#3b82f6"/>
+<text x="80" y="62" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">HDD extern</text>
+<path d="M140 70 C160 70 160 100 120 102" stroke="#111827" stroke-width="4" fill="none"/>
+<rect x="104" y="96" width="18" height="10" rx="2" fill="#94a3b8"/></svg>`,
+dvd:W+`<defs><linearGradient id="gd1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset=".4" stop-color="#a5b4fc"/><stop offset=".7" stop-color="#fbcfe8"/><stop offset="1" stop-color="#bae6fd"/></linearGradient></defs>
+<circle cx="80" cy="55" r="46" fill="url(#gd1)" stroke="#6366f1" stroke-width="3"/>
+<circle cx="80" cy="55" r="16" fill="#fff" stroke="#94a3b8"/><circle cx="80" cy="55" r="6" fill="#e2e8f0"/>
+<text x="80" y="100" font-size="11" font-weight="bold" fill="#4338ca" text-anchor="middle" font-family="Arial">DVD</text></svg>`,
+bluray:W+`<defs><linearGradient id="gb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e3a8a"/><stop offset=".5" stop-color="#3b82f6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+<circle cx="80" cy="55" r="46" fill="url(#gb1)" stroke="#1e3a8a" stroke-width="3"/>
+<circle cx="80" cy="55" r="16" fill="#fff" stroke="#94a3b8"/><circle cx="80" cy="55" r="6" fill="#cbd5e1"/>
+<text x="80" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">Blu-ray</text></svg>`,
+cd:W+`<defs><linearGradient id="gc1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset=".3" stop-color="#fca5a5"/><stop offset=".55" stop-color="#fde68a"/><stop offset=".8" stop-color="#86efac"/><stop offset="1" stop-color="#93c5fd"/></linearGradient></defs>
+<circle cx="80" cy="55" r="46" fill="url(#gc1)" stroke="#94a3b8" stroke-width="3"/>
+<circle cx="80" cy="55" r="15" fill="#fff" stroke="#94a3b8"/><circle cx="80" cy="55" r="6" fill="#e2e8f0"/>
+<text x="80" y="100" font-size="11" font-weight="bold" fill="#475569" text-anchor="middle" font-family="Arial">CD</text></svg>`,
+card:W+`<path d="M45 12 H110 a8 8 0 0 1 8 8 V90 a8 8 0 0 1 -8 8 H45 a8 8 0 0 1 -8 -8 V34 Z" fill="#1f2937"/>
+<g fill="#eab308"><rect x="50" y="72" width="7" height="22"/><rect x="61" y="72" width="7" height="22"/><rect x="72" y="72" width="7" height="22"/><rect x="83" y="72" width="7" height="22"/><rect x="94" y="72" width="7" height="22"/></g>
+<rect x="52" y="24" width="48" height="26" rx="4" fill="#ef4444"/>
+<text x="76" y="42" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">32 GB</text></svg>`,
+usb:W+`<rect x="20" y="38" width="96" height="36" rx="10" fill="#dc2626"/>
+<rect x="30" y="46" width="48" height="20" rx="4" fill="#b91c1c"/>
+<text x="54" y="61" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">USB</text>
+<rect x="116" y="44" width="38" height="24" rx="2" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/>
+<rect x="124" y="51" width="8" height="10" fill="#475569"/><rect x="138" y="51" width="8" height="10" fill="#475569"/>
+<circle cx="30" cy="56" r="0"/></svg>`
+};
+
+/* ---------- Dispozitive ---------- */
+const DEVS=[
+{k:'ssd',n:'Hard cu cipuri – SSD',c:'c1',cat:'cu cipuri',d:'<b>S</b>olid <b>S</b>tate <b>D</b>rive. Are cipuri solide și stabile, deci <b>nicio piesă în mișcare</b>. Scrie și citește direct din cipurile de memorie, care sunt <i>non-volatile</i>: datele nu se pierd când oprești calculatorul.',f:'Capacitate: 256 GB – 100 TB'},
+{k:'hdd',n:'Discul dur – HDD',c:'c2',cat:'magnetic',d:'<b>Hard Disk</b>. Este un dispozitiv magnetic cu unul sau mai multe <i>platane</i> (discuri magnetice tari pe care se stochează datele). De obicei este în unitatea centrală, dar există și HDD-uri externe, apreciate pentru portabilitate.',f:'Capacitate: 50 GB – 32 TB'},
+{k:'dvd',n:'Discul digital – DVD',c:'c3',cat:'optic',d:'<b>D</b>igital <b>V</b>ideo <b>D</b>isk. Dispozitiv optic cu capacitate mai mare decât CD-ul; poate avea <b>două fețe</b> pe care se înregistrează informații.',f:'Capacitate: aprox. 50 GB'},
+{k:'bluray',n:'Discul Blu-Ray',c:'c1',cat:'optic',d:'Disc de mare densitate, folosit în general pentru înregistrări video. Numele vine de la culoarea <b>albastră</b> a razei laser cu care se citesc și se scriu datele.',f:'Se folosește pentru filme'},
+{k:'cd',n:'Discul compact – CD',c:'c4',cat:'optic',d:'<b>C</b>ompact <b>D</b>isk. Dispozitiv optic care se inscripționează <b>doar pe o față</b>, deci are capacitate mică. Există <b>CD-R</b> (Recordable, o singură înregistrare) și <b>CD-RW</b> (Re-Writable, mai multe înregistrări).',f:'Capacitate: aprox. 700 MB'},
+{k:'card',n:'Cardul de memorie',c:'c5',cat:'miniatural',d:'Dispozitiv miniatural pentru stocarea și transferul datelor pe laptop, telefon, aparat foto, cameră web.',f:'Capacitate: 16 MB – 1 TB'},
+{k:'usb',n:'Stickul de memorie (USB)',c:'c6',cat:'miniatural',d:'Cunoscut ca <b>Memorie Flash</b> sau <b>Stick USB</b> (<b>U</b>niversal <b>S</b>erial <b>B</b>us). Cele mai multe memorii flash folosesc o conexiune USB.',f:'Capacitate: 16 MB – 4 TB'},
+{k:'hddext',n:'HDD extern',c:'c2',cat:'magnetic',d:'Un disc dur care se conectează la calculator printr-un cablu. Este foarte apreciat datorită portabilității: îl iei cu tine!',f:'Același principiu ca HDD-ul'}
+];
+const SIMPLE={
+ssd:'🗣️ <b>Pe înțelesul tău:</b> e ca o memorie de „fulger”. Nu are piese care se mișcă, de aceea e rapid și nu face zgomot. „Non-volatile” înseamnă că <b>nu uită</b> datele când stingi calculatorul.',
+hdd:'🗣️ <b>Pe înțelesul tău:</b> înăuntru e un disc care se învârte repede. „Platanul” e discul pe care sunt scrise datele, iar „magnetic” înseamnă că datele sunt păstrate cu ajutorul magnetismului. Are loc multă și e ieftin, dar se poate strica dacă îl scapi.',
+dvd:'🗣️ <b>Pe înțelesul tău:</b> arată ca un CD, dar încap mult mai multe date. Poate fi folosit pe <b>ambele fețe</b>, ca o foaie scrisă și în față, și în spate.',
+bluray:'🗣️ <b>Pe înțelesul tău:</b> e discul „mare și puternic”, pentru filme foarte clare. Se citește cu laser <b>albastru</b>, de aici și numele (blue = albastru, ray = rază).',
+cd:'🗣️ <b>Pe înțelesul tău:</b> e discul clasic de muzică. Se scrie <b>doar pe o față</b>, așa că încap puține date. CD-R = scrii <b>o singură dată</b> (ca un pix). CD-RW = scrii de <b>mai multe ori</b> (ca un creion cu radieră).',
+card:'🗣️ <b>Pe înțelesul tău:</b> e cel mai mic „sertar” de date. Îl pui în telefon sau în aparatul foto și acolo se păstrează pozele tale.',
+usb:'🗣️ <b>Pe înțelesul tău:</b> e „penarul” cu date pe care îl duci oriunde. Îl bagi în portul USB al calculatorului și pozele sau temele apar imediat.',
+hddext:'🗣️ <b>Pe înțelesul tău:</b> e un HDD „de voiaj”. Îl legi cu un cablu și ai încă loc pentru multe fișiere, fără să deschizi calculatorul.'
+};
+const grid=document.getElementById('devgrid');
+DEVS.forEach(v=>{
+ const e=document.createElement('div');e.className='dev '+v.c;
+ e.innerHTML=`<div class="pic">${IMG[v.k]}</div><h3>${v.n}</h3><div>Categorie: <b>${v.cat}</b></div><div class="hint">👆 apasă pentru detalii</div><div class="more">${v.d}<br><br>📏 ${v.f}<div class="simple">${SIMPLE[v.k]}</div></div>`;
+ e.onclick=()=>e.classList.toggle('open');
+ grid.appendChild(e);
+});
+
+/* ---------- Bare capacitate ---------- */
+const bars=[['SSD',100,'100 TB'],['HDD',32,'32 TB'],['Stick USB',4,'4 TB'],['Card memorie',1,'1 TB'],['DVD',.05,'50 GB'],['CD',.0007,'700 MB']];
+document.getElementById('bars').innerHTML=bars.map(b=>{
+ const w=Math.max(6,Math.round(Math.log10(b[1]*1e6)/8*100));
+ return `<div class="row"><div class="lbl">${b[0]}</div><div class="bar" style="width:${w}%">${b[2]}</div></div>`;}).join('');
+
+/* ---------- Utilitare ---------- */
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const $=id=>document.getElementById(id);
+
+/* ---------- Joc de identificare ---------- */
+const GN={ssd:'SSD (hard cu cipuri)',hdd:'HDD (disc dur)',dvd:'DVD',bluray:'Disc Blu-Ray',cd:'CD',card:'Card de memorie',usb:'Stick USB',hddext:'HDD extern'};
+const FACT={ssd:'Nu are piese în mișcare, doar cipuri!',hdd:'Datele sunt stocate pe platane magnetice.',dvd:'Poate avea două fețe înregistrate.',bluray:'Numele vine de la raza laser albastră.',cd:'Se inscripționează doar pe o față.',card:'Îl găsești în telefon sau aparatul foto.',usb:'USB vine de la Universal Serial Bus.',hddext:'Se conectează prin cablu și se poate transporta.'};
+let gq=[],gi=0,gp=0,gs=0,glock=false;
+function gShow(){
+ glock=false;const k=gq[gi];
+ $('gr').textContent=gi+1;$('gp').textContent=gp;$('gs').textContent=gs;
+ $('gbar').style.width=(gi/8*100)+'%';
+ $('gpic').innerHTML=IMG[k];$('gfb').textContent='';$('gnext').classList.add('hidden');
+ const wrong=shuffle(Object.keys(GN).filter(x=>x!==k)).slice(0,3);
+ $('gopts').innerHTML='';
+ shuffle([k,...wrong]).forEach(o=>{
+  const b=document.createElement('button');b.className='opt';b.textContent=GN[o];b.dataset.k=o;
+  b.onclick=()=>gAns(b,k);$('gopts').appendChild(b);
+ });
+}
+function gAns(b,k){
+ if(glock)return;glock=true;
+ const ok=b.dataset.k===k;
+ [...$('gopts').children].forEach(x=>{x.disabled=true;if(x.dataset.k===k)x.classList.add('ok');});
+ if(ok){gs++;let pts=10;if(gs>=3)pts+=5;gp+=pts;$('gfb').innerHTML='✅ Bravo! +'+pts+' puncte. '+FACT[k];}
+ else{b.classList.add('bad');gs=0;$('gfb').innerHTML='❌ Nu chiar! Era <b>'+GN[k]+'</b>. '+FACT[k];}
+ $('gp').textContent=gp;$('gs').textContent=gs;
+ $('gnext').textContent=gi===7?'🏁 Vezi rezultatul':'Următoarea ➡️';
+ $('gnext').classList.remove('hidden');
+}
+$('gstart').onclick=()=>{
+ gq=shuffle(Object.keys(GN));gi=0;gp=0;gs=0;
+ $('gres').classList.add('hidden');$('gstage').classList.remove('hidden');$('gstart').classList.add('hidden');gShow();
+};
+$('gnext').onclick=()=>{
+ if(gi<7){gi++;gShow();}
+ else{
+  $('gbar').style.width='100%';$('gstage').classList.add('hidden');
+  const m=gp>=100?'🏆 Detectiv de top! Ești expert în dispozitive de stocare!':gp>=60?'🌟 Foarte bine! Mai repetă puțin și ești campion!':'💪 Un început bun! Reciti lecția și mai încearcă!';
+  $('gres').innerHTML='Ai obținut <b>'+gp+' puncte</b>!<br>'+m;
+  $('gres').classList.remove('hidden');$('gstart').textContent='🔁 Joacă din nou';$('gstart').classList.remove('hidden');
+ }
+};
+
+/* ---------- Grile ---------- */
+const Q=[
+{q:'Ce tip de memorie își pierde datele când oprești calculatorul?',o:['ROM','RAM','SSD','HDD'],a:1,e:'RAM își pierde datele la oprire. De aceea avem nevoie de memorie externă.'},
+{q:'Ce înseamnă SSD?',o:['Super Speed Disk','Solid State Drive','Small Storage Device','Serial State Drive'],a:1,e:'SSD = Solid State Drive, cu cipuri solide și stabile.'},
+{q:'Care dispozitiv NU are nicio componentă în mișcare?',o:['HDD','CD','SSD','DVD'],a:2,e:'SSD-ul are doar cipuri, toate stabile.'},
+{q:'Cum se numește discul magnetic tare din interiorul unui HDD?',o:['Port','Platan','Magistrală','Cip'],a:1,e:'Platanul este discul magnetic pe care se stochează datele.'},
+{q:'De ce are CD-ul o capacitate mică?',o:['Pentru că e rotund','Pentru că se inscripționează doar pe o față','Pentru că e vechi','Pentru că are cipuri'],a:1,e:'CD-ul se inscripționează doar pe o față.'},
+{q:'De la ce vine denumirea discului Blu-Ray?',o:['De la culoarea discului','De la culoarea albastră a razei laser','De la numele inventatorului','De la o carte'],a:1,e:'Raza laser albastră citește și scrie datele.'},
+{q:'Cum se numește operația de păstrare a datelor în siguranță în afara calculatorului?',o:['Restore','Backup','Port','Download'],a:1,e:'Backup = copie de siguranță. Restore = recuperarea datelor.'},
+{q:'Care este ordinea crescătoare a capacităților cardurilor de 128 GB, 32 GB, 256 GB și 64 GB?',o:['32, 64, 128, 256','64, 32, 128, 256','256, 128, 64, 32','32, 128, 64, 256'],a:0,e:'32 GB < 64 GB < 128 GB < 256 GB.'},
+{q:'Prin ce se transferă datele între microprocesor, memorie și dispozitivele de stocare?',o:['Prin porturi USB doar','Prin magistrale de date','Prin imprimantă','Prin ROM'],a:1,e:'Magistralele de date sunt căile de comunicație ale datelor.'},
+{q:'Ce reprezintă rata de transfer?',o:['Cantitatea de informație transferată într-o secundă','Cât de mare e dispozitivul','Timpul de pornire a calculatorului','Prețul dispozitivului'],a:0,e:'Rata de transfer = cantitatea de informație transferată într-o secundă.'}
+];
+let qq=[],qi=0,qp=0,qlock=false;
+function qShow(){
+ qlock=false;const it=qq[qi];
+ $('qn').textContent=qi+1;$('qp').textContent=qp;$('qbar').style.width=(qi/10*100)+'%';
+ $('qtext').textContent=it.q;$('qfb').textContent='';$('qnext').classList.add('hidden');$('qopts').innerHTML='';
+ it.m.forEach(o=>{
+  const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.dataset.ok=o.ok?'1':'0';
+  b.onclick=()=>qAns(b,it);$('qopts').appendChild(b);
+ });
+}
+function qAns(b,it){
+ if(qlock)return;qlock=true;
+ const ok=b.dataset.ok==='1';
+ [...$('qopts').children].forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('ok');});
+ if(ok){qp++;$('qfb').innerHTML='✅ Corect! '+it.e;}else{b.classList.add('bad');$('qfb').innerHTML='❌ Greșit. '+it.e;}
+ $('qp').textContent=qp;
+ $('qnext').textContent=qi===9?'🏁 Vezi rezultatul':'Următoarea ➡️';$('qnext').classList.remove('hidden');
+}
+$('qstart').onclick=()=>{
+ qq=shuffle(Q).map(x=>({q:x.q,e:x.e,m:shuffle(x.o.map((t,i)=>({t,ok:i===x.a})))}));
+ qi=0;qp=0;$('qres').classList.add('hidden');$('qstage').classList.remove('hidden');$('qstart').classList.add('hidden');qShow();
+};
+/* ---------- Calculator conversii ---------- */
+const UN=['bit','B','KB','MB','GB','TB'];
+const STEP=[8,1024,1024,1024,1024]; /* factorul dintre unitatea i și i+1 */
+(function(){
+ const f=$('cfrom'),t=$('cto');
+ UN.forEach((n,i)=>{f.add(new Option(n,i));t.add(new Option(n,i));});
+ f.value=4;t.value=3;
+ const fmt=x=>x.toLocaleString('ro-RO',{maximumFractionDigits:6,useGrouping:false});
+ $('cbtn').onclick=()=>{
+  const v=parseFloat($('cv').value),a=parseInt(f.value),b=parseInt(t.value),out=$('cout');
+  if(isNaN(v)||v<0){out.innerHTML='⚠️ Scrie un număr valid (0 sau mai mare).';return;}
+  if(a===b){out.innerHTML='🙂 Aceeași unitate: <b>'+fmt(v)+' '+UN[a]+'</b>.';return;}
+  let r=v,facs=[];
+  if(b<a){for(let i=b;i<a;i++)facs.push(STEP[i]);facs.forEach(x=>r*=x);
+   out.innerHTML='⬇️ Mergem spre o unitate <b>mai mică</b>, deci <b>înmulțim</b>:<br>'+fmt(v)+' '+UN[a]+' = '+fmt(v)+' × '+facs.join(' × ')+' = <b>'+fmt(r)+' '+UN[b]+'</b>';}
+  else{for(let i=a;i<b;i++)facs.push(STEP[i]);facs.forEach(x=>r/=x);
+   out.innerHTML='⬆️ Mergem spre o unitate <b>mai mare</b>, deci <b>împărțim</b>:<br>'+fmt(v)+' '+UN[a]+' = '+fmt(v)+' : '+facs.join(' : ')+' = <b>'+fmt(r)+' '+UN[b]+'</b>';}
+ };
+})();
+
+$('qnext').onclick=()=>{
+ if(qi<9){qi++;qShow();}
+ else{
+  $('qbar').style.width='100%';$('qstage').classList.add('hidden');
+  const m=qp>=9?'🏆 Excelent! Nota 10 la dispozitive de stocare!':qp>=7?'🌟 Foarte bine!':qp>=5?'👍 Bine, dar mai citește lecția o dată.':'💪 Mai încearcă după ce reciți lecția!';
+  $('qres').innerHTML='Ai răspuns corect la <b>'+qp+' din 10</b> întrebări.<br>'+m;
+  $('qres').classList.remove('hidden');$('qstart').textContent='🔁 Încearcă din nou';$('qstart').classList.remove('hidden');
+ }
+};
+</script>
+</body>
+</html>
