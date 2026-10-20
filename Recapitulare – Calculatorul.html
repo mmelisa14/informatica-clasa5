@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recapitulare – Calculatorul</title>
+<style>
+:root{--bg:#f4f7ff;--card:#fff;--tx:#1d2540;--mut:#5b6486;--pri:#3b6cff;--ok:#12a150;--bad:#e5484d;--acc:#ff9f1c;--bd:#dbe3ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669}}
+:root[data-theme="dark"]{--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5;font-size:17px}
+header{background:linear-gradient(135deg,#ff7a18,#ff3d77);color:#fff;text-align:center;padding:18px 14px 12px}
+header h1{margin:0;font-size:clamp(1.4rem,5vw,2.2rem)}header p{margin:4px 0 0}
+#st{display:inline-block;background:rgba(255,255,255,.25);border-radius:99px;padding:2px 14px;font-weight:800;margin-top:6px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px;background:var(--card);border-bottom:2px solid var(--bd)}
+nav button{flex:0 0 auto;border:0;border-radius:999px;padding:9px 14px;font:inherit;font-weight:700;background:var(--bg);color:var(--tx);cursor:pointer}
+nav button.on{background:var(--pri);color:#fff}
+main{max-width:760px;margin:0 auto;padding:14px}
+section{display:none}section.on{display:block}
+h2{margin:6px 0 10px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:14px;margin:12px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{border:2px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:99px;padding:4px 12px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.prog{color:var(--mut);font-weight:700;font-size:.9rem}
+.opt{display:block;width:100%;text-align:left;margin:7px 0;padding:11px 14px;border:3px solid var(--bd);border-radius:14px;background:var(--bg);color:var(--tx);font:inherit;cursor:pointer}
+.opt:hover{border-color:var(--pri)}.opt.ok{background:#d6f5e3;border-color:var(--ok);color:#0b3d22}.opt.no{background:#ffdcdc;border-color:var(--bad);color:#5a0d10}
+.fb{margin:8px 0;font-weight:700;min-height:1.5em}
+.fb small{display:block;font-weight:400;color:var(--mut)}
+.btn{border:0;background:var(--pri);color:#fff;font:inherit;font-weight:700;padding:10px 16px;border-radius:12px;cursor:pointer;margin:4px}
+.pic{display:block;margin:6px auto;width:min(100%,260px);max-height:150px;background:#2b3150;border-radius:14px;padding:10px}
+.big2{font-size:3.2rem;text-align:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mt{padding:12px 8px;border:3px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit;font-weight:700;cursor:pointer}
+.mt.sel{border-color:var(--acc);background:#fff3d6;color:#4a3500}.mt.ok{background:#d6f5e3;border-color:var(--ok);color:#0b3d22;pointer-events:none}
+.mt.no{animation:sh .35s;border-color:var(--bad)}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.bits{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.bit{width:40px;height:58px;border-radius:10px;border:2px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;font-weight:800;font-size:1.2rem;cursor:pointer}
+.bit.on{background:var(--ok);color:#fff}.bit small{display:block;font-size:.6rem;font-weight:400}
+.tf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:2px dashed var(--bd);padding:10px 0}
+.tf p{flex:1 1 260px;margin:0}.tf .a{display:flex;gap:6px}
+.tf button{padding:8px 14px}.tf .r{flex-basis:100%;font-weight:700}
+</style>
+</head>
+<body>
+<header><h1>🎓 Recapitulare: Calculatorul</h1><p>Grile, imagini și jocuri</p><span id="st">⭐ 0</span></header>
+<nav id="nav"></nav>
+<main>
+<section id="s0" class="on"><h2>🧩 Grile</h2><div class="chips" id="chips"></div><div class="card" id="qz"></div></section>
+<section id="s1"><h2>🖼️ Ce piesă este?</h2><div class="card" id="pz"></div></section>
+<section id="s2"><h2>📏 Unități de măsură</h2>
+<div class="card"><b>Potrivește</b> fiecare valoare din stânga cu cea egală din dreapta. Apasă întâi pe una din stânga, apoi pe cea din dreapta.<div class="two" style="margin-top:10px" id="mt"></div><p id="mtT" style="font-weight:700;text-align:center"></p></div>
+<div class="card"><b>Provocarea biților 🔘</b><p>Un octet are 8 biți. Apasă pe biți ca să formezi numărul cerut!</p>
+<div class="big2" id="tg"></div><div class="bits" id="bits"></div><p id="bT" style="text-align:center;font-weight:700"></p><div style="text-align:center"><button class="btn" onclick="nb()">Alt număr 🎲</button></div></div></section>
+<section id="s3"><h2>✅ Adevărat sau Fals?</h2><div class="card" id="tf"></div></section>
+<section id="s4"><h2>🎯 Sortează</h2><div class="card"><p style="margin-top:0">Hardware, sistem de operare sau aplicație?</p><div id="so"></div></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let ST=0;const star=()=>{ST++;$('st').textContent='⭐ '+ST};
+["🧩 Grile","🖼️ Ce piesă e?","📏 Unități","✅ Adevărat/Fals","🎯 Sortează"].forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>go(i);$('nav').appendChild(b)});
+function go(i){document.querySelectorAll('section').forEach((s,k)=>s.classList.toggle('on',k===i));[...$('nav').children].forEach((b,k)=>b.classList.toggle('on',k===i));window.scrollTo({top:0})}
+go(0);
+
+/* Motor de grile: it={q,o:[corect,greșite...],e,svg?,fx?,c?} */
+function Quiz(el,items){
+ let L=shuf(items),i=0,sc=0,lock=false;
+ (function show(){
+  if(i>=L.length){const p=sc/L.length;el.innerHTML=`<div class="big2">${p>=.8?'🏆':p>=.5?'👍':'💪'}</div><p style="text-align:center;font-weight:800;font-size:1.3rem">Scor: ${sc} / ${L.length}</p><p style="text-align:center">${p>=.8?'Excelent! Ești gata!':p>=.5?'Bine! Mai exersează puțin.':'Citește din nou lecția și încearcă iar!'}</p><div style="text-align:center"><button class="btn">Din nou 🔄</button></div>`;el.querySelector('.btn').onclick=()=>Quiz(el,items);return}
+  const it=L[i];lock=false;
+  const op=it.fx?it.o.map((t,k)=>[t,k===it.c]):shuf(it.o.map((t,k)=>[t,k===0]));
+  el.innerHTML=`<div class="prog">Întrebarea ${i+1} din ${L.length} • Corecte: ${sc}</div>${it.svg?`<svg class="pic" viewBox="0 0 ${it.svg[0]} ${it.svg[1]}">${it.svg[2]}</svg>`:''}<h3 style="margin:8px 0">${it.q}</h3><div></div><div class="fb"></div><div style="text-align:center"><button class="btn" style="display:none">Următoarea ➜</button></div>`;
+  const box=el.children[it.svg?3:2],fb=el.querySelector('.fb'),nx=el.querySelector('.btn');
+  op.forEach(([t,ok])=>{const b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=()=>{if(lock)return;lock=true;
+   [...box.children].forEach((x,k)=>{if(op[k][1])x.classList.add('ok')});
+   if(ok){sc++;star();fb.innerHTML='✅ Corect!'+(it.e?`<small>${it.e}</small>`:'')}else{b.classList.add('no');fb.innerHTML='❌ Nu chiar.'+(it.e?`<small>${it.e}</small>`:'')}
+   nx.style.display='inline-block';nx.textContent=i+1>=L.length?'Vezi scorul 🏁':'Următoarea ➜'};box.appendChild(b)});
+  nx.onclick=()=>{i++;show()};
+ })()}
+
+/* 1. Grile */
+const G=[
+['Hardware','Cum se numește partea vizibilă a calculatorului, formată din echipamente fizice?',['Hardware','Software','Sistem de operare','Aplicație'],'Hardware este partea pe care o poți atinge.'],
+['Software','Software-ul este…',['partea nevizibilă, formată din programe care execută instrucțiuni','partea formată din echipamente fizice','o placă electronică','o memorie a calculatorului'],'Programele nu pot fi atinse.'],
+['Hardware','Care componentă este considerată „creierul calculatorului”?',['Microprocesorul','Placa de bază','Sursa de alimentare','Placa grafică'],'Microprocesorul coordonează întreaga activitate a calculatorului.'],
+['Hardware','Care componentă este „coloana vertebrală” a calculatorului?',['Placa de bază','Microprocesorul','Memoria RAM','Monitorul'],'Placa de bază coordonează piesele și distribuie energia electrică.'],
+['Hardware','Ce face sursa de alimentare?',['Alimentează componentele cu energia electrică de care au nevoie','Generează imaginile','Memorează fișierele','Redă sunetul'],''],
+['Hardware','Care este rolul plăcii grafice?',['Generează imaginile','Alimentează piesele','Face legătura cu internetul','Citește instrucțiunile de pornire'],'Plăcile performante au și ventilatoare proprii.'],
+['Hardware','Ce componentă este prezentă doar la laptop?',['Acumulatorul (bateria)','Placa de bază','Procesorul','Memoria RAM'],'Laptopul are componente miniaturizate și consum mic de energie.'],
+['Hardware','Unitatea centrală este…',['cutia în care se află piesele interne importante','doar monitorul','un program','o memorie externă'],''],
+['Memorii','Ce se întâmplă cu datele din memoria RAM când oprești calculatorul?',['Se pierd','Rămân salvate','Se mută în ROM','Se copiază pe monitor'],'RAM este o memorie volatilă.'],
+['Memorii','Ce înseamnă ROM?',['Read Only Memory – memorie doar pentru citire','Random Access Memory','Memorie de rezervă','Memorie rapidă'],'În ROM sunt scrise instrucțiunile de pornire.'],
+['Memorii','Ce este memoria cache?',['Memorie temporară de mare viteză, pentru datele folosite cel mai des','Memorie care se șterge doar o dată pe an','Memorie care permite doar citirea','Un tip de monitor'],''],
+['Memorii','Ce observi dacă ai mai multă memorie internă?',['Aplicațiile se execută mai repede','Calculatorul se oprește','Monitorul se mărește','Nimic'],''],
+['Unități','Ce valori poate memora un bit?',['0 sau 1','De la 0 la 9','Doar 1','Orice număr'],'Un bit corespunde la două stări distincte.'],
+['Unități','Câți biți are un octet (byte)?',['8','2','10','1024'],''],
+['Unități','Care este simbolul pentru byte?',['B','b','o','Bt'],'b mic este bitul, B mare este byte-ul.'],
+['Unități','1 KB (Kilooctet) este egal cu…',['1024 octeți','1000 octeți','8 octeți','1024 MB'],''],
+['Unități','1 GB este egal cu…',['1024 MB','1024 KB','1000 TB','8 MB'],''],
+['Unități','1024 GB este egal cu…',['1 TB','1 MB','1 PB','1 KB'],''],
+['Software','Care dintre ele este sistem de operare?',['Linux','Paint','Tastatura','RAM'],'Windows, Linux, Android și macOS sunt sisteme de operare.'],
+['Software','Ce face sistemul de operare?',['Pornește odată cu calculatorul și coordonează întreaga activitate','Doar desenează','Doar printează','Memorează date fără curent'],'El face legătura între componentele fizice și cele logice.'],
+['Software','Paint este…',['o aplicație','un sistem de operare','o placă','o memorie'],''],
+['Software','Unde se încarcă sistemul de operare la pornire?',['În memoria RAM','În placa grafică','În monitor','În mouse'],''],
+['Extern','La ce folosește placa de rețea?',['Conectează la o rețea locală sau la internet','Generează imaginile','Redă sunetul','Alimentează piesele'],''],
+['Extern','Ce face placa de sunet?',['Redă sunetul sau convertește sunetele în format binar','Alimentează calculatorul','Memorează fișiere','Generează imagini'],'Formatul binar înseamnă cifrele 0 și 1.'],
+['Extern','Prin ce se conectează dispozitivele la unitatea centrală?',['Prin porturi (USB, HDMI…)','Prin carcasă','Prin ventilator','Prin ROM'],'']
+].map(([t,q,o,e])=>({t,q,o,e}));
+const TOP=['Toate','Hardware','Memorii','Unități','Software','Extern'];
+TOP.forEach((t,i)=>{const b=document.createElement('button');b.className='chip'+(i?'':' on');b.textContent=t;b.onclick=()=>{[...$('chips').children].forEach(c=>c.classList.remove('on'));b.classList.add('on');Quiz($('qz'),i?G.filter(x=>x.t===t):G)};$('chips').appendChild(b)});
+Quiz($('qz'),G);
+
+/* 2. Ce piesă este? */
+const fan=(cx,cy,r,c)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}" stroke="#111"/><g stroke="#888" stroke-width="3"><path d="M${cx-r+3} ${cy}H${cx+r-3}M${cx} ${cy-r+3}V${cy+r-3}M${cx-r*.7} ${cy-r*.7}L${cx+r*.7} ${cy+r*.7}M${cx+r*.7} ${cy-r*.7}L${cx-r*.7} ${cy+r*.7}"/></g><circle cx="${cx}" cy="${cy}" r="${r*.25}" fill="#111"/>`;
+const PC=[
+['Placa de bază',[226,250,`<rect width="226" height="250" rx="8" fill="#1f8f5f" stroke="#0d5a3b" stroke-width="3"/><g stroke="#5fd59b" fill="none"><path d="M12 40H30M12 60H30M200 150V190M60 120H146M100 90V156"/></g><rect x="30" y="26" width="64" height="64" fill="#0f6b45" stroke="#ddd" stroke-dasharray="3"/><rect x="146" y="22" width="30" height="110" rx="3" fill="#111"/><rect x="182" y="22" width="30" height="110" rx="3" fill="#111"/><rect x="30" y="176" width="150" height="7" fill="#111"/><rect x="100" y="206" width="30" height="30" fill="#8a919c"/>`],'Este placa principală, „coloana vertebrală”: pe ea se montează celelalte piese.'],
+['Microprocesorul (CPU)',[64,64,`<rect x="2" y="2" width="60" height="60" rx="3" fill="#c9a227"/><rect x="11" y="11" width="42" height="42" rx="3" fill="#d5d9e0" stroke="#889"/><text x="32" y="36" font-size="11" text-anchor="middle" font-weight="700" fill="#334">CPU</text>`],'Este „creierul calculatorului”.'],
+['Memoria RAM',[30,110,`<rect width="30" height="110" rx="2" fill="#1f7a4d"/><g fill="#111"><rect x="4" y="8" width="22" height="20"/><rect x="4" y="34" width="22" height="20"/><rect x="4" y="60" width="22" height="20"/></g><rect y="98" width="30" height="12" fill="#ffd23f"/>`],'Ține datele cât lucrezi și se șterge la oprire.'],
+['Placa grafică',[180,44,`<rect y="4" width="172" height="36" rx="4" fill="#23262e" stroke="#555"/>${fan(45,22,16,'#333')}${fan(105,22,16,'#333')}<rect x="172" width="8" height="44" fill="#bbb"/><rect x="20" y="40" width="100" height="4" fill="#ffd23f"/>`],'Generează imaginile. Are ventilatoare proprii.'],
+['SSD (stocare)',[44,70,`<rect x="2" y="2" width="40" height="66" rx="4" fill="#4a5568"/><rect x="6" y="12" width="32" height="30" rx="2" fill="#e2e8f0"/><text x="22" y="32" font-size="11" text-anchor="middle" font-weight="700" fill="#334">SSD</text><rect x="12" y="58" width="20" height="9" fill="#ffd23f"/>`],'Păstrează fișierele chiar și când calculatorul este oprit.'],
+['Sursa de alimentare',[160,56,`<rect width="160" height="56" rx="4" fill="#8a919c" stroke="#333"/>${fan(38,28,22,'#2c2f36')}<rect x="80" y="10" width="62" height="22" rx="2" fill="#ddd"/><text x="111" y="26" font-size="12" text-anchor="middle" font-weight="700" fill="#334">PSU</text>`],'Alimentează componentele cu energie electrică.']];
+Quiz($('pz'),PC.map(([n,svg,e])=>({q:'Ce piesă este aceasta?',svg,o:[n,...shuf(PC.map(x=>x[0]).filter(x=>x!==n)).slice(0,3)],e:n+': '+e})));
+
+/* 3. Unități: potrivire */
+const MP=[['1024 GB','1 TB'],['1024 TB','1 PB'],['1 GB','1024 MB'],['1 MB','1024 KB'],['1024 octeți','1 KB'],['8 biți','1 octet']];
+(function(){let a=null,d=0;const box=$('mt');
+ const col=(items,side)=>items.forEach(([t,i])=>{const b=document.createElement('button');b.className='mt';b.textContent=t;b.dataset.s=side;b.dataset.i=i;b.onclick=()=>{
+  if(side==='L'){box.querySelectorAll('[data-s=L]').forEach(x=>x.classList.remove('sel'));a=i;b.classList.add('sel');return}
+  if(a===null)return;
+  if(+a===i){box.querySelectorAll(`[data-i="${i}"]`).forEach(x=>{x.classList.remove('sel');x.classList.add('ok')});a=null;star();if(++d===MP.length)$('mtT').textContent='🎉 Bravo! Toate perechile sunt corecte!'}
+  else{b.classList.add('no');setTimeout(()=>b.classList.remove('no'),400)}};box.appendChild(b)});
+ const L=MP.map((p,i)=>[p[0],i]),R=shuf(MP.map((p,i)=>[p[1],i]));
+ L.forEach((l,k)=>{col([l],'L');col([R[k]],'R')})})();
+
+/* Provocarea biților */
+const bw=[128,64,32,16,8,4,2,1];let bs,T;
+bw.forEach((w,i)=>{const b=document.createElement('button');b.className='bit';b.innerHTML=`0<small>${w}</small>`;b.onclick=()=>{bs[i]^=1;b.classList.toggle('on',!!bs[i]);b.firstChild.textContent=bs[i];chk()};$('bits').appendChild(b)});
+function chk(){const n=bs.reduce((a,x,i)=>a+x*bw[i],0);$('bT').textContent=bs.join('')+' = '+n;if(n===T){$('bT').textContent+=' 🎉 Corect!';star()}}
+function nb(){T=Math.floor(Math.random()*256);bs=bw.map(()=>0);$('tg').textContent='Formează: '+T;[...$('bits').children].forEach(b=>{b.classList.remove('on');b.firstChild.textContent=0});$('bT').textContent='00000000 = 0'}
+nb();
+
+/* 4. Adevărat / Fals */
+const TF=[['Placa de bază este cea mai importantă componentă software a unui sistem de calcul.',0,'Placa de bază este hardware, nu software.'],['Din punct de vedere tehnic, microprocesorul este un circuit electronic integrat, cunoscut sub numele de cip.',1,'Exact!'],['Cu cât capacitatea memoriei interne este mai mare, cu atât aplicațiile se execută mai repede.',1,'Performanța calculatorului crește.'],['Sursa de alimentare este „coloana vertebrală” a calculatorului.',0,'Coloana vertebrală este placa de bază. Sursa doar alimentează piesele.'],['Datele din memoria RAM se păstrează după oprirea calculatorului.',0,'RAM este volatilă: datele se pierd.'],['Un octet are 8 biți.',1,'1 byte = 8 biți.'],['Windows este o aplicație de desenat.',0,'Windows este un sistem de operare.'],['Memoria ROM permite și citirea, și scrierea datelor.',0,'ROM permite doar citirea.'],['Laptopul are componente asemănătoare cu Tower PC-ul, dar miniaturizate.',1,'Ele sunt adaptate pentru mobilitate și consum mic de energie.']];
+const tf=$('tf');let tfs=0;
+TF.forEach(([q,a,e],i)=>{const d=document.createElement('div');d.className='tf';d.innerHTML=`<p><b>${String.fromCharCode(97+i)})</b> ${q}</p><div class="a"><button class="btn">A</button><button class="btn" style="background:var(--bad)">F</button></div><div class="r"></div>`;
+ const bt=d.querySelectorAll('button'),r=d.querySelector('.r');let done=false;
+ bt.forEach((b,k)=>b.onclick=()=>{if(done)return;done=true;const ok=(k===0)===!!a;if(ok)star();r.innerHTML=(ok?'✅ Corect! ':'❌ Greșit. ')+`<small style="font-weight:400;color:var(--mut)">${e}</small>`});tf.appendChild(d)});
+
+/* 5. Sortează */
+const SO=[['🪟 Windows',1],['⌨️ Tastatura',0],['🎨 Paint',2],['🐧 Linux',1],['📝 Word',2],['📱 Android',1],['🧠 Microprocesorul',0],['🌐 Browserul',2],['⚡ Memoria RAM',0],['📊 Excel',2],['🔌 Sursa de alimentare',0],['🍎 macOS',1]];
+Quiz($('so'),SO.map(([q,c])=>({q,fx:1,c,o:['🔧 Hardware','🧑‍✈️ Sistem de operare','🎨 Aplicație'],e:''})));
+</script>
+</body>
+</html>
