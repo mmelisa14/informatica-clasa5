@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dispozitivele periferice – lecție interactivă</title>
+<style>
+:root{--bg:#fff8ec;--card:#ffffff;--ink:#1f2a44;--mut:#5b6580;--line:#e8dcc4;
+--in:#1e88e5;--inb:#e3f1ff;--out:#e8590c;--outb:#fff0e3;--io:#2e9e5b;--iob:#e4f7ea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a2b;--card:#1d2540;--ink:#f1f3fa;--mut:#a9b2cc;--line:#2f3a5c;
+--in:#6bb6ff;--inb:#1a3050;--out:#ffa05c;--outb:#3a2616;--io:#6fdc9a;--iob:#173a27}}
+:root[data-theme="dark"]{--bg:#141a2b;--card:#1d2540;--ink:#f1f3fa;--mut:#a9b2cc;--line:#2f3a5c;--in:#6bb6ff;--inb:#1a3050;--out:#ffa05c;--outb:#3a2616;--io:#6fdc9a;--iob:#173a27}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Nunito","Trebuchet MS",system-ui,sans-serif}
+h1,h2,h3{font-family:"Baloo 2","Nunito","Trebuchet MS",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+main{max-width:860px;margin:0 auto;padding:0 16px 60px}
+header{text-align:center;padding:34px 8px 10px}
+header h1{font-size:clamp(30px,6vw,48px)}
+header p{color:var(--mut);margin:0}
+.big{font-size:64px;line-height:1}
+section{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;margin:22px 0}
+section>h2{font-size:clamp(24px,4.5vw,32px)}
+.num{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--bg);margin-right:8px;font-size:20px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;text-align:center;margin:18px 0}
+.node{background:var(--bg);border:2px dashed var(--line);border-radius:18px;padding:12px 6px}
+.node b{display:block;font-size:15px}
+.node span{font-size:40px}
+.arr{font-size:30px;font-weight:800}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.tag{flex:1 1 220px;border-radius:18px;padding:14px;border:2px solid}
+.tag.in{background:var(--inb);border-color:var(--in)}.tag.out{background:var(--outb);border-color:var(--out)}.tag.io{background:var(--iob);border-color:var(--io)}
+.tag h3{font-size:22px;margin-bottom:4px}
+.in h3,.in .c{color:var(--in)}.out h3,.out .c{color:var(--out)}.io h3,.io .c{color:var(--io)}
+.tag p{margin:.3em 0}
+.q{background:var(--bg);border-left:6px solid var(--io);border-radius:12px;padding:12px 16px;margin:14px 0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+.tab{flex:1 1 140px;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--bg);font-weight:800}
+.tab[aria-selected="true"]{color:#fff;border-color:transparent}
+.tab[data-c="in"][aria-selected="true"]{background:#1e88e5}.tab[data-c="out"][aria-selected="true"]{background:#e8590c}.tab[data-c="io"][aria-selected="true"]{background:#2e9e5b}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.dev{background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:12px 8px;text-align:center;min-height:150px}
+.dev .e{font-size:46px;line-height:1.1}
+.dev b{display:block;margin-top:4px}
+.dev small{display:block;color:var(--mut);font-size:14px;line-height:1.35;margin-top:4px}
+.dev:hover,.dev:focus-visible{border-color:var(--ink)}
+.dev .why{display:none;font-size:14px;margin-top:6px;font-weight:700}
+.dev.open .why{display:block}
+.dev.open small{display:none}
+#game{text-align:center}
+.bar{display:flex;justify-content:space-between;font-weight:800;margin-bottom:10px}
+.prog{height:12px;background:var(--bg);border-radius:8px;overflow:hidden;border:2px solid var(--line);margin-bottom:14px}
+.prog i{display:block;height:100%;width:0;background:var(--io);transition:width .3s}
+.card{background:var(--bg);border:2px solid var(--line);border-radius:22px;padding:18px;margin-bottom:14px}
+.card .e{font-size:84px;line-height:1.1}
+.card h3{font-size:28px;margin:.2em 0}
+.ans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ans button{padding:14px 6px;border-radius:16px;border:3px solid;font-weight:800;font-size:17px;background:var(--card)}
+.ans .a-in{border-color:var(--in)}.ans .a-out{border-color:var(--out)}.ans .a-io{border-color:var(--io)}
+.ans button:disabled{cursor:default}
+.ans .good{background:#2e9e5b;color:#fff;border-color:#2e9e5b}.ans .bad{background:#d64545;color:#fff;border-color:#d64545}
+.fb{min-height:60px;margin:12px 0;font-weight:700}
+.btn{padding:12px 26px;border-radius:30px;border:0;background:var(--ink);color:var(--bg);font-weight:800;font-size:18px}
+button:focus-visible{outline:3px solid var(--io);outline-offset:2px}
+@media(max-width:560px){body{font-size:17px}.flow{grid-template-columns:1fr}.arr{transform:rotate(90deg)}.ans{grid-template-columns:1fr}.big{font-size:52px}}
+.demo{display:flex;align-items:center;gap:8px;margin:16px 0}.demo .node{flex:0 0 100px}
+.lane{flex:1;position:relative;height:60px;background:linear-gradient(var(--line),var(--line)) center/100% 4px no-repeat}
+.pk{position:absolute;top:50%;left:5%;transform:translate(-50%,-50%);font-size:36px;opacity:0}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.act{padding:12px 6px;border-radius:16px;border:3px solid;font-weight:800;background:var(--card);font-size:16px}
+.act.a-in{border-color:var(--in)}.act.a-out{border-color:var(--out)}.act.a-io{border-color:var(--io)}
+.act:disabled{opacity:.5;cursor:default}
+.res{background:var(--bg);border-radius:16px;padding:14px 16px;margin-top:12px;min-height:84px}
+@media(max-width:560px){.acts{grid-template-columns:1fr}.demo .node{flex-basis:78px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="big">🖱️⌨️🖥️</div>
+<h1>Dispozitivele periferice</h1>
+<p>Lecția 9 · Informatică și TIC · clasa a V-a</p>
+</header>
+
+<section>
+<h2><span class="num">1</span>Ce sunt dispozitivele periferice?</h2>
+<p>Calculatorul este ca un creier care gândește. Dar un creier singur nu poate vedea, auzi sau vorbi. Are nevoie de „ajutoare” puse în jurul lui: acestea sunt <b>dispozitivele periferice</b>. Ele se împart în <b>3 categorii</b>.</p>
+<p><b>Încearcă singur!</b> Apasă pe rând fiecare buton și urmărește cum călătorește mesajul între tine și calculator.</p>
+<div class="demo"><div class="node"><span>🧒</span><b>TU</b></div><div class="lane"><div class="pk" id="pk"></div></div><div class="node"><span>💻</span><b>CALCULATOR</b></div></div>
+<div class="acts"><button class="act a-in" data-k="in">⌨️ Scriu un cuvânt</button><button class="act a-out" data-k="out">🖥️ Mă uit la ecran</button><button class="act a-io" data-k="io">🎤🎧 Vorbesc și ascult</button></div>
+<div class="res" id="res" aria-live="polite">Apasă un buton și privește ce se întâmplă! 👆</div>
+</section>
+
+<section>
+<h2><span class="num">2</span>Cum recunoaștem categoria? Întreabă-te!</h2>
+<div class="q"><b>Întrebarea 1:</b> Eu <b>dau</b> ceva calculatorului (apăs, vorbesc, desenez, scanez)? <br>Dacă DA → <b style="color:var(--in)">intrare</b>.</div>
+<div class="q" style="border-color:var(--out)"><b>Întrebarea 2:</b> Eu <b>primesc</b> ceva de la calculator (văd, aud, țin în mână o hârtie)? <br>Dacă DA → <b style="color:var(--out)">ieșire</b>.</div>
+<div class="q"><b>Dacă răspunsul este DA la ambele întrebări</b> → <b style="color:var(--io)">intrare/ieșire</b>.</div>
+<p>👉 Exemplu: <b>căștile cu microfon</b>. Cu microfonul tu <i>vorbești</i> (intrare), iar cu căștile tu <i>asculți</i> (ieșire). Două DA-uri, deci <b>intrare/ieșire</b>!</p>
+</section>
+
+<section>
+<h2><span class="num">3</span>Să cunoaștem dispozitivele</h2>
+<p>Alege o categorie și atinge o poză ca să afli de ce face parte din ea.</p>
+<div class="tabs" role="tablist" id="tabs"></div>
+<div class="grid" id="grid"></div>
+</section>
+
+<section>
+<h2><span class="num">4</span>Țineți minte!</h2>
+<div class="row">
+<div class="tag in"><b>⌨️ Tastatura</b> este principalul dispozitiv de <b>intrare</b>.</div>
+<div class="tag out"><b>🖥️ Monitorul</b> este principalul dispozitiv de <b>ieșire</b>.</div>
+<div class="tag io"><b>📱 Touchscreen-ul</b> este un dispozitiv de <b>intrare/ieșire</b>: îl atingi și îți arată imaginea.</div>
+</div>
+</section>
+
+<section id="game">
+<h2><span class="num">5</span>Jocul detectivilor 🔎</h2>
+<div id="gbox"></div>
+</section>
+</main>
+
+<script>
+var CATS={in:{n:"De intrare",i:"⬇️"},out:{n:"De ieșire",i:"⬆️"},io:{n:"De intrare/ieșire",i:"↕️"}};
+var D=[
+{n:"Tastatura",e:"⌨️",c:"in",d:"Scrii litere și cifre.",w:"Tu apeși tastele și trimiți litere către calculator."},
+{n:"Mouse-ul",e:"🖱️",c:"in",d:"Muți indicatorul pe ecran.",w:"Tu miști mouse-ul și îi dai comenzi calculatorului."},
+{n:"Scannerul",e:"📄🔍",c:"in",d:"Copiază o poză sau o foaie în calculator.",w:"Imaginea de pe hârtie intră în calculator."},
+{n:"Camera web",e:"📷",c:"in",d:"Surprinde imagini video.",w:"Calculatorul primește imaginea ta."},
+{n:"Joystick-ul",e:"🕹️",c:"in",d:"Conduci personajele din jocuri.",w:"Tu trimiți mișcările către joc."},
+{n:"Microfonul",e:"🎤",c:"in",d:"Introduce sunete și voce.",w:"Vocea ta intră în calculator."},
+{n:"Touchpad-ul",e:"👆",c:"in",d:"Înlocuiește mouse-ul la laptop.",w:"Tu îți plimbi degetul și dai comenzi."},
+{n:"Tableta grafică",e:"✍️",c:"in",d:"Desenezi cu un creion special.",w:"Desenul tău intră în calculator."},
+{n:"Monitorul",e:"🖥️",c:"out",d:"Îți arată textul, pozele și filmele.",w:"Calculatorul îți arată rezultatul pe ecran."},
+{n:"Videoproiectorul",e:"📽️",c:"out",d:"Arată imaginea pe un perete mare.",w:"Rezultatul este afișat pentru tine și clasă."},
+{n:"Imprimanta",e:"🖨️",c:"out",d:"Pune pe hârtie documente și poze.",w:"Calculatorul îți dă rezultatul pe hârtie."},
+{n:"Plotterul",e:"🗺️",c:"out",d:"Tipărește planuri și afișe foarte mari.",w:"Primești rezultatul tipărit, în format mare."},
+{n:"Imprimanta 3D",e:"🧊",c:"out",d:"Construiește obiecte adevărate.",w:"Calculatorul îți dă un obiect gata făcut."},
+{n:"Boxele",e:"🔊",c:"out",d:"Redau muzică și sunete.",w:"Tu asculți sunetele de la calculator."},
+{n:"Căștile",e:"🎧",c:"out",d:"Asculți sunetele doar tu.",w:"Tu primești sunetul de la calculator."},
+{n:"Ochelarii VR",e:"🥽",c:"out",d:"Te duc într-o lume virtuală.",w:"Tu vezi imaginile trimise de calculator."},
+{n:"Touchscreen-ul",e:"📱",c:"io",d:"Ecran pe care îl atingi cu degetul.",w:"Îl atingi (intrare) și vezi imaginea (ieșire)."},
+{n:"Căști cu microfon",e:"🎧🎤",c:"io",d:"Vorbești și asculți în același timp.",w:"Microfonul = intrare, căștile = ieșire."},
+{n:"Multifuncționalul",e:"🖨️📠",c:"io",d:"Imprimă, scanează și copiază.",w:"Scanează (intrare) și imprimă (ieșire)."}
+];
+var RES={in:'<b style="color:var(--in)">⬇️ INTRARE</b><br>Tu ai trimis date <b>către</b> calculator. Așa lucrează tastatura, mouse-ul, microfonul, scannerul.',out:'<b style="color:var(--out)">⬆️ IEȘIRE</b><br>Calculatorul ți-a trimis <b>ție</b> rezultatul. Așa lucrează monitorul, boxele, imprimanta.',io:'<b style="color:var(--io)">↕️ INTRARE/IEȘIRE</b><br>Ai trimis <b>și</b> ai primit date. Așa lucrează touchscreen-ul, căștile cu microfon, multifuncționalul.'};
+var PL={in:[['🔤',5,95]],out:[['🖼️',95,5]],io:[['🗣️',5,95],['🔊',95,5]]};
+function mv(s,cb){var p=document.getElementById('pk');p.style.transition='none';p.textContent=s[0];p.style.opacity=1;p.style.left=s[1]+'%';p.offsetWidth;p.style.transition='left .9s ease';p.style.left=s[2]+'%';setTimeout(cb,1000)}
+function play(k){var bs=document.querySelectorAll('.act'),r=document.getElementById('res'),i=0;bs.forEach(function(b){b.disabled=true});r.textContent='…';
+var st=PL[k];(function nx(){if(i<st.length){mv(st[i++],nx)}else{document.getElementById('pk').style.opacity=0;r.innerHTML=RES[k];bs.forEach(function(b){b.disabled=false})}})()}
+document.querySelectorAll('.act').forEach(function(b){b.onclick=function(){play(b.dataset.k)}});
+var cur="in";
+function tabs(){var t=document.getElementById("tabs");t.innerHTML="";
+for(var k in CATS){var b=document.createElement("button");b.className="tab";b.dataset.c=k;b.setAttribute("role","tab");b.setAttribute("aria-selected",k===cur);b.textContent=CATS[k].i+" "+CATS[k].n;
+b.onclick=(function(k){return function(){cur=k;tabs();grid()}})(k);t.appendChild(b)}}
+function grid(){var g=document.getElementById("grid");g.innerHTML="";
+D.filter(function(x){return x.c===cur}).forEach(function(x){var b=document.createElement("button");b.className="dev";
+b.innerHTML='<div class="e">'+x.e+'</div><b>'+x.n+'</b><small>'+x.d+'</small><div class="why c" style="color:var(--'+x.c+')">'+x.w+'</div>';
+b.onclick=function(){b.classList.toggle("open")};g.appendChild(b)})}
+tabs();grid();
+
+var Q,qi,sc,lock;
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function start(){Q=shuf(D).slice(0,10);qi=0;sc=0;show()}
+function show(){var g=document.getElementById("gbox"),x=Q[qi];lock=false;
+g.innerHTML='<div class="bar"><span>Întrebarea '+(qi+1)+' din '+Q.length+'</span><span>⭐ '+sc+'</span></div><div class="prog"><i style="width:'+(qi/Q.length*100)+'%"></i></div>'+
+'<div class="card"><div class="e">'+x.e+'</div><h3>'+x.n+'</h3><div>În ce categorie intră?</div></div>'+
+'<div class="ans"><button class="a-in" data-c="in">⬇️ Intrare</button><button class="a-out" data-c="out">⬆️ Ieșire</button><button class="a-io" data-c="io">↕️ Intrare/ieșire</button></div>'+
+'<div class="fb" id="fb" aria-live="polite"></div>';
+g.querySelectorAll(".ans button").forEach(function(b){b.onclick=function(){pick(b,x)}})}
+function pick(b,x){if(lock)return;lock=true;var ok=b.dataset.c===x.c;if(ok)sc++;
+document.querySelectorAll(".ans button").forEach(function(o){o.disabled=true;if(o.dataset.c===x.c)o.classList.add("good")});
+if(!ok)b.classList.add("bad");
+var fb=document.getElementById("fb");
+fb.innerHTML=(ok?"🎉 Bravo! ":"🤔 Nu chiar. Corect: <b>"+CATS[x.c].n+"</b>. ")+x.w+'<br><br><button class="btn" id="nx">'+(qi+1<Q.length?"Următoarea":"Vezi rezultatul")+'</button>';
+document.getElementById("nx").onclick=function(){qi++;qi<Q.length?show():end()};}
+function end(){var m=sc>=9?["🏆","Super detectiv! Știi tot despre periferice!"]:sc>=6?["🥈","Foarte bine! Mai citește o dată și ești campion."]:["🌱","Bun început! Reia lecția și încearcă din nou."];
+document.getElementById("gbox").innerHTML='<div class="card"><div class="e">'+m[0]+'</div><h3>'+sc+' din '+Q.length+' răspunsuri corecte</h3><p>'+m[1]+'</p></div><button class="btn" id="re">Joacă din nou</button>';
+document.getElementById("re").onclick=start}
+start();
+</script>
+</body>
+</html>
