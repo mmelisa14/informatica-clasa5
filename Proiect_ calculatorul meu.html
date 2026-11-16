@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proiect: calculatorul meu</title>
+<style>
+:root{--bg:#f4f7ff;--card:#fff;--tx:#1d2540;--mut:#5b6486;--pri:#3b6cff;--ok:#12a150;--acc:#ff9f1c;--vio:#8a4dff;--bd:#dbe3ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669}}
+:root[data-theme="dark"]{--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5;font-size:17px}
+header{background:linear-gradient(135deg,#3b6cff,#8a4dff);color:#fff;text-align:center;padding:22px 14px 16px}
+header h1{margin:0;font-size:clamp(1.4rem,5vw,2.2rem)}header p{margin:4px 0 0;opacity:.92}
+main{max-width:820px;margin:0 auto;padding:14px}
+h2{margin:0 0 6px;font-size:1.4rem}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:16px;margin:14px 0}
+.dl{background:#fff6dd;color:#4a3500;border-color:var(--acc);text-align:center;font-size:1.1rem}
+.v1{border-top:8px solid var(--acc)}.v2{border-top:8px solid var(--vio)}.v3{border-top:8px solid var(--ok)}
+.tag{display:inline-block;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:99px;background:var(--pri);color:#fff;vertical-align:middle}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.chip{background:var(--bg);border:2px solid var(--bd);border-radius:99px;padding:3px 11px;font-size:.92rem}
+.step{background:var(--bg);border-left:6px solid var(--ok);border-radius:10px;padding:9px 12px;margin:8px 0}
+a{color:var(--pri);font-weight:700}
+</style>
+</head>
+<body>
+<header><h1>🖥️ Proiect: Calculatorul meu</h1><p>Alege varianta care ți se potrivește</p></header>
+<main>
+
+<div class="card dl">📅 <b>Termen de predare: 7 decembrie</b><br>Cel mai târziu se poate preda pe <b>21 decembrie</b>.</div>
+
+<div class="card">Proiectul se poate realiza și <b>în grupe</b>. Alege una dintre cele 3 variante de mai jos.</div>
+
+<div class="card v1">
+<h2>Varianta 1 <span class="tag">pe foi</span> <span class="tag" style="background:var(--acc)">maxim 2 persoane</span></h2>
+<p style="margin:6px 0">Încercăm să ne creăm un calculator. Va trebui să alegem noi componentele de bază, tot ce considerăm necesar.</p>
+<div class="step"><b>1. Unitatea centrală.</b> Alegeți componentele de bază de la unitatea centrală și scrieți câteva detalii despre ele.
+<div class="chips"><span class="chip">🧰 Carcasa</span><span class="chip">🟩 Placa de bază</span><span class="chip">🧠 Procesorul</span><span class="chip">⚡ Memoria RAM</span><span class="chip">💾 SSD / HDD</span><span class="chip">🎮 Placa grafică</span><span class="chip">🔌 Sursa</span></div></div>
+<div class="step"><b>2. Perifericele.</b> Adăugați monitorul, tastatura, microfonul și altele.
+<div class="chips"><span class="chip">🖥️ Monitor</span><span class="chip">⌨️ Tastatură</span><span class="chip">🎤 Microfon</span><span class="chip">🖱️ Mouse</span><span class="chip">🔊 Boxe</span><span class="chip">și altele…</span></div></div>
+<div class="step"><b>3. Realizarea.</b> Le desenați pe foi sau le lipiți, apoi le legați prin linii.</div>
+</div>
+
+<div class="card v2">
+<h2>Varianta 2 <span class="tag" style="background:var(--vio)">Scratch</span> <span class="tag" style="background:var(--acc)">maxim 3 persoane</span></h2>
+<div class="step"><b>Tema:</b> alegeți componente pe care le legați între ele în Scratch.</div>
+<div class="step"><b>Sau:</b> alegeți voi o temă legată de componente și periferice.</div>
+</div>
+
+<div class="card v3">
+<h2>Varianta 3 <span class="tag" style="background:var(--ok)">test</span></h2>
+<p style="margin:6px 0">Susții un test. Lucrarea cuprinde: <b>unitatea centrală, periferice, stocare și conversii în binar</b>. Te poți pregăti cu <a href="https://claude.ai/artifact/Vp48mkxNakJZc93G4PjX5J">pagina de recapitulare</a>.</p>
+</div>
+
+</main>
+</body>
+</html>
