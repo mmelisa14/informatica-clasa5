@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recapitulare: lumea calculatorului</title>
+<style>
+:root{--bg:#f4f7ff;--card:#fff;--tx:#1d2540;--mut:#5b6486;--pri:#3b6cff;--ok:#12a150;--bad:#d93a3a;--acc:#ff9f1c;--bd:#dbe3ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669}}
+:root[data-theme="dark"]{--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5;font-size:17px}
+header{background:linear-gradient(135deg,#3b6cff,#8a4dff);color:#fff;text-align:center;padding:20px 14px 12px}
+header h1{margin:0;font-size:clamp(1.4rem,5vw,2.2rem)}header p{margin:4px 0 0;opacity:.92}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;justify-content:center;padding:8px;background:var(--card);border-bottom:2px solid var(--bd)}
+nav button{border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:700;background:var(--bg);color:var(--tx);cursor:pointer}
+nav button.on{background:var(--pri);color:#fff}
+main{max-width:760px;margin:0 auto;padding:14px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:16px;margin:12px 0}
+.opt{display:block;width:100%;text-align:left;margin:7px 0;padding:11px 14px;border:2px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--bad);border-color:var(--bad);color:#fff}
+.fb{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff6dd;color:#4a3500;display:none}
+.btn{border:0;background:var(--pri);color:#fff;font:inherit;font-weight:700;padding:10px 18px;border-radius:12px;cursor:pointer;margin:4px}.btn.alt{background:var(--mut)}
+.prog{height:10px;background:var(--bd);border-radius:9px;overflow:hidden}.prog i{display:block;height:100%;background:var(--pri);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--mut);font-weight:700;margin-bottom:6px}
+.bits{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.bit{width:42px;height:62px;border-radius:10px;border:2px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;font-weight:800;font-size:1.2rem;cursor:pointer}
+.bit.on{background:var(--ok);color:#fff;border-color:var(--ok)}.bit small{display:block;font-size:.6rem;font-weight:400}
+.num{font-size:2.2rem;font-weight:800;text-align:center}
+.res{text-align:center;font-weight:700;min-height:1.6em}.hint{display:none;background:var(--bg);border-radius:12px;padding:10px;margin-top:8px}
+.end{text-align:center}.end .big{font-size:3.4rem}
+</style>
+</head>
+<body>
+<header><h1>📝 Recapitulare: lumea calculatorului</h1><p>Testează-ți cunoștințele!</p></header>
+<nav id="nav"><button class="on" onclick="go(0)">❓ Grile</button><button onclick="go(1)">🔢 Conversie în binar</button></nav>
+<main>
+<section id="s0" class="on"><div class="card" id="quiz"></div></section>
+<section id="s1">
+<div class="card">Un octet are 8 biți, iar fiecare bit are o valoare: <b>128, 64, 32, 16, 8, 4, 2, 1</b>. Apasă pe biți ca să-i faci <b>1</b> (aprins) sau <b>0</b>, astfel încât suma valorilor aprinse să fie numărul cerut.</div>
+<div id="ex"></div>
+<div style="text-align:center"><button class="btn alt" onclick="newEx()">🔄 Alte numere</button></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function go(i){document.querySelectorAll('section').forEach((s,k)=>s.classList.toggle('on',k===i));[...$('nav').children].forEach((b,k)=>b.classList.toggle('on',k===i));window.scrollTo({top:0})}
+
+/* [întrebare, [răspuns corect, greșite...], explicație] */
+const Q=[
+['Cum se numește partea vizibilă a calculatorului, cea pe care o poți atinge?',['Hardware','Software','Sistem de operare'],'Hardware sunt echipamentele fizice. Software sunt programele, partea nevizibilă.'],
+['Ce este software-ul?',['Programele care execută instrucțiuni','Echipamentele fizice','Carcasa calculatorului'],'Software-ul nu poate fi atins: este format din programe.'],
+['Care memorie se șterge când oprești calculatorul?',['RAM','SSD','HDD'],'RAM este memoria de lucru și este volatilă: datele se pierd la oprire. SSD-ul și HDD-ul păstrează fișierele și când calculatorul este oprit.'],
+['Ce conține memoria ROM?',['Instrucțiunile de pornire','Jocurile tale','Pozele tale'],'ROM este doar pentru citire și conține instrucțiunile de pornire.'],
+['La ce folosește memoria cache?',['Păstrează datele folosite cel mai des, foarte rapid','Generează imaginile','Alimentează piesele cu energie'],'Cache este o memorie foarte rapidă pentru datele folosite des.'],
+['Care piesă este „creierul” calculatorului?',['Microprocesorul (CPU)','Placa de sunet','Sursa de alimentare'],'Procesorul coordonează întreaga activitate, după impulsurile „ceasului”.'],
+['Ce rol are placa de bază?',['Coordonează piesele și distribuie energia electrică','Generează imaginile','Convertește sunetul în 0 și 1'],'Pe placa de bază se montează celelalte piese.'],
+['Ce face placa grafică?',['Generează imaginile de pe ecran','Redă sunetul','Conectează la internet'],'Placa grafică produce imaginea; cele moderne au memorie proprie.'],
+['Ce face placa de sunet?',['Redă sunetul și îl convertește în format binar','Răcește procesorul','Stochează fișierele'],'Placa de sunet lucrează cu informația audio.'],
+['Care piesă alimentează componentele cu energie electrică?',['Sursa de alimentare','Placa de rețea','Memoria cache'],'Sursa transformă curentul din priză în energia potrivită pieselor.'],
+['Care este unitatea de măsură a informației memorate de calculator?',['Bitul','Pixelul','Hertzul'],'Bitul (simbol b) memorează 0 sau 1: două stări distincte.'],
+['Câți biți are un octet (byte)?',['8','4','16'],'1 B = 8 b. Octetul este cea mai mică unitate adresabilă de microprocesor.'],
+['Ce înseamnă „B” mare, față de „b” mic?',['B = byte (octet), b = bit','B = bit, b = byte','Sunt același lucru'],'Atenție la litere: b mic este bit, B mare este byte.'],
+['Câți octeți are 1 Kilooctet (KB)?',['1024','1000','512'],'1 KB = 1024 octeți, 1 MB = 1024 KB, 1 GB = 1024 MB.'],
+['Care dintre acestea este un sistem de operare?',['Linux','Paint','Excel'],'Windows, Linux, Android și macOS sunt sisteme de operare. Paint și Excel sunt aplicații.']
+];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let qi=0,sc=0,order=sh(Q.map((_,i)=>i));
+function showQ(){
+ const box=$('quiz');
+ if(qi>=order.length){const p=sc/order.length;box.innerHTML=`<div class="end"><div class="big">${p>=.9?'🏆':p>=.6?'👍':'💪'}</div><h2>Scor: ${sc} / ${order.length}</h2><p>${p>=.9?'Excelent! Ești gata de test.':p>=.6?'Bine! Mai citește lecția și încearcă din nou.':'Mai citește lecția și încearcă din nou, vei reuși!'}</p><button class="btn" onclick="restart()">Joacă din nou</button></div>`;return}
+ const q=Q[order[qi]];
+ box.innerHTML=`<div class="meta"><span>Întrebarea ${qi+1} din ${order.length}</span><span>Scor: ${sc}</span></div><div class="prog"><i style="width:${qi/order.length*100}%"></i></div><h3>${q[0]}</h3><div id="opts"></div><div class="fb" id="fb"></div><div style="text-align:center"><button class="btn" id="nx" style="display:none" onclick="qi++;showQ()">Următoarea ➜</button></div>`;
+ sh(q[1].map((t,i)=>[t,i===0])).forEach(([t,c])=>{const b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=()=>pick(b,c,q);$('opts').appendChild(b)});
+}
+function pick(b,c,q){
+ const bs=[...$('opts').children];bs.forEach(x=>{x.disabled=true;if(x.textContent===q[1][0])x.classList.add('ok')});
+ if(c)sc++;else b.classList.add('no');
+ const f=$('fb');f.style.display='block';f.textContent=(c?'✅ Corect! ':'❌ Nu chiar. ')+q[2];
+ $('nx').style.display='inline-block';$('nx').textContent=qi===order.length-1?'Vezi scorul ➜':'Următoarea ➜';
+}
+function restart(){qi=0;sc=0;order=sh(Q.map((_,i)=>i));showQ()}
+showQ();
+
+/* Conversie în binar */
+const W=[128,64,32,16,8,4,2,1];
+const rnd=(a,b)=>a+(Math.random()*(b-a+1)|0);
+function explain(n){let r=n,p=[];W.forEach(w=>{if(r>=w){p.push(w);r-=w}});return p.join(' + ')+' = '+n+'. Biții aprinși sunt la valorile '+p.join(', ')+'.'}
+function newEx(){
+ const ns=[rnd(5,15),rnd(20,90),rnd(100,255)];
+ $('ex').innerHTML='';
+ ns.forEach((n,k)=>{
+  const bs=W.map(()=>0),c=document.createElement('div');c.className='card';
+  c.innerHTML=`<b>Exercițiul ${k+1}</b><div class="num">${n}<small style="font-size:1rem;color:var(--mut)"> (în baza 10)</small></div><div class="bits"></div><div class="res"></div><div style="text-align:center"><button class="btn">✔ Verifică</button><button class="btn alt">💡 Indiciu</button></div><div class="hint">${explain(n)}</div>`;
+  const bw=c.querySelector('.bits'),res=c.querySelector('.res'),hint=c.querySelector('.hint');
+  W.forEach((w,i)=>{const b=document.createElement('button');b.className='bit';b.innerHTML=`0<small>${w}</small>`;b.onclick=()=>{bs[i]^=1;b.classList.toggle('on',!!bs[i]);b.firstChild.textContent=bs[i];res.textContent=''};bw.appendChild(b)});
+  const [v,h]=c.querySelectorAll('.btn');
+  v.onclick=()=>{const s=bs.reduce((a,x,i)=>a+x*W[i],0);res.style.color=s===n?'var(--ok)':'var(--bad)';
+   res.textContent=s===n?`✅ Corect! ${n} = ${bs.join('')} în binar`:`❌ Ai format ${s} (${bs.join('')}). Mai încearcă!`};
+  h.onclick=()=>{hint.style.display=hint.style.display==='block'?'none':'block'};
+  $('ex').appendChild(c)});
+}
+newEx();
+</script>
+</body>
+</html>
