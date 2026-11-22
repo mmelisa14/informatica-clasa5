@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grile – Călătorie în lumea calculatorului</title>
+<style>
+:root{--bg:#eef6ff;--card:#fff;--text:#1e293b;--blue:#2563eb;--line:#bfdbfe;--hover:#dbeafe;--ok:#bbf7d0;--okb:#16a34a;--bad:#fecaca;--badb:#dc2626;--track:#e2e8f0;--chip:#fde047;--chipt:#422006;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--blue:#60a5fa;--line:#334155;--hover:#334155;--ok:#14532d;--okb:#22c55e;--bad:#7f1d1d;--badb:#f87171;--track:#334155}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--blue:#60a5fa;--line:#334155;--hover:#334155;--ok:#14532d;--okb:#22c55e;--bad:#7f1d1d;--badb:#f87171;--track:#334155}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{text-align:center;color:var(--blue);font-size:clamp(24px,5vw,34px);margin:10px 0 4px}
+.sub{text-align:center;margin:0 0 16px;opacity:.85}
+.card{background:var(--card);border-radius:20px;padding:20px;box-shadow:0 6px 18px rgba(30,64,175,.12)}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+button{font-family:inherit;font-size:17px;cursor:pointer;color:var(--text)}
+.cat{border:3px solid var(--line);background:var(--card);border-radius:16px;padding:10px;font-weight:bold}
+.cat:hover{background:var(--hover)}
+.cat.sel{border-color:var(--blue);background:var(--hover)}
+.btn{background:#2563eb;color:#fff;border:0;border-radius:999px;padding:10px 24px;font-weight:bold;box-shadow:0 4px 0 #1e3a8a}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.chip{display:inline-block;background:var(--chip);color:var(--chipt);padding:3px 14px;border-radius:999px;font-weight:bold;margin:2px}
+.bar{height:12px;border-radius:6px;background:var(--track);overflow:hidden;margin:10px 0}
+.bar div{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#16a34a);transition:width .4s}
+.q{font-weight:bold;font-size:19px;margin:8px 0 12px}
+.opts{display:grid;gap:10px}
+.opt{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:10px 14px;text-align:left;font-weight:bold}
+.opt:hover:not(:disabled){background:var(--hover)}
+.opt.ok{background:var(--ok);border-color:var(--okb)}
+.opt.bad{background:var(--bad);border-color:var(--badb)}
+.fb{min-height:48px;margin:12px 0;font-weight:bold}
+.res{text-align:center;font-size:22px;padding:10px}
+.hidden{display:none}
+.tag{font-size:14px;color:var(--blue);font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>📝 Grile: Călătorie în lumea calculatorului</h1>
+<p class="sub">Toate lecțiile și subiectele din testul de evaluare</p>
+<div class="card">
+ <div class="cats" id="cats"></div>
+ <div id="stage" class="hidden">
+  <div><span class="chip">Întrebarea: <span id="n">1</span>/<span id="t">1</span></span><span class="chip">Puncte: <span id="p">0</span></span></div>
+  <div class="bar"><div id="bar"></div></div>
+  <div class="tag" id="tag"></div>
+  <div class="q" id="qt"></div>
+  <div class="opts" id="opts"></div>
+  <div class="fb" id="fb"></div>
+  <div style="text-align:center"><button class="btn hidden" id="next">Următoarea ➡️</button></div>
+ </div>
+ <div class="res hidden" id="res"></div>
+ <div style="text-align:center"><button class="btn" id="start">▶️ Începe grilele</button></div>
+</div>
+</main>
+<script>
+const CATS=['🖥️ Calculator','🖱️ Periferice','💾 Stocare','💭 Software','🔢 Biți și octeți'];
+/* [categorie, test(1/0), întrebare, [corect, greșite...], explicație] */
+const Q=[
+/* Test de evaluare */
+[0,1,'Subiectul I.1: Care componentă este considerată „creierul” calculatorului?',['Microprocesorul','Placa de bază','Sursa de alimentare','Memoria ROM'],'Microprocesorul coordonează întreaga activitate a calculatorului.'],
+[0,1,'Subiectul I.2: Care este rolul plăcii grafice?',['Generează imaginile de pe ecran','Alimentează piesele cu energie','Memorează fișierele','Redă sunetul'],'Placa grafică generează imaginile pe care le vezi pe ecran.'],
+[0,1,'Subiectul I.3: Ce se întâmplă cu datele din memoria RAM când oprim calculatorul?',['Se pierd','Rămân salvate','Se mută în memoria ROM','Se salvează pe monitor'],'RAM este volatilă: datele se pierd la oprire.'],
+[2,1,'Subiectul I.4: Care dintre următoarele dispozitive de stocare este un dispozitiv optic?',['DVD','SSD','HDD','Cardul de memorie'],'CD, DVD și Blu-Ray sunt dispozitive optice.'],
+[2,1,'Subiectul I.5: Care dintre următoarele dispozitive de stocare este un dispozitiv miniatural?',['Stickul USB','CD','HDD','DVD'],'Stickul USB și cardul de memorie sunt miniaturale.'],
+[0,1,'Subiectul II.a: Placa de bază este o componentă software a calculatorului.',['Fals','Adevărat'],'Placa de bază este hardware, o componentă fizică.'],
+[0,1,'Subiectul II.b: Memoria RAM este o memorie care își pierde datele când calculatorul este oprit.',['Adevărat','Fals'],'RAM este memoria de lucru și este volatilă.'],
+[2,1,'Subiectul II.c: SSD-ul este un dispozitiv magnetic care are piese în mișcare.',['Fals','Adevărat'],'SSD-ul are cipuri și nu are piese în mișcare. HDD-ul este cel magnetic.'],
+[2,1,'Subiectul II.d: CD-ul este un dispozitiv optic, care citește datele cu ajutorul unei raze laser.',['Adevărat','Fals'],'Dispozitivele optice folosesc raza laser.'],
+[1,1,'Subiectul III.a: Care dintre acestea este un dispozitiv periferic de intrare?',['Tastatura','Monitorul','Imprimanta','Boxele'],'Pe tastatură tu dai date calculatorului: intrare.'],
+[1,1,'Subiectul III.b: Care dintre acestea este un dispozitiv periferic de ieșire?',['Imprimanta','Mouse-ul','Microfonul','Scannerul'],'Imprimanta îți dă rezultatul pe hârtie: ieșire.'],
+[1,1,'Subiectul III.c: Care dintre acestea este un dispozitiv periferic de intrare/ieșire?',['Touchscreen-ul','Tastatura','Monitorul','Boxele'],'Touchscreen-ul îl atingi (intrare) și îți arată imaginea (ieșire).'],
+[4,1,'Subiectul IV: Cum se scrie numărul 13 în binar, pe un octet?',['00001101','00001011','00010101','00001110'],'13 = 8 + 4 + 1, deci biții de 8, 4 și 1 sunt aprinși.'],
+[4,1,'Subiectul IV: Cum se scrie numărul 25 în binar, pe un octet?',['00011001','00010011','00011100','00101001'],'25 = 16 + 8 + 1.'],
+/* Calculator */
+[0,0,'Cum se numește partea vizibilă a calculatorului, cea pe care o poți atinge?',['Hardware','Software','Sistem de operare','Aplicație'],'Hardware sunt echipamentele fizice. Software sunt programele.'],
+[0,0,'Ce este software-ul?',['Programele care execută instrucțiuni','Echipamentele fizice','Carcasa calculatorului','Cablurile'],'Software-ul nu poate fi atins: este format din programe.'],
+[0,0,'Ce are în plus un laptop față de un Tower PC?',['Acumulator (baterie)','Placă de bază','Procesor','Memorie RAM'],'Laptopul are aceleași componente, dar miniaturizate, plus bateria.'],
+[0,0,'Ce conține memoria ROM?',['Instrucțiunile de pornire','Jocurile tale','Pozele tale','Datele din RAM'],'ROM este doar pentru citire și conține instrucțiunile de pornire.'],
+[0,0,'La ce folosește memoria cache?',['Păstrează foarte rapid datele folosite des','Generează imaginile','Alimentează piesele','Conectează la internet'],'Cache este o memorie foarte rapidă pentru datele folosite cel mai des.'],
+[0,0,'Ce rol are placa de bază?',['Coordonează piesele și distribuie energia electrică','Generează imaginile','Convertește sunetul în 0 și 1','Răcește procesorul'],'Pe placa de bază se montează celelalte piese.'],
+[0,0,'Ce face placa de sunet?',['Redă sunetul și îl convertește în format binar','Răcește procesorul','Stochează fișierele','Generează imaginile'],'Placa de sunet lucrează cu informația audio.'],
+[0,0,'Care piesă alimentează componentele cu energie electrică?',['Sursa de alimentare','Placa de rețea','Memoria cache','Placa grafică'],'Sursa transformă curentul din priză în energia potrivită pieselor.'],
+[0,0,'Ce permite placa de rețea?',['Conectarea la o rețea locală sau la internet','Redarea sunetului','Generarea imaginilor','Alimentarea pieselor'],'Se poate conecta cu cablu (RJ-45) sau fără fir (Wi-Fi).'],
+[0,0,'Ce face ventilatorul (cooler-ul) din unitatea centrală?',['Împrăștie căldura produsă de procesor','Stochează date','Generează sunet','Alimentează placa de bază'],'Fără răcire, procesorul s-ar supraîncălzi.'],
+[0,0,'Care port transmite imagine și sunet către monitor?',['HDMI','RJ-45','Jack audio pentru microfon','Port serial pentru mouse'],'HDMI transportă imagine și sunet. RJ-45 este pentru cablul de rețea.'],
+[0,0,'Prin ce se transferă datele între microprocesor, memorie și dispozitivele de stocare?',['Prin magistrale de date','Prin imprimantă','Prin ROM','Prin monitor'],'Magistralele de date sunt „drumurile” pe care circulă datele.'],
+/* Periferice */
+[1,0,'Ce întrebare te ajută să recunoști un dispozitiv de intrare?',['Eu dau ceva calculatorului?','Eu primesc ceva de la calculator?','Este mare sau mic?','Este conectat cu cablu?'],'Dacă tu dai date calculatorului (apeși, vorbești, scanezi), este dispozitiv de intrare.'],
+[1,0,'Care dintre acestea este un dispozitiv de intrare?',['Scannerul','Videoproiectorul','Boxele','Plotterul'],'Scannerul copiază imaginea de pe hârtie în calculator.'],
+[1,0,'De ce sunt căștile cu microfon dispozitiv de intrare/ieșire?',['Microfonul este intrare, căștile sunt ieșire','Sunt foarte scumpe','Se conectează prin USB','Au două fire'],'Vorbești (intrare) și asculți (ieșire).'],
+[1,0,'Care dintre acestea este un dispozitiv de ieșire?',['Videoproiectorul','Tableta grafică','Joystick-ul','Camera web'],'Videoproiectorul arată imaginea pe un perete mare.'],
+[1,0,'Ce face imprimanta 3D?',['Construiește obiecte adevărate','Scanează documente','Înregistrează voce','Citește CD-uri'],'Este un dispozitiv de ieșire: calculatorul îți dă un obiect gata făcut.'],
+[1,0,'Care dintre acestea este un dispozitiv de intrare/ieșire?',['Multifuncționalul','Mouse-ul','Boxele','Plotterul'],'Multifuncționalul scanează (intrare) și imprimă (ieșire).'],
+[1,0,'Care este principalul dispozitiv de ieșire?',['Monitorul','Tastatura','Mouse-ul','Scannerul'],'Monitorul îți arată rezultatul pe ecran.'],
+[1,0,'Cum se mai numesc dispozitivele de stocare, deoarece prin magistrale datele intră și ies?',['Dispozitive periferice de intrare/ieșire','Dispozitive de ieșire','Componente software','Plăci de extensie'],'Magistralele sunt bidirecționale: datele intră și ies.'],
+/* Stocare */
+[2,0,'Care dintre aceste dispozitive face parte din categoria „cu cipuri”?',['SSD','HDD','CD','DVD'],'SSD-ul păstrează datele în cipuri electronice.'],
+[2,0,'De ce este SSD-ul rapid și silențios?',['Nu are piese în mișcare','Are un laser','Are platane','Este mic'],'Datele stau în cipuri, iar înăuntru nu se mișcă nimic.'],
+[2,0,'Ce înseamnă că memoria SSD este non-volatilă?',['Datele nu se pierd când oprești calculatorul','Datele se pierd la oprire','Se încălzește mult','Poate fi scrisă doar o dată'],'Non-volatilă = nu uită datele la oprire.'],
+[2,0,'Ce categorie de dispozitive de stocare este HDD-ul?',['Magnetică','Optică','Miniaturală','Cu cipuri'],'HDD-ul stochează datele pe discuri magnetice.'],
+[2,0,'Prin ce se conectează la calculator un HDD extern?',['Printr-un cablu','Printr-o rază laser','Printr-un CD','Nu se poate conecta'],'HDD-ul extern se leagă printr-un cablu și se poate transporta.'],
+[2,0,'Cu ce se citesc și se scriu datele pe un disc optic?',['Cu o rază laser','Cu un magnet','Cu cipuri','Cu un cablu'],'Discurile optice folosesc lumina laserului.'],
+[2,0,'De la ce vine numele discului Blu-Ray?',['De la culoarea albastră a razei laser','De la culoarea discului','De la inventator','De la un film'],'Raza laser albastră citește și scrie datele.'],
+[2,0,'Unde folosim de obicei un card de memorie?',['În telefon sau în aparatul foto','În cititorul de CD-uri','În unitatea centrală, în locul HDD-ului','În imprimantă'],'Cardul stochează pozele din telefon sau din aparatul foto.'],
+[2,0,'Cum se numește operația de păstrare a datelor în siguranță în afara calculatorului?',['Backup','Restore','Port','Download'],'Backup = copie de siguranță. Restore = recuperarea datelor.'],
+[2,0,'Ce reprezintă rata de transfer?',['Cantitatea de informație transferată într-o secundă','Cât de mare este dispozitivul','Timpul de pornire a calculatorului','Prețul dispozitivului'],'Rata de transfer = informația transferată într-o secundă.'],
+/* Software */
+[3,0,'Care dintre acestea este un sistem de operare?',['Linux','Paint','Excel','Word'],'Windows, Linux, Android și macOS sunt sisteme de operare.'],
+[3,0,'Care dintre acestea este o aplicație?',['Paint','Windows','Android','macOS'],'Paint, Word, Excel și browserul sunt aplicații.'],
+[3,0,'Ce face sistemul de operare?',['Coordonează întreaga activitate și face legătura între hardware și programe','Generează imaginile','Memorează doar pozele','Alimentează piesele'],'Pornește odată cu calculatorul și coordonează tot.'],
+[3,0,'Unde este încărcat sistemul de operare la pornirea calculatorului?',['În memoria RAM','În memoria ROM','În monitor','În tastatură'],'ROM pornește calculatorul, apoi sistemul de operare intră în RAM.'],
+[3,0,'Care este ordinea straturilor, de la utilizator spre piese?',['Utilizator, aplicații, sistem de operare, hardware','Utilizator, hardware, aplicații, sistem de operare','Hardware, utilizator, sistem de operare, aplicații','Aplicații, utilizator, hardware, sistem de operare'],'Tu folosești aplicații, iar sistemul de operare le leagă de hardware.'],
+/* Biți și octeți */
+[4,0,'Care este unitatea de măsură a informației memorate de calculator?',['Bitul','Pixelul','Hertzul','Metrul'],'Bitul (simbol b) memorează 0 sau 1: două stări distincte.'],
+[4,0,'Câți biți are un octet (byte)?',['8','4','16','10'],'1 B = 8 b.'],
+[4,0,'Ce înseamnă „B” mare, față de „b” mic?',['B = byte (octet), b = bit','B = bit, b = byte','Sunt același lucru','B = bază, b = binar'],'Atenție la litere: b mic este bit, B mare este byte.'],
+[4,0,'Câți octeți are 1 Kilooctet (KB)?',['1024','1000','512','8'],'1 KB = 1024 octeți. De fiecare dată înmulțim sau împărțim cu 1024.'],
+[4,0,'Câți MB sunt 2 GB?',['2048 MB','2000 MB','1024 MB','512 MB'],'2 GB = 2 × 1024 = 2048 MB.'],
+[4,0,'Câți GB sunt 3072 MB?',['3 GB','30 GB','1 GB','2 GB'],'3072 : 1024 = 3.'],
+[4,0,'Câți KB sunt 5 MB?',['5120 KB','5000 KB','1024 KB','512 KB'],'5 × 1024 = 5120.'],
+[4,0,'Care este cel mai mare număr pe care îl poate forma un octet?',['255','256','128','100'],'11111111 în binar este 255.'],
+[4,0,'De ce 1 KB = 1024 B și nu 1000 B?',['Pentru că 1024 = 2 la puterea 10, iar calculatorul lucrează în binar','Pentru că așa a hotărât producătorul','Pentru că 1024 este mai mare','Pentru că un octet are 10 biți'],'Calculatorul gândește cu 0 și 1, deci folosește puterile lui 2.']
+];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const cnt=k=>k==='all'?Q.length:k==='test'?Q.filter(x=>x[1]).length:Q.filter(x=>x[0]===k).length;
+let sel='all',qq=[],i=0,p=0,lock=false;
+function drawCats(){
+ const all=[['all','🎯 Toate'],['test','📋 Testul de evaluare'],...CATS.map((c,k)=>[k,c])];
+ $('cats').innerHTML='';
+ all.forEach(([k,n])=>{const b=document.createElement('button');b.className='cat'+(sel===k?' sel':'');b.textContent=n+' ('+cnt(k)+')';
+  b.onclick=()=>{sel=k;drawCats();};$('cats').appendChild(b);});
+}
+function show(){
+ lock=false;const it=qq[i];
+ $('n').textContent=i+1;$('t').textContent=qq.length;$('p').textContent=p;
+ $('bar').style.width=(i/qq.length*100)+'%';
+ $('tag').textContent=it.t?'📋 Test · '+CATS[it.c]:CATS[it.c];$('qt').textContent=it.q;$('fb').textContent='';$('next').classList.add('hidden');
+ $('opts').innerHTML='';
+ let m=it.m;
+ m=m.length===2?m.slice().sort((a,b)=>a.t.localeCompare(b.t,'ro')):shuffle(m);
+ m.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.dataset.ok=o.ok?'1':'0';
+  b.onclick=()=>answer(b,it);$('opts').appendChild(b);});
+}
+function answer(b,it){
+ if(lock)return;lock=true;
+ const ok=b.dataset.ok==='1';
+ [...$('opts').children].forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('ok');});
+ if(ok){p++;$('fb').textContent='✅ Corect! '+it.e;}else{b.classList.add('bad');$('fb').textContent='❌ Greșit. '+it.e;}
+ $('p').textContent=p;
+ $('next').textContent=i===qq.length-1?'🏁 Vezi rezultatul':'Următoarea ➡️';$('next').classList.remove('hidden');
+}
+$('start').onclick=()=>{
+ let pool=sel==='all'?Q:sel==='test'?Q.filter(x=>x[1]):Q.filter(x=>x[0]===sel);
+ pool=sel==='test'?pool:shuffle(pool);
+ qq=pool.map(x=>({c:x[0],t:x[1],q:x[2],e:x[4],m:x[3].map((t,k)=>({t,ok:k===0}))}));
+ i=0;p=0;$('res').classList.add('hidden');$('stage').classList.remove('hidden');$('start').classList.add('hidden');show();
+};
+$('next').onclick=()=>{
+ if(i<qq.length-1){i++;show();return;}
+ $('bar').style.width='100%';$('stage').classList.add('hidden');
+ const r=p/qq.length;
+ const m=r===1?'🏆 Excelent! Ai răspuns corect la toate!':r>=.75?'🌟 Foarte bine!':r>=.5?'👍 Bine, dar mai citește lecțiile o dată.':'💪 Mai încearcă după ce reciți lecțiile!';
+ $('res').innerHTML='Ai răspuns corect la <b>'+p+' din '+qq.length+'</b> întrebări.<br>'+m;
+ $('res').classList.remove('hidden');$('start').textContent='🔁 Încearcă din nou';$('start').classList.remove('hidden');
+};
+drawCats();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grile – Categorii de dispozitive de stocare</title>
+<style>
+:root{--bg:#eef6ff;--card:#fff;--text:#1e293b;--blue:#2563eb;--line:#bfdbfe;--hover:#dbeafe;--ok:#bbf7d0;--okb:#16a34a;--bad:#fecaca;--badb:#dc2626;--track:#e2e8f0;--chip:#fde047;--chipt:#422006;--tint:#f0f9ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--blue:#60a5fa;--line:#334155;--hover:#334155;--ok:#14532d;--okb:#22c55e;--bad:#7f1d1d;--badb:#f87171;--track:#334155;--tint:#0f172a}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--blue:#60a5fa;--line:#334155;--hover:#334155;--ok:#14532d;--okb:#22c55e;--bad:#7f1d1d;--badb:#f87171;--track:#334155;--tint:#0f172a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{text-align:center;color:var(--blue);font-size:clamp(24px,5vw,34px);margin:10px 0 4px}
+.sub{text-align:center;margin:0 0 16px;opacity:.85}
+.card{background:var(--card);border-radius:20px;padding:20px;box-shadow:0 6px 18px rgba(30,64,175,.12)}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+button{font-family:inherit;font-size:17px;cursor:pointer;color:var(--text)}
+.cat{border:3px solid var(--line);background:var(--card);border-radius:16px;padding:12px;font-weight:bold}
+.cat:hover{background:var(--hover)}
+.cat.sel{border-color:var(--blue);background:var(--hover)}
+.btn{background:#2563eb;color:#fff;border:0;border-radius:999px;padding:10px 24px;font-weight:bold;box-shadow:0 4px 0 #1e3a8a}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.chip{display:inline-block;background:var(--chip);color:var(--chipt);padding:3px 14px;border-radius:999px;font-weight:bold;margin:2px}
+.bar{height:12px;border-radius:6px;background:var(--track);overflow:hidden;margin:10px 0}
+.bar div{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#16a34a);transition:width .4s}
+.q{font-weight:bold;font-size:19px;margin:8px 0 12px}
+.opts{display:grid;gap:10px}
+.opt{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:10px 14px;text-align:left;font-weight:bold}
+.opt:hover:not(:disabled){background:var(--hover)}
+.opt.ok{background:var(--ok);border-color:var(--okb)}
+.opt.bad{background:var(--bad);border-color:var(--badb)}
+.fb{min-height:48px;margin:12px 0;font-weight:bold}
+.res{text-align:center;font-size:22px;padding:10px}
+.hidden{display:none}
+.tag{font-size:14px;color:var(--blue);font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>📝 Grile: categoriile de stocare</h1>
+<p class="sub">Alege o categorie și testează-ți cunoștințele!</p>
+<div class="card">
+ <div class="cats" id="cats"></div>
+ <div id="stage" class="hidden">
+  <div><span class="chip">Întrebarea: <span id="n">1</span>/<span id="t">4</span></span><span class="chip">Puncte: <span id="p">0</span></span></div>
+  <div class="bar"><div id="bar"></div></div>
+  <div class="tag" id="tag"></div>
+  <div class="q" id="qt"></div>
+  <div class="opts" id="opts"></div>
+  <div class="fb" id="fb"></div>
+  <div style="text-align:center"><button class="btn hidden" id="next">Următoarea ➡️</button></div>
+ </div>
+ <div class="res hidden" id="res"></div>
+ <div style="text-align:center"><button class="btn" id="start">▶️ Începe grilele</button></div>
+</div>
+</main>
+<script>
+const CATS=['🧠 Cu cipuri','🧲 Magnetice','🔦 Optice','🤏 Miniaturale'];
+const Q=[
+{c:0,q:'Care dintre aceste dispozitive face parte din categoria „cu cipuri”?',o:['SSD','HDD','CD','DVD'],a:0,e:'SSD-ul păstrează datele în cipuri electronice.'},
+{c:0,q:'De ce este SSD-ul rapid și silențios?',o:['Pentru că are un laser','Pentru că nu are piese în mișcare','Pentru că are platane','Pentru că este mic'],a:1,e:'Datele stau în cipuri, iar înăuntru nu se mișcă nimic.'},
+{c:0,q:'Ce înseamnă că memoria SSD este non-volatilă?',o:['Datele se pierd când oprești calculatorul','Datele nu se pierd când oprești calculatorul','Se încălzește mult','Poate fi scrisă doar o dată'],a:1,e:'Non-volatilă = nu uită datele la oprire.'},
+{c:0,q:'Ce înseamnă SSD?',o:['Super Speed Disk','Small Storage Device','Solid State Drive','Serial State Drive'],a:2,e:'SSD = Solid State Drive, adică dispozitiv cu cipuri solide și stabile.'},
+{c:1,q:'Ce categorie de dispozitive de stocare este HDD-ul?',o:['Optică','Miniaturală','Cu cipuri','Magnetică'],a:3,e:'HDD-ul stochează datele pe discuri magnetice.'},
+{c:1,q:'Care dintre aceste dispozitive are piese care se învârt?',o:['SSD','Stick USB','Card de memorie','HDD'],a:3,e:'HDD-ul are platane care se rotesc, spre deosebire de SSD.'},
+{c:1,q:'Prin ce se conectează la calculator un HDD extern?',o:['Printr-un cablu','Printr-o rază laser','Printr-un CD','Nu se poate conecta'],a:0,e:'HDD-ul extern se leagă printr-un cablu și se poate transporta.'},
+{c:2,q:'Cu ce se citesc și se scriu datele pe un disc optic?',o:['Cu un magnet','Cu o rază laser','Cu cipuri','Cu un cablu'],a:1,e:'Discurile optice folosesc lumina laserului.'},
+{c:2,q:'De la ce vine numele discului Blu-Ray?',o:['De la culoarea albastră a razei laser','De la culoarea discului','De la inventator','De la un film'],a:0,e:'Raza laser albastră citește și scrie datele.'},
+{c:2,q:'Care dintre aceste dispozitive este optic?',o:['SSD','DVD','HDD','Stick USB'],a:1,e:'CD, DVD și Blu-Ray sunt dispozitive optice.'},
+{c:3,q:'Care dintre aceste dispozitive este miniatural?',o:['HDD','DVD','Stick USB','CD'],a:2,e:'Stickul USB și cardul de memorie sunt miniaturale.'},
+{c:3,q:'Unde folosim de obicei un card de memorie?',o:['În unitatea centrală, în locul HDD-ului','În telefon sau în aparatul foto','În cititorul de CD-uri','În imprimantă, pentru cerneală'],a:1,e:'Cardul de memorie stochează pozele din telefon sau din aparatul foto.'},
+{c:3,q:'Ce au în comun cardul de memorie și stickul USB?',o:['Sunt foarte mici și ușor de transportat','Folosesc raza laser','Au platane magnetice','Se inscripționează pe o față'],a:0,e:'Sunt miniaturale: le pui în buzunar și le conectezi unde ai nevoie.'}
+];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+let sel=-1,qq=[],i=0,p=0,lock=false;
+function drawCats(){
+ const all=['🎯 Toate (13)',...CATS];
+ $('cats').innerHTML='';
+ all.forEach((n,k)=>{const b=document.createElement('button');b.className='cat'+(sel===k-1?' sel':'');b.textContent=n;
+  b.onclick=()=>{sel=k-1;drawCats();};$('cats').appendChild(b);});
+}
+function show(){
+ lock=false;const it=qq[i];
+ $('n').textContent=i+1;$('t').textContent=qq.length;$('p').textContent=p;
+ $('bar').style.width=(i/qq.length*100)+'%';
+ $('tag').textContent=CATS[it.c];$('qt').textContent=it.q;$('fb').textContent='';$('next').classList.add('hidden');
+ $('opts').innerHTML='';
+ it.m.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.dataset.ok=o.ok?'1':'0';
+  b.onclick=()=>answer(b,it);$('opts').appendChild(b);});
+}
+function answer(b,it){
+ if(lock)return;lock=true;
+ const ok=b.dataset.ok==='1';
+ [...$('opts').children].forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('ok');});
+ if(ok){p++;$('fb').textContent='✅ Corect! '+it.e;}else{b.classList.add('bad');$('fb').textContent='❌ Greșit. '+it.e;}
+ $('p').textContent=p;
+ $('next').textContent=i===qq.length-1?'🏁 Vezi rezultatul':'Următoarea ➡️';$('next').classList.remove('hidden');
+}
+$('start').onclick=()=>{
+ const pool=sel<0?Q:Q.filter(x=>x.c===sel);
+ qq=shuffle(pool).map(x=>({c:x.c,q:x.q,e:x.e,m:shuffle(x.o.map((t,k)=>({t,ok:k===x.a})))}));
+ i=0;p=0;$('res').classList.add('hidden');$('stage').classList.remove('hidden');$('start').classList.add('hidden');show();
+};
+$('next').onclick=()=>{
+ if(i<qq.length-1){i++;show();return;}
+ $('bar').style.width='100%';$('stage').classList.add('hidden');
+ const r=p/qq.length;
+ const m=r===1?'🏆 Excelent! Ai răspuns corect la toate!':r>=.75?'🌟 Foarte bine!':r>=.5?'👍 Bine, dar mai citește lecția o dată.':'💪 Mai încearcă după ce reciți lecția!';
+ $('res').innerHTML='Ai răspuns corect la <b>'+p+' din '+qq.length+'</b> întrebări.<br>'+m;
+ $('res').classList.remove('hidden');$('start').textContent='🔁 Încearcă din nou';$('start').classList.remove('hidden');
+};
+drawCats();
+</script>
+</body>
+</html>
