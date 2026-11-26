@@ -1,0 +1,668 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cum funcționează calculatorul?</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#f4f7ff;--card:#fff;--tx:#1d2540;--mut:#5b6486;--pri:#3b6cff;--ok:#12a150;--okt:#0b7a3b;--bad:#c62828;--acc:#ff9f1c;--bd:#dbe3ff;--btn2:#5b6486;--fbg:#fff6dd;--ftx:#4a3500;--dk:#2b3150;--dk2:#3a4166}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669;--okt:#5fe39a;--bad:#ff8a80;--btn2:#4a5588;--fbg:#3a2f12;--ftx:#ffe9a8;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10152b;--card:#1a2142;--tx:#eef1ff;--mut:#a9b2d6;--bd:#2c3669;--okt:#5fe39a;--bad:#ff8a80;--btn2:#4a5588;--fbg:#3a2f12;--ftx:#ffe9a8;color-scheme:dark}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 60px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5;font-size:17px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header{background:linear-gradient(135deg,#3b6cff,#8a4dff);color:#fff;text-align:center;padding-block:20px 12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header h1{margin:0;font-size:clamp(1.4rem,5vw,2.3rem)}header p{margin:4px 0 0;opacity:.95}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;overflow-x:auto;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--card);border-bottom:2px solid var(--bd)}
+nav button{flex:0 0 auto;border:0;border-radius:999px;padding:9px 14px;font:inherit;font-weight:700;background:var(--bg);color:var(--tx);cursor:pointer}
+nav button.on{background:var(--pri);color:#fff}
+main{max-width:980px;margin:0 auto;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{display:none}section.on{display:block}
+h2{margin:6px 0 10px;font-size:1.5rem}h3{margin:0 0 6px}h4{margin:0 0 4px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two>*{min-width:0}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.q{background:var(--bg);border-radius:12px;padding:8px 10px}.q b{display:block}
+.fact{background:var(--fbg);color:var(--ftx);border-radius:12px;padding:8px 12px;margin-top:8px}
+.hw{border-top:8px solid var(--acc)}.sw{border-top:8px solid #8a4dff}
+.big2{font-size:3rem;text-align:center}
+.btn{border:0;background:var(--pri);color:#fff;font:inherit;font-weight:700;padding:10px 16px;border-radius:12px;cursor:pointer;margin:4px}
+.btn.alt{background:var(--btn2)}.btn.red{background:#c62828}.btn:disabled{opacity:.45;cursor:default}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{border:2px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+.chip.sel{background:var(--pri);border-color:var(--pri);color:#fff}
+.stages{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stg{flex:1 1 110px;text-align:center;border-radius:12px;padding:6px;background:var(--bg);border:2px solid var(--bd);font-weight:700;font-size:.85rem}
+.stg.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.rowlab{font-weight:800;font-size:.85rem;color:var(--mut);margin:10px 0 4px}
+.nodes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.node{background:var(--bg);border:3px solid var(--bd);border-radius:14px;padding:8px 4px;text-align:center;font-weight:700;font-size:.85rem;transition:.25s}
+.node .em{font-size:1.8rem;display:block}
+.node.on{border-color:var(--acc);background:#fff1d6;color:#4a3500;transform:scale(1.04);box-shadow:0 0 0 4px rgba(255,159,28,.3)}
+.step{background:var(--bg);border-left:6px solid var(--ok);border-radius:10px;padding:10px;margin:8px 0}
+.msg{min-height:3em;font-weight:700;text-align:center;margin:8px 0}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.flash{animation:fl .6s}@keyframes fl{from{box-shadow:0 0 0 5px var(--acc)}to{box-shadow:0 0 0 0 transparent}}
+.lg{margin:8px 0;padding:0;list-style:none}
+.lg li{background:var(--bg);border-radius:10px;padding:6px 10px;margin:4px 0;animation:fi .35s backwards}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}}
+.board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;max-width:420px;margin:auto;background:var(--dk);padding:6px;border-radius:14px}
+.cell{aspect-ratio:1;border-radius:8px;background:var(--dk2);display:flex;align-items:center;justify-content:center;font-size:clamp(1.2rem,5vw,1.9rem)}
+#gwrap{border-radius:14px}
+.gclosed{background:#000;color:#6dff9c;font-family:monospace;max-width:420px;margin:auto;border-radius:14px;padding:50px 14px;text-align:center}
+.dpad{display:grid;grid-template-columns:repeat(3,56px);gap:6px;justify-content:center;margin:10px auto}
+.dpad .btn{margin:0;padding:10px 0}
+.mem{border:2px solid var(--bd);border-radius:12px;padding:8px 10px;margin:8px 0;background:var(--card)}
+.mem.ram{border-top:8px solid var(--acc)}.mem.ssd{border-top:8px solid #8a4dff}
+.memv{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--bg);border-radius:8px;padding:6px 8px;min-height:2.4em;white-space:pre-wrap;overflow-wrap:anywhere;max-height:8em;overflow:auto;font-size:.9rem}
+.word{border:2px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--card)}
+.wbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:#2b579a;color:#fff;padding:6px 10px;font-weight:700;font-size:.9rem}
+.wst{background:#fff;color:#1d2540;border-radius:99px;padding:0 10px;font-size:.8rem}
+.wst.un{background:#ffe3b0;color:#5a3500}.wst.sv{background:#c8f3d9;color:#0b4d27}
+#wtxt{width:100%;min-height:140px;border:0;padding:10px;font:inherit;background:#fff;color:#1d2540;resize:vertical;display:block}
+.wscr{background:#000;color:#6dff9c;font-family:monospace;padding:14px;min-height:140px;display:flex;align-items:center;justify-content:center;text-align:center}
+.dlg{background:var(--fbg);color:var(--ftx);padding:10px;border-top:2px solid var(--acc);text-align:center}
+.dlg .btn{margin:3px}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:10px 12px;margin:6px 0;font:inherit;cursor:pointer}
+.opt.good{border-color:var(--ok);background:rgba(18,161,80,.16)}.opt.bad{border-color:var(--bad);background:rgba(198,40,40,.14)}
+.opt:disabled{cursor:default;color:var(--tx)}
+.ans{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pxrow{display:grid;grid-template-columns:repeat(8,minmax(0,1fr)) 3.4rem;gap:3px;align-items:center;margin-bottom:3px;max-width:360px}
+.pxc{aspect-ratio:1;border:2px solid var(--bd);background:var(--bg);color:var(--mut);cursor:pointer;border-radius:5px;padding:0;font:inherit;font-weight:700;font-size:.8rem}
+.pxc.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.pxn{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:.85rem}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.92rem}td,th{border:1px solid var(--bd);padding:5px 8px;text-align:left}td:first-child{font-weight:700}
+.cmp td:first-child{width:28%}
+.ct td:first-child{width:auto;font-size:1.2rem}
+input[type=text]{font:inherit;padding:8px 10px;border:2px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:100%;max-width:320px}
+.tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0;min-height:70px}
+.piece{border:3px solid var(--bd);background:var(--dk);color:#fff;border-radius:14px;padding:6px 10px;font:inherit;font-size:.85rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.piece .em{font-size:1.8rem}
+.chain{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.slot{min-width:88px;border:2px dashed var(--mut);border-radius:12px;padding:8px;text-align:center;font-weight:700;font-size:.85rem;color:var(--mut)}
+.slot.full{border:2px solid var(--ok);background:rgba(18,161,80,.14);color:var(--tx)}
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:8px 0}
+.score div{background:var(--bg);border-radius:12px;padding:6px;text-align:center;font-weight:700;font-size:.9rem}
+.score b{display:block;font-size:1.5rem}
+button:focus-visible,#gwrap:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.bn rect{fill:var(--card);stroke:var(--bd);stroke-width:3;transition:.25s}.bn text{fill:var(--tx)}.bn.on rect{fill:#fff1d6;stroke:var(--acc);stroke-width:4}.bn.on text{fill:#4a3500}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header><h1>🖥️ Cum funcționează calculatorul?</h1><p>De la o comandă la un rezultat</p></header>
+<nav id="nav"></nav>
+<main>
+
+<!-- 1 -->
+<section id="s0" class="on">
+<h2>1. De la o comandă la un rezultat 🔁</h2>
+<div class="card">În prima lecție ai aflat că un calculator <b>introduce, prelucrează, memorează și transmite</b> date. Acum vedem <b>cum lucrează piesele împreună</b>: ce se întâmplă din clipa în care dai o comandă, până când vezi sau auzi rezultatul.
+<div class="fact">🍽️ <b>Ca la restaurant:</b> tu dai comanda (<b>introducere</b>), bucătarul gătește (<b>prelucrare</b>), ingredientele și rețetele stau în cămară și pe masa de lucru (<b>memorare</b>), iar farfuria ajunge pe masa ta (<b>transmitere</b>).</div></div>
+<div class="grid">
+<div class="card q"><b>1 · Introducere ⌨️</b>Tastatura, mouse-ul sau microfonul trimit comanda ta în calculator.</div>
+<div class="card q"><b>2 · Prelucrare 🧠</b>Procesorul execută instrucțiunile și hotărăște ce trebuie făcut.</div>
+<div class="card q"><b>3 · Memorare ⚡💾</b>RAM ține minte ce lucrezi acum. SSD-ul păstrează fișierele pentru mai târziu.</div>
+<div class="card q"><b>4 · Transmitere 🖥️🔊</b>Monitorul și boxele îți arată rezultatul.</div>
+</div>
+<div class="card"><h3>🔬 Simulatorul de comenzi</h3>
+<p>Alege o comandă, apoi apasă <b>Pasul următor</b> și urmărește piesele care se aprind.</p>
+<div class="chips" id="cmds"></div>
+<div class="stages" id="stages"></div>
+<div id="flow"></div>
+<div class="step"><b id="cnum"></b><br><span id="ctxt"></span></div>
+<div style="text-align:center"><button class="btn alt" id="cprev">⬅ Înapoi</button><button class="btn" id="cnext">Pasul următor ➜</button></div>
+<div class="fact" id="cdone" hidden>🎉 Ai urmărit tot drumul, de la comanda ta până la rezultat. Un procesor modern execută miliarde de operații pe secundă, așa că toți acești pași se petrec într-o fracțiune de secundă.</div></div>
+<button class="btn" onclick="go(1)">Cum circulă informația? 🛣️</button>
+</section>
+
+<!-- NOU: magistrale -->
+<section id="sbus">
+<h2>2. Cum circulă informația înăuntru? 🛣️</h2>
+<div class="card">Piesele nu stau una lângă alta „la întâmplare”. Toate sunt montate pe <b>placa de bază</b> 🟩, o placă mare cu <b>drumuri foarte subțiri din cupru</b> înăuntru. Aceste drumuri se numesc <b>magistrale</b>. Pe ele aleargă 0 și 1 de la o piesă la alta.
+<div class="fact">🏙️ <b>Placa de bază = harta orașului.</b> Procesorul, RAM-ul, ROM-ul și plăcile (grafică, sunet) sunt „clădirile”. Magistralele sunt „străzile”. Porturile (USB, HDMI) sunt „porțile orașului”, pe unde intră și ies lucrurile.</div></div>
+<div class="grid">
+<div class="card q"><b>📮 Magistrala de ADRESE</b>Spune <b>UNDE</b>. Ca adresa de pe plic: „RAM, locul numărul 5”.</div>
+<div class="card q"><b>📦 Magistrala de DATE</b>Duce <b>CE</b>. Este camionul cu colete: litera A, un program, o imagine.</div>
+<div class="card q"><b>🚦 Magistrala de CONTROL</b>Spune <b>CE SĂ SE FACĂ</b>: „CITEȘTE” sau „SCRIE”. Ca un semafor care dă ordine.</div>
+</div>
+<div class="card"><h3>🧠 Cum găsește procesorul ce vrea?</h3>RAM-ul este ca un <b>bloc uriaș cu milioane de apartamente</b>, fiecare cu număr. În fiecare apartament stă <b>1 octet</b>. Procesorul nu strigă „dă-mi litera A!”, ci spune: „<b>adresa 5, CITEȘTE!</b>”. Toate piesele aud strada, dar răspunde doar cea cu adresa potrivită.</div>
+<div class="card"><h3>🔬 Harta plăcii de bază în acțiune</h3>
+<p>Alege o poveste și apasă <b>Pasul următor</b>. Urmărește cum fiecare mesaj alege <b>strada lui</b>: 📮 albastră, 📦 portocalie, 🚦 verde.</p>
+<div class="chips" id="bcmds"></div>
+<div class="scroll"><svg id="bsvg" viewBox="0 0 700 480" style="width:100%;min-width:560px;height:auto;color:var(--tx)" role="img" aria-label="Harta plăcii de bază cu magistralele"></svg></div>
+<div class="step"><b id="bnum"></b><br><span id="btxt"></span></div>
+<div style="text-align:center"><button class="btn alt" id="bprev">⬅ Înapoi</button><button class="btn" id="bnext">Pasul următor ➜</button></div>
+<div class="fact" id="bdn" hidden>🎉 Ai urmărit tot drumul! Observă: <b>nicio piesă nu vorbește direct cu alta</b>, ci toate folosesc aceleași magistrale, pe rând, foarte repede.</div></div>
+<div class="card"><h3>🎯 Mini-test: care magistrală?</h3>
+<p id="mq" style="font-weight:800"></p><div id="mo"></div><div class="step" id="mw" hidden></div>
+<div style="text-align:center"><button class="btn alt" id="mn" hidden>Următoarea ➜</button></div></div>
+<div class="card"><h3>🟩 Ce găsești pe placa de bază?</h3>
+<div class="step">🔌 <b>Soclul procesorului</b> și <b>sloturile de RAM</b>, unde se montează piesele.</div>
+<div class="step">📖 <b>Cipul ROM</b> cu programul de pornire.</div>
+<div class="step">🎮 <b>Sloturi pentru plăci</b> (grafică, sunet, rețea). Unele calculatoare au sunetul și rețeaua deja încorporate pe placă.</div>
+<div class="step">💾 <b>Conectori pentru SSD/HDD</b> și 🔌 <b>porturi</b> (USB, HDMI) pentru tastatură, mouse, monitor, boxe.</div>
+<div class="fact">🤓 În calculatoarele adevărate există mai multe magistrale și „controlere” care coordonează traficul. Noi am simplificat harta ca să înțelegem principiul.</div></div>
+<button class="btn" onclick="go(2)">Hai să ne jucăm! 🎮</button>
+</section>
+
+<!-- 2 -->
+<section id="s1">
+<h2>3. Ce se întâmplă când ne jucăm? 🎮</h2>
+<div class="card">Când joci un joc, calculatorul repetă cele 4 etape de foarte multe ori pe secundă. <b>Mută pisica și strânge stelele</b>, iar sub tabla de joc vei vedea ce face calculatorul la fiecare mișcare.
+<div class="fact">⌨️ Poți folosi butoanele de mai jos sau tastele ← ↑ ↓ → (apasă mai întâi pe tabla de joc).</div></div>
+<div class="card">
+<div id="gwrap" tabindex="0" aria-label="Tabla de joc"><div class="board" id="gboard"></div><div class="gclosed" id="gclosed" hidden>⚫ Jocul este închis.<br>Nimic nu rulează.</div></div>
+<div class="dpad">
+<span></span><button class="btn" data-d="up" aria-label="Sus">⬆️</button><span></span>
+<button class="btn" data-d="left" aria-label="Stânga">⬅️</button><button class="btn" data-d="down" aria-label="Jos">⬇️</button><button class="btn" data-d="right" aria-label="Dreapta">➡️</button></div>
+<h3>🕵️ Ce a făcut calculatorul la ultima mișcare?</h3>
+<ol class="lg" id="glog"><li>Fă o mișcare ca să vezi pașii.</li></ol></div>
+<div class="two">
+<div class="mem ram" id="gramb"><h4>⚡ RAM (memoria de lucru)</h4><div class="memv" id="gram"></div></div>
+<div class="mem ssd" id="gssdb"><h4>💾 SSD (stocarea)</h4><div class="memv" id="gssd"></div></div></div>
+<div style="text-align:center"><button class="btn" id="gsave">💾 Salvează jocul</button><button class="btn red" id="gclose">🔌 Închide jocul</button><button class="btn alt" id="gopen">▶ Deschide jocul</button></div>
+<div class="msg" id="gmsg"></div>
+<div class="card">🧩 <b>Observă:</b> jocul rulează în <b>RAM</b>, de aceea poziția și scorul se schimbă atât de repede. Când închizi jocul, RAM-ul se eliberează. Ce n-ai salvat pe <b>SSD</b> se pierde. Așa funcționează și butonul „Salvează jocul”.
+<div class="fact">🎞️ În jocurile adevărate, imaginea se desenează din nou de obicei de 60 de ori pe secundă. Placa grafică are mult de lucru!</div></div>
+<button class="btn" onclick="go(3)">Ce se întâmplă cu fișierele? 💾</button>
+</section>
+
+<!-- 3 -->
+<section id="s2">
+<h2>4. Word, RAM și salvarea 💾</h2>
+<div class="card"><h3>🤔 Întrebarea</h3>Lucrezi în Word și <b>nu ai apăsat încă Salvare</b>. Totuși, ce ai scris <b>nu dispare</b>. Unde se află textul tău?
+<div class="fact">✅ <b>Răspuns:</b> în <b>memoria RAM</b>. Atâta timp cât calculatorul are curent electric, RAM-ul ține minte tot ce scrii. Dar RAM-ul este <b>volatilă</b>: dacă se oprește curentul sau calculatorul se blochează, textul nesalvat dispare. Salvarea <b>copiază</b> textul din RAM pe <b>SSD</b>, care îl păstrează și fără curent.</div>
+<div class="fact">🏙️ Ca în orașul nostru: ce scrii pe <b>birou</b> (RAM) e la îndemână, dar dacă pleci fără să pui hârtia în <b>arhivă</b> (SSD) și se întrerupe curentul, ai pierdut-o.</div></div>
+<div class="card"><h3>🧪 Experimentul</h3>
+<p>Scrie ceva în „Word”. Privește RAM-ul. Apoi salvează sau lasă textul nesalvat și încearcă <b>⚡ Se oprește curentul!</b></p>
+<div class="two">
+<div><div class="word"><div class="wbar"><span>📝 Document1 – Word</span><span class="wst" id="wst">Document nou</span></div>
+<textarea id="wtxt" aria-label="Textul din Word" placeholder="Scrie aici, ca în Word…"></textarea>
+<div class="wscr" id="wscr" hidden></div>
+<div class="dlg" id="wdlg" hidden>Vrei să salvezi modificările?<br><button class="btn" id="wd1">💾 Salvează</button><button class="btn alt" id="wd2">Nu salva</button><button class="btn alt" id="wd3">Anulează</button></div></div>
+<div style="text-align:center;margin-top:6px"><button class="btn" id="wsave">💾 Salvează (Ctrl+S)</button><button class="btn alt" id="wclose">❌ Închide Word</button><button class="btn red" id="wcut">⚡ Se oprește curentul!</button><button class="btn" id="wboot" hidden>🔌 Repornește</button></div></div>
+<div><div class="mem ram" id="wram"><h4>⚡ RAM</h4><div class="memv" id="ramv"></div></div>
+<div class="mem ssd" id="wssd"><h4>💾 SSD</h4><div class="memv" id="ssdv"></div></div></div></div>
+<div class="step"><span id="wmsg"></span></div></div>
+
+<div class="card"><h3>📋 Ce se întâmplă când salvezi?</h3>
+<div class="step"><b>1.</b> ⌨️ Apeși <b>Ctrl+S</b> (sau butonul Salvare).</div>
+<div class="step"><b>2.</b> 🧠 Procesorul citește textul din RAM.</div>
+<div class="step"><b>3.</b> 🧑‍✈️ Sistemul de operare îl scrie ca <b>fișier</b> pe SSD.</div>
+<div class="step"><b>4.</b> 💾 Fișierul rămâne acolo și când calculatorul este oprit. Îl poți deschide oricând, iar el se copiază din nou în RAM.</div></div>
+<div class="card"><h3>⚖️ RAM sau SSD?</h3><div class="scroll"><table class="cmp"><tr><th></th><th>⚡ RAM</th><th>💾 SSD / HDD</th></tr>
+<tr><td>Rol</td><td>Păstrează ce folosești acum</td><td>Păstrează fișierele pe termen lung</td></tr>
+<tr><td>Fără curent</td><td>Se șterge</td><td>Păstrează datele</td></tr>
+<tr><td>Viteză</td><td>Foarte rapidă</td><td>Mai lentă decât RAM</td></tr>
+<tr><td>Capacitate obișnuită</td><td>8–32 GB</td><td>256 GB – 2 TB</td></tr>
+<tr><td>Exemplu</td><td>Textul nesalvat din Word</td><td>Documentul „Tema.docx” salvat</td></tr></table></div>
+<div class="fact">🤓 De ce nu lucrează procesorul direct cu SSD-ul? Pentru că RAM-ul este mult mai rapidă. Procesorul ar pierde timp așteptând datele.</div>
+<div class="fact">🛟 Word face din când în când o copie de siguranță pe SSD (recuperare automată), iar uneori găsești o parte din lucru după o pană de curent. Dar nu te baza pe ea: <b>salvează des, cu Ctrl+S!</b></div></div>
+<button class="btn" onclick="go(4)">Cum pornește calculatorul? 🚀</button>
+</section>
+
+<!-- 4 -->
+<section id="s3">
+<h2>5. Cum știe calculatorul să pornească? 🚀</h2>
+<div class="card"><h3>🐔 Oul și găina</h3>Când pornești calculatorul, <b>RAM-ul este gol</b> (s-a șters la oprire). Sistemul de operare este pe SSD. Dar cine îi spune procesorului să îl caute?
+<div class="fact">💡 <b>ROM!</b> Memoria ROM păstrează un mic <b>program de pornire</b> care nu se șterge niciodată, nici fără curent. Procesorul îl citește primul, apoi pornește sistemul de operare.</div></div>
+<div class="card"><h3>🧩 Joc: pune pașii în ordine</h3>
+<p>Apasă pașii în ordinea în care se petrec după ce apeși butonul de pornire.</p>
+<div id="bdone"></div>
+<div id="btray"></div>
+<div class="msg" id="bmsg"></div>
+<div style="text-align:center"><button class="btn alt" id="breset">🔄 De la capăt</button></div></div>
+<div class="card"><h3>🖼️ Și cum știe ce să afișeze?</h3>Sistemul de operare este un program, adică o listă de instrucțiuni scrise de programatori: „desenează fundalul”, „desenează pictogramele”, „desenează bara de jos”. Procesorul le execută și cere <b>plăcii grafice</b> imaginea. Placa grafică o trimite monitorului.
+<div class="fact">🧠 Calculatorul nu „vede” nimic și nu știe litere sau poze. El lucrează doar cu <b>numere</b>, formate din 0 și 1. Vezi în pagina următoare cum!</div></div>
+<button class="btn" onclick="go(5)">Imagini din numere 🖼️</button>
+</section>
+
+<!-- 5 -->
+<section id="s4">
+<h2>6. Tot ce vezi sunt 0 și 1 🖼️</h2>
+<div class="card"><h3>🔲 Ecranul este făcut din puncte</h3>Imaginea de pe ecran este formată din puncte foarte mici, numite <b>pixeli</b>. Un monitor Full HD are 1920 × 1080 = <b>2.073.600 de pixeli</b>! Fiecare pixel are o culoare, memorată ca număr.
+<p>Aici avem o imagine mică, alb-negru, de <b>8 × 8 pixeli</b>. Un pixel aprins este <b>1</b>, unul stins este <b>0</b>. Apasă pe pătrățele! <b>Fiecare rând are 8 biți, adică exact un octet.</b></p>
+<div class="chips"><button class="chip" id="phe">❤️ Inimă</button><button class="chip" id="psm">😀 Față</button><button class="chip" id="pcl">🧹 Șterge</button></div>
+<div id="px"></div>
+<div class="fact">🎨 Imaginile color au nevoie de mai mulți biți pentru fiecare pixel (de obicei 3 octeți). O singură imagine Full HD ocupă aproape 6 MB, iar monitorul primește de obicei 60 de imagini pe secundă. Placa grafică lucrează mult!</div></div>
+<div class="card"><h3>🔤 Și literele?</h3>Fiecare literă are un cod numeric, memorat într-un <b>octet</b>. Scrie un cuvânt și vezi cum îl vede calculatorul:
+<p><input type="text" id="lc" maxlength="10" value="Ana" aria-label="Cuvântul tău"></p>
+<div class="scroll"><table class="ct"><tr><th>Caracter</th><th>Octet (8 biți)</th><th>Număr</th></tr><tbody id="lct"></tbody></table></div>
+<div class="fact" id="lcn"></div></div>
+<div class="card"><h3>🛤️ Drumul unei imagini</h3>
+<div class="ans"><span class="chip">🎨 Program</span>➜<span class="chip">🧠 Procesor</span>➜<span class="chip">🎮 Placa grafică</span>➜<span class="chip">🔌 Cablu HDMI</span>➜<span class="chip">🖥️ Monitor</span></div></div>
+<button class="btn" onclick="go(6)">La jocuri! 🎯</button>
+</section>
+
+<!-- 6 -->
+<section id="s5">
+<h2>7. Jocuri și test 🎯</h2>
+
+<div class="card"><h3>🛤️ Joc 1: Drumul comenzii</h3>
+<p>Alege o poveste. Apoi apasă piesele în ordinea în care trece informația. Atenție, unele piese nu fac parte din drum!</p>
+<div class="chips" id="asc"></div>
+<div class="chain" id="achain"></div>
+<div class="tray" id="atray"></div>
+<div class="msg" id="amsg"></div></div>
+
+<div class="card"><h3>⚡📖💾 Joc 2: RAM, ROM sau SSD?</h3>
+<div class="big2" id="mtxtE">🤔</div>
+<p id="mtxt" style="text-align:center;font-weight:800;font-size:1.15rem;margin:0"></p>
+<div class="ans" style="margin-top:8px"><button class="btn" data-m="0">⚡ RAM</button><button class="btn" data-m="1">📖 ROM</button><button class="btn" data-m="2">💾 SSD</button></div>
+<p class="msg" id="mmsg"></p>
+<div style="text-align:center"><button class="btn alt" id="mnext" hidden>Următoarea ➜</button></div>
+<p id="mnum" style="text-align:center"></p></div>
+
+<div class="card"><h3>⚡ Joc 3: Salvează la timp!</h3>
+<p>Ai <b>30 de secunde</b>. Apasă <b>✍️ Scrie</b> ca să faci pagini. Ele sunt doar în RAM! Apasă <b>💾 Salvează</b> ca să le muți pe SSD. Salvarea durează 1 secundă. De câteva ori <b>curentul va pica</b>, iar paginile nesalvate dispar.</p>
+<div class="score"><div>⏱️ Timp<b id="tgt">30</b></div><div>⚡ Nesalvat (RAM)<b id="tgu">0</b></div><div>💾 Salvat (SSD)<b id="tgs">0</b></div><div>😢 Pierdut<b id="tgl">0</b></div></div>
+<div class="fact" id="tgb">💡 Curent normal</div>
+<div style="text-align:center"><button class="btn" id="tgw" disabled>✍️ Scrie</button><button class="btn" id="tgv" disabled>💾 Salvează (1 s)</button><button class="btn alt" id="tgg">▶ Start</button></div>
+<div class="msg" id="tgm">Apasă Start!</div></div>
+
+<div class="card"><h3>📝 Test final</h3>
+<p id="zq" style="font-weight:800"></p><div id="zo"></div>
+<div class="step" id="zw" hidden></div>
+<div style="text-align:center"><button class="btn alt" id="znext" hidden>Următoarea ➜</button></div>
+<p id="zn" style="text-align:center"></p></div>
+</section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const shake=e=>{e.classList.add('shake');setTimeout(()=>e.classList.remove('shake'),400)};
+const flash=id=>{const e=$(id);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash')};
+
+/* Navigare */
+const TABS=["🔁 Comandă → rezultat","🛣️ Magistrale","🎮 Când ne jucăm","💾 Word, RAM, salvare","🚀 Pornirea","🖼️ Ce afișează","🎯 Jocuri"];
+TABS.forEach((t,i)=>{const b=mk('button','',t);b.onclick=()=>go(i);$('nav').appendChild(b)});
+function go(i){document.querySelectorAll('main > section').forEach((s,k)=>s.classList.toggle('on',k===i));[...$('nav').children].forEach((b,k)=>b.classList.toggle('on',k===i));window.scrollTo({top:0,behavior:'smooth'})}
+go(0);
+
+/* 1. Simulator de comenzi */
+const ND={tu:['🧍','Tu'],in:['⌨️','Dispozitiv de intrare'],port:['🔌','Port (USB)'],cpu:['🧠','Procesor'],ram:['⚡','RAM'],ssd:['💾','SSD (stocare)'],gpu:['🎮','Placa grafică'],snd:['🎼','Placa de sunet'],out:['🖥️','Ieșire: monitor, boxe']};
+const ROWS=[['1 · Introducere',['tu','in','port']],['2 · Prelucrare și 3 · Memorare (unitatea centrală)',['cpu','ram','ssd']],['4 · Transmitere (ieșire)',['gpu','snd','out']]];
+const ST=['1 · Introducere','2 · Prelucrare','3 · Memorare','4 · Transmitere'];
+const CMD=[
+{n:'⌨️ Apeși tasta A în Word',s:[
+{st:0,on:['tu','in'],t:'Apeși tasta A. Tastatura simte apăsarea. Ea este un dispozitiv de intrare: introduce date în calculator.'},
+{st:0,on:['in','port'],t:'Tastatura transformă apăsarea într-un cod format din 0 și 1 și îl trimite, printr-un port, la unitatea centrală.'},
+{st:1,on:['port','cpu'],t:'Procesorul primește codul. Sistemul de operare îi spune programului Word: „Utilizatorul a apăsat litera A!”'},
+{st:2,on:['cpu','ram'],t:'Word rulează în RAM. Procesorul adaugă litera A în textul din RAM. Acum litera ta există doar în memoria de lucru.'},
+{st:3,on:['cpu','gpu'],t:'Procesorul trimite plăcii grafice noua înfățișare a paginii, cu litera A.'},
+{st:3,on:['gpu','out'],t:'Placa grafică generează imaginea și o trimite la monitor. Vezi litera A pe ecran!'}]},
+{n:'🖱️ Dai dublu click pe Paint',s:[
+{st:0,on:['tu','in'],t:'Muți mouse-ul pe pictograma Paint și dai dublu click. Și mouse-ul este un dispozitiv de intrare.'},
+{st:0,on:['in','port'],t:'Mouse-ul trimite prin port poziția cursorului și semnalul de click, tot sub formă de 0 și 1.'},
+{st:1,on:['port','cpu'],t:'Sistemul de operare vede unde era cursorul: pe pictograma Paint. El înțelege comanda: „Deschide programul Paint!”'},
+{st:2,on:['ssd','ram'],t:'Programul Paint este memorat pe SSD. Sistemul de operare îl copiază în RAM, pentru că procesorul lucrează cu programele aflate în memoria internă.'},
+{st:1,on:['cpu','ram'],t:'Procesorul începe să execute instrucțiunile programului Paint din RAM.'},
+{st:3,on:['gpu','out'],t:'Placa grafică desenează fereastra Paint, iar monitorul o afișează. Poți desena!'}]},
+{n:'🎵 Apeși Play la un cântec',s:[
+{st:0,on:['tu','in'],t:'Apeși butonul Play cu mouse-ul.'},
+{st:0,on:['in','port'],t:'Comanda ajunge, prin port, la unitatea centrală.'},
+{st:1,on:['port','cpu'],t:'Procesorul și sistemul de operare îi spun playerului: „Redă cântecul!”'},
+{st:2,on:['ssd','ram'],t:'Fișierul cu cântecul este memorat pe SSD. Bucată cu bucată, el este citit și adus în RAM.'},
+{st:1,on:['ram','cpu'],t:'Procesorul prelucrează datele: transformă fișierul în numerele care descriu sunetul.'},
+{st:3,on:['cpu','snd'],t:'Procesorul trimite numerele către placa de sunet.'},
+{st:3,on:['snd','out'],t:'Placa de sunet transformă numerele în semnal electric pentru boxe. Auzi muzica! 🎵'}]}];
+let ci=0,si=0;
+(function(){
+ const f=$('flow');
+ ROWS.forEach(r=>{f.appendChild(mk('div','rowlab',r[0]));const g=mk('div','nodes');
+  r[1].forEach(id=>{const n=mk('div','node');n.id='n_'+id;n.appendChild(mk('span','em',ND[id][0]));n.appendChild(document.createTextNode(ND[id][1]));g.appendChild(n)});
+  f.appendChild(g)});
+ ST.forEach((s,i)=>{const c=mk('div','stg',s);c.id='st'+i;$('stages').appendChild(c)});
+ CMD.forEach((c,i)=>{const b=mk('button','chip',c.n);b.onclick=()=>{ci=i;si=0;rc()};$('cmds').appendChild(b)});
+})();
+function rc(){
+ const c=CMD[ci],s=c.s[si];
+ [...$('cmds').children].forEach((b,k)=>b.classList.toggle('sel',k===ci));
+ Object.keys(ND).forEach(id=>$('n_'+id).classList.toggle('on',s.on.includes(id)));
+ ST.forEach((_,i)=>$('st'+i).classList.toggle('on',i===s.st));
+ $('cnum').textContent='Pasul '+(si+1)+' din '+c.s.length;
+ $('ctxt').textContent=s.t;
+ $('cprev').disabled=si===0;
+ $('cnext').textContent=si===c.s.length-1?'↺ De la început':'Pasul următor ➜';
+ $('cdone').hidden=si!==c.s.length-1;
+}
+$('cnext').onclick=()=>{si=si===CMD[ci].s.length-1?0:si+1;rc()};
+$('cprev').onclick=()=>{if(si>0){si--;rc()}};
+rc();
+
+/* 2. Jocul cu pisica */
+const GW=7,GH=5,G0={score:0,x:0,y:2};
+const G={x:0,y:2,sx:5,sy:2,score:0,open:true,ssd:null};
+function gmsg(t){$('gmsg').textContent=t}
+function gstar(){let x,y;do{x=Math.floor(Math.random()*GW);y=Math.floor(Math.random()*GH)}while(x===G.x&&y===G.y);G.sx=x;G.sy=y}
+function gdraw(){
+ const b=$('gboard');b.hidden=!G.open;$('gclosed').hidden=G.open;
+ if(G.open){b.innerHTML='';for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){const c=mk('div','cell');if(x===G.x&&y===G.y)c.textContent='🐱';else if(x===G.sx&&y===G.sy)c.textContent='⭐';b.appendChild(c)}}
+ $('gram').textContent=G.open?'Jocul rulează\nPoziția: x='+G.x+', y='+G.y+'\nScor: '+G.score:'⚫ gol: jocul nu mai rulează';
+ $('gssd').textContent=G.ssd?'Salvare găsită\nScor: '+G.ssd.score+'\nPoziția: x='+G.ssd.x+', y='+G.ssd.y:'(nimic salvat încă)';
+}
+function gmove(dx,dy,name){
+ if(!G.open){gmsg('Jocul este închis. Apasă „Deschide jocul”.');return}
+ const nx=Math.max(0,Math.min(GW-1,G.x+dx)),ny=Math.max(0,Math.min(GH-1,G.y+dy));
+ const moved=nx!==G.x||ny!==G.y;G.x=nx;G.y=ny;
+ const L=[['⌨️','Intrare','Ai apăsat '+name+'. Tasta trimite un cod prin port.'],
+  ['🧠','Prelucrare',moved?'Procesorul calculează poziția nouă: x='+G.x+', y='+G.y+'.':'Procesorul vede marginea tablei: pisica rămâne pe loc.'],
+  ['⚡','Memorare','Poziția și scorul se scriu în RAM.']];
+ if(G.x===G.sx&&G.y===G.sy){G.score++;L.push(['⭐','Prelucrare','Pisica e pe stea! Procesorul adaugă 1 la scor și pune o stea nouă.']);gstar()}
+ L.push(['🎮','Transmitere','Placa grafică desenează din nou toată imaginea.']);
+ L.push(['🖥️','Transmitere','Monitorul afișează imaginea nouă.']);
+ const ul=$('glog');ul.innerHTML='';
+ L.forEach((l,i)=>{const li=mk('li','',l[0]+' '+l[1]+': '+l[2]);li.style.animationDelay=(i*0.12)+'s';ul.appendChild(li)});
+ gdraw();flash('gramb');
+}
+document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const d=b.dataset.d;
+ if(d==='up')gmove(0,-1,'⬆️');else if(d==='down')gmove(0,1,'⬇️');else if(d==='left')gmove(-1,0,'⬅️');else gmove(1,0,'➡️')});
+$('gwrap').addEventListener('keydown',e=>{
+ const m={ArrowUp:[0,-1,'⬆️'],ArrowDown:[0,1,'⬇️'],ArrowLeft:[-1,0,'⬅️'],ArrowRight:[1,0,'➡️'],w:[0,-1,'W'],s:[0,1,'S'],a:[-1,0,'A'],d:[1,0,'D']}[e.key];
+ if(m){e.preventDefault();gmove(m[0],m[1],m[2])}});
+$('gsave').onclick=()=>{
+ if(!G.open){gmsg('Jocul e închis, iar RAM-ul e gol: nu ai ce salva. Salvarea se face din RAM.');return}
+ G.ssd={score:G.score,x:G.x,y:G.y};gdraw();flash('gssdb');gmsg('💾 Jocul a fost copiat din RAM pe SSD. Rămâne și dacă oprești calculatorul.')};
+$('gclose').onclick=()=>{
+ if(!G.open)return;
+ const b=G.ssd||G0,unsaved=b.score!==G.score||b.x!==G.x||b.y!==G.y;
+ G.open=false;gdraw();flash('gramb');
+ gmsg(unsaved?'😢 Ai închis jocul fără să salvezi: tot ce era în RAM s-a pierdut.':'Ai închis jocul. RAM-ul s-a golit, dar nu ai pierdut nimic.')};
+$('gopen').onclick=()=>{
+ if(G.open)return;
+ const b=G.ssd||G0;G.score=b.score;G.x=b.x;G.y=b.y;G.open=true;gstar();gdraw();flash('gramb');
+ gmsg(G.ssd?'📂 Jocul a citit salvarea de pe SSD și a copiat-o în RAM. Continui de unde ai rămas!':'Nu există nicio salvare, deci jocul începe de la zero.')};
+gdraw();gmsg('Mută pisica, apoi încearcă să salvezi și să închizi jocul.');
+
+/* 3. Word */
+const W={ram:'',ssd:null,power:true,open:true};
+const wbase=()=>W.ssd===null?'':W.ssd;
+const wcut=t=>t.length>300?t.slice(0,300)+'…':t;
+function wmsg(t){$('wmsg').textContent=t}
+function wr(){
+ const live=W.power&&W.open;
+ $('wtxt').hidden=!live;$('wscr').hidden=live;
+ $('wscr').textContent=!W.power?'⚡ Curentul s-a oprit. Ecranul este negru.':'Word este închis.';
+ if($('wtxt').value!==W.ram)$('wtxt').value=W.ram;
+ const st=$('wst');
+ if(!live){st.textContent=!W.power?'oprit':'închis';st.className='wst'}
+ else if(W.ssd===null&&W.ram===''){st.textContent='Document nou';st.className='wst'}
+ else if(W.ram===wbase()){st.textContent='✔ Salvat';st.className='wst sv'}
+ else{st.textContent='● Nesalvat';st.className='wst un'}
+ $('ramv').textContent=!W.power?'⚫ gol (fără curent)':!W.open?'⚪ gol (Word este închis)':W.ram===''?'(Word rulează, dar nu ai scris nimic)':wcut(W.ram);
+ $('ssdv').textContent=W.ssd===null?'(nimic salvat încă)':W.ssd===''?'(fișier salvat, dar gol)':wcut(W.ssd);
+ $('wsave').hidden=!live;$('wclose').hidden=!live;$('wcut').hidden=!live;$('wboot').hidden=live;
+ $('wboot').textContent=!W.power?'🔌 Repornește calculatorul':'📂 Deschide Word';
+}
+$('wtxt').addEventListener('input',()=>{W.ram=$('wtxt').value;wr();flash('wram');
+ wmsg(W.ssd===null?'Ce scrii ajunge în RAM. Pe SSD nu există încă nimic.':'Ce scrii ajunge în RAM. Pe SSD rămâne varianta salvată mai devreme.')});
+function wsave(){W.ssd=W.ram;wr();flash('wssd');wmsg('💾 Salvat! Textul a fost copiat din RAM pe SSD. Acum rămâne și dacă se oprește curentul.')}
+$('wsave').onclick=wsave;
+$('wtxt').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();wsave()}});
+$('wcut').onclick=()=>{
+ const had=W.ram,same=had===wbase();
+ W.power=false;W.open=false;W.ram='';$('wdlg').hidden=true;wr();flash('wram');
+ if(!same)wmsg('😢 Textul nesalvat a dispărut: era doar în RAM, iar RAM-ul se șterge fără curent electric.'+(W.ssd!==null?' Varianta salvată mai devreme este încă pe SSD.':' Pe SSD nu era nimic.'));
+ else wmsg(had===''&&W.ssd===null?'Documentul era gol, deci nu ai pierdut nimic.':'😊 Nu ai pierdut nimic: tot ce scrisese era salvat pe SSD.')};
+function wclose(m){W.open=false;W.ram='';$('wdlg').hidden=true;wr();flash('wram');wmsg(m)}
+$('wclose').onclick=()=>{
+ if(W.ram!==wbase()){$('wdlg').hidden=false;wmsg('Word te întreabă ce faci cu modificările nesalvate.')}
+ else wclose('Ai închis Word. Totul era salvat, deci nu s-a pierdut nimic.')};
+$('wd1').onclick=()=>{W.ssd=W.ram;wclose('Ai ales Salvează: textul a fost copiat pe SSD, apoi Word s-a închis și RAM-ul s-a golit.')};
+$('wd2').onclick=()=>wclose('Ai ales Nu salva: textul din RAM a fost șters și nu mai există nicăieri. 😢');
+$('wd3').onclick=()=>{$('wdlg').hidden=true;wmsg('Ai anulat. Ești tot în Word.')};
+$('wboot').onclick=()=>{
+ const was=!W.power;W.power=true;W.open=true;W.ram=wbase();wr();flash('wram');
+ if(W.ssd===null)wmsg(was?'🔌 Calculatorul a pornit (ROM, apoi sistemul de operare în RAM) și ai deschis Word. Nu ai salvat nimic, deci documentul e gol.':'Word s-a deschis cu un document gol: nu ai salvat nimic.');
+ else wmsg('📂 Fișierul salvat a fost citit de pe SSD și copiat în RAM. Textul este înapoi pe ecran!')};
+wr();wmsg('Scrie ceva în „Word” și urmărește RAM-ul.');
+
+/* 4. Joc: pașii pornirii */
+const BOOT=['Apeși butonul de pornire: sursa de alimentare trimite curent electric pieselor.','Procesorul citește din memoria ROM micul program de pornire.','Programul de pornire verifică piesele: memoria RAM, placa grafică, tastatura.','Programul de pornire caută sistemul de operare pe SSD.','Sistemul de operare este copiat de pe SSD în RAM.','Sistemul de operare desenează desktopul, iar placa grafică îl trimite la monitor.'];
+let bo=[],bk=0;
+function binit(){bo=shuf(BOOT.map((_,i)=>i));if(bo.every((v,i)=>v===i))bo.reverse();bk=0;$('bmsg').textContent='Alege primul pas 👇';brender()}
+function brender(){
+ const d=$('bdone');d.innerHTML='';
+ for(let i=0;i<bk;i++){const s=mk('div','step');const b=mk('b','','Pasul '+(i+1)+'. ');s.appendChild(b);s.appendChild(document.createTextNode(BOOT[i]));d.appendChild(s)}
+ const t=$('btray');t.innerHTML='';
+ bo.filter(i=>i>=bk).forEach(i=>{const b=mk('button','opt',BOOT[i]);b.onclick=()=>bpick(i,b);t.appendChild(b)});
+}
+function bpick(i,b){
+ if(i===bk){bk++;brender();$('bmsg').textContent=bk===BOOT.length?'🎉 Perfect! Ai pornit calculatorul în ordinea corectă. Fără ROM, calculatorul n-ar ști nici măcar să caute sistemul de operare.':'✅ Corect! Care este pasul următor?'}
+ else{shake(b);$('bmsg').textContent='❌ Nu încă. Gândește-te: ce trebuie să se întâmple înaintea acestui pas?'}
+}
+$('breset').onclick=binit;binit();
+
+/* 5. Pixeli și litere */
+const PXD=Array(8).fill(0);
+function pxr(){
+ const g=$('px');g.innerHTML='';
+ PXD.forEach((byte,r)=>{
+  const row=mk('div','pxrow');
+  for(let i=0;i<8;i++){const on=(byte>>(7-i))&1;const b=mk('button','pxc'+(on?' on':''),String(on));b.setAttribute('aria-label','Rândul '+(r+1)+', pixelul '+(i+1)+': '+on);b.onclick=()=>{PXD[r]^=1<<(7-i);pxr()};row.appendChild(b)}
+  row.appendChild(mk('span','pxn','= '+byte));g.appendChild(row)});
+}
+const setPx=a=>{a.forEach((v,i)=>PXD[i]=v);pxr()};
+$('phe').onclick=()=>setPx([0,102,255,255,255,126,60,24]);
+$('psm').onclick=()=>setPx([60,66,165,129,165,153,66,60]);
+$('pcl').onclick=()=>setPx([0,0,0,0,0,0,0,0]);
+setPx([0,102,255,255,255,126,60,24]);
+function lc(){
+ const tb=$('lct');tb.innerHTML='';let multi=false;
+ Array.from($('lc').value).slice(0,10).forEach(ch=>{
+  const by=Array.from(new TextEncoder().encode(ch));if(by.length>1)multi=true;
+  const tr=mk('tr');
+  tr.appendChild(mk('td','',ch===' '?'␣':ch));
+  tr.appendChild(mk('td','mono',by.map(b=>b.toString(2).padStart(8,'0')).join(' ')));
+  tr.appendChild(mk('td','',by.join(', ')));
+  tb.appendChild(tr)});
+ $('lcn').textContent=multi?'Literele cu diacritice (ă, â, î, ș, ț) au nevoie de 2 octeți. Litera A, de exemplu, are codul 65 și ocupă un singur octet.':'Fiecare literă ocupă 1 octet (8 biți). Litera A are codul 65, adică 01000001. Încearcă și litere mici, cifre sau diacritice!';
+}
+$('lc').addEventListener('input',lc);lc();
+
+/* 6. Joc 1: drumul comenzii */
+const COMP={kb:['⌨️','Tastatura'],mouse:['🖱️','Mouse-ul'],usb:['🔌','Port USB'],cpu:['🧠','Procesorul'],ram:['⚡','RAM'],ssd:['💾','SSD'],gpu:['🎮','Placa grafică'],snd:['🎼','Placa de sunet'],mon:['🖥️','Monitorul'],spk:['🔊','Boxele'],prn:['🖨️','Imprimanta'],net:['🌐','Placa de rețea']};
+const SC=[
+{n:'Scrii litera A în Word',chain:['kb','usb','cpu','ram','gpu','mon'],extra:['spk','snd','prn']},
+{n:'Asculți un cântec salvat',chain:['ssd','ram','cpu','snd','spk'],extra:['mon','mouse','net']},
+{n:'Salvezi documentul (Ctrl+S)',chain:['kb','cpu','ram','ssd'],extra:['gpu','mon','spk']}];
+let sa=0,ak=0,ao=[];
+SC.forEach((s,i)=>{const b=mk('button','chip',s.n);b.onclick=()=>ainit(i);$('asc').appendChild(b)});
+function ainit(i){sa=i;ak=0;ao=shuf(SC[i].chain.concat(SC[i].extra));[...$('asc').children].forEach((b,k)=>b.classList.toggle('sel',k===i));$('amsg').textContent='Alege primul element al drumului 👇';ar()}
+function ar(){
+ const s=SC[sa],ch=$('achain');ch.innerHTML='';
+ s.chain.forEach((id,i)=>ch.appendChild(mk('div','slot'+(i<ak?' full':''),i<ak?COMP[id][0]+' '+COMP[id][1]:(i+1)+' ?')));
+ const t=$('atray');t.innerHTML='';
+ ao.filter(id=>{const p=s.chain.indexOf(id);return !(p>=0&&p<ak)}).forEach(id=>{
+  const b=mk('button','piece');b.appendChild(mk('span','em',COMP[id][0]));b.appendChild(document.createTextNode(COMP[id][1]));b.onclick=()=>apick(id,b);t.appendChild(b)});
+}
+function apick(id,b){
+ const s=SC[sa];if(ak>=s.chain.length)return;
+ if(id===s.chain[ak]){ak++;ar();$('amsg').textContent=ak===s.chain.length?'🎉 Drum complet! Alege altă poveste sau joacă din nou.':'✅ Bine! Ce urmează?'}
+ else{shake(b);$('amsg').textContent=s.chain.includes(id)?'Aproape! Dar nu încă: ce trebuie să se întâmple mai întâi?':'🚫 Piesa asta nu face parte din drumul acesta.'}
+}
+ainit(0);
+
+/* 6. Joc 2: RAM, ROM sau SSD */
+const MN=['RAM','ROM','SSD'];
+const MI=[
+['Textul din Word pe care nu l-ai salvat încă',0,'Ce lucrezi acum este în RAM și se pierde dacă se oprește curentul.'],
+['Poza din vacanță, salvată ieri',2,'Fișierele salvate stau pe SSD (sau HDD) și rămân și când calculatorul e oprit.'],
+['Instrucțiunile de pornire ale calculatorului',1,'ROM păstrează programul de pornire și se poate doar citi.'],
+['Jocul care rulează chiar acum',0,'Un program care rulează trebuie să fie copiat în RAM.'],
+['Documentul „Tema.docx”, salvat',2,'Un document salvat este un fișier, iar fișierele stau pe SSD.'],
+['Poziția personajului tău din joc, chiar în acest moment',0,'Datele cu care lucrează jocul acum sunt în RAM.'],
+['Cântecul descărcat de pe internet',2,'Un fișier descărcat se memorează pe SSD.'],
+['Memoria care se șterge când oprești calculatorul',0,'RAM este volatilă: fără curent, își pierde conținutul.'],
+['Memoria din care procesorul doar citește, la pornire',1,'ROM este memorie „doar citire”.'],
+['Arhiva în care păstrezi fișierele mult timp',2,'SSD-ul este arhiva calculatorului nostru-oraș.']];
+let mq=[],mi=0,ms=0,mlock=false;
+function minit(){mq=shuf(MI);mi=0;ms=0;mlock=false;mshow()}
+function mshow(){
+ mlock=false;$('mnext').hidden=true;
+ if(mi>=mq.length){$('mtxtE').textContent='🏆';$('mtxt').textContent='Scor final: '+ms+' / '+mq.length;$('mmsg').textContent='';$('mnum').textContent='';$('mnext').hidden=false;$('mnext').textContent='🔄 Joacă din nou';mlock=true;return}
+ $('mtxtE').textContent='🤔';$('mtxt').textContent=mq[mi][0];$('mmsg').textContent='';$('mnum').textContent='Întrebarea '+(mi+1)+' din '+mq.length+' · Scor: '+ms;
+}
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{
+ if(mlock)return;mlock=true;const it=mq[mi],k=+b.dataset.m;
+ if(k===it[1]){ms++;$('mmsg').textContent='✅ Corect! '+it[2]}else $('mmsg').textContent='❌ Răspunsul corect: '+MN[it[1]]+'. '+it[2];
+ mi++;$('mnext').textContent='Următoarea ➜';$('mnext').hidden=false});
+$('mnext').onclick=()=>{if(mi>=mq.length)minit();else mshow()};
+minit();
+
+/* 6. Joc 3: salvează la timp */
+const TG={run:false,tk:0,un:0,sv:0,lost:0,cuts:[],ci:0,saveEnd:0,pend:0,cutUntil:0,iv:null};
+function tgCuts(){for(let n=0;n<60;n++){const c=[];for(let i=0;i<3;i++)c.push(4+Math.floor(Math.random()*23));c.sort((a,b)=>a-b);if(c[1]-c[0]>=4&&c[2]-c[1]>=4)return c}return[8,16,24]}
+function tgM(t){$('tgm').textContent=t}
+function tgStart(){clearInterval(TG.iv);Object.assign(TG,{run:true,tk:0,un:0,sv:0,lost:0,cuts:tgCuts(),ci:0,saveEnd:0,pend:0,cutUntil:0});TG.iv=setInterval(tgTick,100);tgM('Scrie pagini și salvează-le la timp!');tgR()}
+function tgTick(){
+ TG.tk++;const sec=TG.tk/10;
+ if(TG.saveEnd&&TG.tk>=TG.saveEnd){TG.sv+=TG.pend;TG.un-=TG.pend;TG.pend=0;TG.saveEnd=0}
+ if(TG.ci<TG.cuts.length&&sec>=TG.cuts[TG.ci]){
+  const l=TG.un;TG.lost+=l;TG.un=0;TG.saveEnd=0;TG.pend=0;TG.ci++;TG.cutUntil=TG.tk+20;
+  tgM(l>0?'⚡ Curentul a picat! Ai pierdut '+l+(l===1?' pagină nesalvată.':' pagini nesalvate.'):'⚡ Curentul a picat, dar n-ai pierdut nimic. Bravo!')}
+ if(sec>=30){
+  clearInterval(TG.iv);TG.run=false;TG.lost+=TG.un;TG.un=0;TG.saveEnd=0;
+  tgM('🏁 Gata! La final, calculatorul se oprește. Ai salvat '+TG.sv+' pagini și ai pierdut '+TG.lost+'. '+(TG.lost===0?'Perfect!':'Salvează mai des, dar nu uita: și salvarea durează!'))}
+ tgR();
+}
+function tgR(){
+ const sec=TG.tk/10,warn=TG.run&&TG.ci<TG.cuts.length&&sec>=TG.cuts[TG.ci]-1.5;
+ $('tgt').textContent=Math.ceil(Math.max(0,30-sec));$('tgu').textContent=TG.un;$('tgs').textContent=TG.sv;$('tgl').textContent=TG.lost;
+ $('tgb').textContent=TG.run&&TG.tk<TG.cutUntil?'⚡ Curentul a picat!':warn?'⚠️ Becul clipește… curentul poate pica!':'💡 Curent normal';
+ $('tgw').disabled=!TG.run;
+ $('tgv').disabled=!TG.run||!!TG.saveEnd||TG.un<=0;
+ $('tgv').textContent=TG.saveEnd?'⏳ Se salvează…':'💾 Salvează (1 s)';
+ $('tgg').textContent=TG.run?'↺ De la capăt':'▶ Start';
+}
+$('tgw').onclick=()=>{if(TG.run){TG.un++;tgR()}};
+$('tgv').onclick=()=>{if(TG.run&&!TG.saveEnd&&TG.un>0){TG.pend=TG.un;TG.saveEnd=TG.tk+10;tgR()}};
+$('tgg').onclick=tgStart;
+tgR();
+
+/* 6. Test final */
+const ZQ=[
+['Scrii în Word și se oprește brusc curentul, iar tu nu ai salvat. Ce se întâmplă cu textul?',['Rămâne în RAM','Se pierde, pentru că era doar în RAM','Se salvează singur în ROM'],1,'RAM este memorie volatilă: își pierde conținutul când nu mai are curent electric.'],
+['Ce se întâmplă când apeși Ctrl+S?',['Textul se copiază din RAM pe SSD','Textul se mută în ROM','Textul se șterge din RAM și din calculator'],0,'Salvarea copiază datele din RAM pe memoria de stocare (SSD/HDD), unde rămân și fără curent.'],
+['Unde se află micul program care pornește calculatorul?',['În RAM','În ROM','În monitor'],1,'ROM păstrează instrucțiunile de pornire. RAM-ul este gol când pornești calculatorul.'],
+['Când dai dublu click pe Paint, unde este copiat programul ca să poată rula?',['În RAM','În placa grafică','În tastatură'],0,'Procesorul lucrează cu programele aflate în RAM. Sistemul de operare le copiază acolo de pe SSD.'],
+['Ce face placa grafică atunci când muți un personaj într-un joc?',['Memorează jocul pentru totdeauna','Citește tastele apăsate','Desenează din nou imaginea pe care o vezi'],2,'Placa grafică generează imaginile, iar monitorul le afișează.'],
+['Litera A este memorată în calculator ca…',['O poză cu litera A','Un sunet','Un octet: 8 biți de 0 și 1'],2,'Calculatorul lucrează numai cu 0 și 1. Litera A are codul 65, adică 01000001.']];
+let zi=0,zs=0;
+function zshow(){
+ $('zw').hidden=true;$('znext').hidden=true;const o=$('zo');o.innerHTML='';
+ if(zi>=ZQ.length){$('zq').textContent='🏆 Scor final: '+zs+' / '+ZQ.length+(zs===ZQ.length?'. Ești expert în funcționarea calculatorului!':'. Mai încearcă o dată!');$('zn').textContent='';$('znext').hidden=false;$('znext').textContent='🔄 De la început';return}
+ const q=ZQ[zi];$('zq').textContent=q[0];$('zn').textContent='Întrebarea '+(zi+1)+' din '+ZQ.length+' · Scor: '+zs;
+ q[1].forEach((t,k)=>{const b=mk('button','opt',t);b.onclick=()=>zans(k);o.appendChild(b)});
+}
+function zans(k){
+ const q=ZQ[zi],bs=[...$('zo').children];
+ if(bs[0].disabled)return;
+ bs.forEach((b,i)=>{b.disabled=true;if(i===q[2])b.classList.add('good');else if(i===k)b.classList.add('bad')});
+ if(k===q[2])zs++;
+ $('zw').hidden=false;$('zw').textContent=(k===q[2]?'✅ Corect! ':'❌ Nu chiar. ')+q[3];
+ zi++;$('znext').hidden=false;$('znext').textContent=zi>=ZQ.length?'Vezi scorul ➜':'Următoarea ➜';
+}
+$('znext').onclick=()=>{if(zi>=ZQ.length&&$('zq').textContent.startsWith('🏆')){zi=0;zs=0}zshow()};
+zshow();
+
+/* NOU: magistrale */
+const NS='http://www.w3.org/2000/svg';
+const se=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+const BN={usb:{x:95,r:0,e:'🖱️⌨️',l:'Port USB'},cpu:{x:235,r:0,e:'🧠',l:'Procesor'},ram:{x:375,r:0,e:'⚡',l:'RAM'},rom:{x:515,r:0,e:'📖',l:'ROM'},ssd:{x:95,r:1,e:'💾',l:'SSD'},gpu:{x:235,r:1,e:'🎮',l:'Placa grafică'},snd:{x:375,r:1,e:'🎼',l:'Placa de sunet'},mon:{x:235,r:2,via:'gpu',e:'🖥️',l:'Monitor'},spk:{x:375,r:2,via:'snd',e:'🔊',l:'Boxe'}};
+const BC={adr:'#3b6cff',dat:'#ff9f1c',ctl:'#12a150'},BO={adr:-6,dat:0,ctl:6},BL={adr:215,dat:230,ctl:245};
+const bedge=n=>n.r===0?145:n.r===1?315:415;
+(function(){
+ const s=$('bsvg');
+ se('rect',{x:20,y:40,width:600,height:355,rx:20,fill:'var(--bg)',stroke:'var(--ok)','stroke-width':3,'stroke-dasharray':'8 6'},s);
+ const t=se('text',{x:34,y:62,'font-size':14,'font-weight':800,fill:'var(--okt)'},s);t.textContent='🟩 Placa de bază';
+ Object.keys(BL).forEach(k=>{se('line',{x1:50,x2:585,y1:BL[k],y2:BL[k],stroke:BC[k],'stroke-width':4,opacity:.55},s)});
+ [['adr','📮 adrese'],['dat','📦 date'],['ctl','🚦 control']].forEach(a=>{const x=se('text',{x:592,y:BL[a[0]]+4,'font-size':11,'font-weight':700,fill:'currentColor'},s);x.textContent=a[1]});
+ Object.keys(BN).forEach(id=>{const n=BN[id];
+  if(!n.via)Object.keys(BL).forEach(k=>se('line',{x1:n.x+BO[k],x2:n.x+BO[k],y1:bedge(n),y2:BL[k],stroke:BC[k],'stroke-width':2.5,opacity:.4},s));
+  else se('line',{x1:n.x,x2:n.x,y1:385,y2:415,stroke:BC.dat,'stroke-width':4,opacity:.55},s)});
+ Object.keys(BN).forEach(id=>{const n=BN[id],y=n.r===0?75:n.r===1?315:415,h=n.r===2?50:70;
+  const g=se('g',{class:'bn',id:'bn_'+id},s);
+  se('rect',{x:n.x-55,y:y,width:110,height:h,rx:12},g);
+  const e=se('text',{x:n.x,y:y+h/2-(n.r===2?0:4),'text-anchor':'middle','font-size':n.r===2?20:26},g);e.textContent=n.e;
+  const l=se('text',{x:n.x,y:y+h-(n.r===2?6:10),'text-anchor':'middle','font-size':12,'font-weight':700},g);l.textContent=n.l});
+})();
+function bpts(a,b,k){const A=BN[a],B=BN[b],o=BO[k],ly=BL[k];
+ if(A.via===b)return[[A.x,415],[A.x,385]];if(B.via===a)return[[A.x,385],[A.x,415]];
+ return[[A.x+o,bedge(A)],[A.x+o,ly],[B.x+o,ly],[B.x+o,bedge(B)]]}
+let bgen=0;
+function bfly(pts,txt,k,delay,gen){
+ const s=$('bsvg');let L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+ const tot=L[L.length-1],dur=Math.max(900,tot*5);
+ const g=se('g',{class:'pk',opacity:0},s);
+ const w=txt.length*6.5+16;
+ se('rect',{x:-8,y:-11,width:w,height:22,rx:11,fill:BC[k],stroke:'#fff','stroke-width':1.5},g);
+ const tx=se('text',{x:0,y:4,'font-size':12,'font-weight':800,fill:'#fff'},g);tx.textContent=txt;
+ const t0=performance.now()+delay;
+ (function f(now){
+  if(gen!==bgen){g.remove();return}
+  const p=Math.min(1,Math.max(0,(now-t0)/dur));
+  if(now<t0){requestAnimationFrame(f);return}
+  const d=p*tot;let i=1;while(i<L.length-1&&L[i]<d)i++;
+  const u=(d-L[i-1])/((L[i]-L[i-1])||1),x=pts[i-1][0]+(pts[i][0]-pts[i-1][0])*u,y=pts[i-1][1]+(pts[i][1]-pts[i-1][1])*u;
+  g.setAttribute('transform','translate('+(x-w/2+8)+','+y+')');g.setAttribute('opacity',1);
+  if(p<1)requestAnimationFrame(f);else setTimeout(()=>{if(gen===bgen)g.remove()},500)})(performance.now());
+}
+const BS=[
+{n:'🖱️ Dublu click pe Paint',s:[
+{f:'usb',t:'cpu',p:[['dat','🖱️ click']],x:'Mouse-ul trimite codul clickului prin portul USB. Mesajul merge pe magistrala de DATE până la procesor.'},
+{f:'cpu',t:'ssd',p:[['adr','📮 adresa Paint'],['ctl','🚦 CITEȘTE']],x:'Sistemul de operare înțelege: „Deschide Paint!” Procesorul trimite pe magistrala de ADRESE locul unde stă Paint pe SSD și pe cea de CONTROL ordinul CITEȘTE.'},
+{f:'ssd',t:'ram',p:[['dat','📦 Paint']],x:'SSD-ul recunoaște adresa. Programul Paint călătorește pe magistrala de date și este copiat în RAM, pentru că procesorul lucrează cu ce este în RAM.'},
+{f:'cpu',t:'ram',p:[['adr','📮 adresa 1'],['ctl','🚦 CITEȘTE']],x:'Procesorul vrea prima instrucțiune din Paint. Trimite adresa ei către RAM și ordinul CITEȘTE.'},
+{f:'ram',t:'cpu',p:[['dat','📦 instrucțiunea']],x:'RAM-ul răspunde pe magistrala de date. Procesorul execută instrucțiunea. Apoi repetă asta de miliarde de ori pe secundă!'},
+{f:'cpu',t:'gpu',p:[['dat','🎨 fereastra']],x:'Procesorul spune plăcii grafice ce să deseneze: fereastra Paint.'},
+{f:'gpu',t:'mon',p:[['dat','🖼️ imagine']],x:'Placa grafică face imaginea și o trimite prin cablu la monitor. Paint s-a deschis! 🎉'}]},
+{n:'⌨️ Apeși litera A',s:[
+{f:'usb',t:'cpu',p:[['dat','⌨️ A = 65']],x:'Tastatura trimite codul literei A (numărul 65, adică 01000001) prin USB, pe magistrala de date.'},
+{f:'cpu',t:'ram',p:[['adr','📮 adresa 5'],['ctl','🚦 SCRIE'],['dat','📦 A']],x:'Procesorul scrie litera în RAM și folosește toate cele 3 magistrale deodată: ADRESA (unde), CONTROLUL (scrie) și DATELE (ce: litera A).'},
+{f:'cpu',t:'gpu',p:[['dat','🎨 pagina nouă']],x:'Procesorul trimite plăcii grafice noua înfățișare a paginii.'},
+{f:'gpu',t:'mon',p:[['dat','🖼️ imagine']],x:'Monitorul afișează imaginea. Vezi litera A pe ecran! Dar ea este încă doar în RAM, nesalvată.'}]},
+{n:'💾 Apeși Ctrl+S',s:[
+{f:'usb',t:'cpu',p:[['dat','⌨️ Ctrl+S']],x:'Tastatura trimite comanda de salvare către procesor.'},
+{f:'cpu',t:'ram',p:[['adr','📮 adresa 5'],['ctl','🚦 CITEȘTE']],x:'Procesorul cere din RAM textul din document: adresa și ordinul CITEȘTE.'},
+{f:'ram',t:'cpu',p:[['dat','📦 textul']],x:'RAM-ul trimite textul pe magistrala de date, înapoi la procesor.'},
+{f:'cpu',t:'ssd',p:[['adr','📮 loc liber'],['ctl','🚦 SCRIE'],['dat','📦 textul']],x:'Procesorul trimite textul către SSD, cu adresa unde să-l pună și ordinul SCRIE. Acum documentul este un fișier, în siguranță chiar și fără curent. ✅'}]},
+{n:'🚀 Pornești calculatorul',s:[
+{f:'rom',t:'cpu',p:[['dat','📖 program de pornire']],x:'RAM-ul este gol! Procesorul citește primul lucru din ROM: micul program de pornire.'},
+{f:'cpu',t:'ssd',p:[['adr','📮 sistemul de operare'],['ctl','🚦 CITEȘTE']],x:'Programul de pornire îl caută pe SSD pe Windows (sistemul de operare).'},
+{f:'ssd',t:'ram',p:[['dat','📦 sistemul de operare']],x:'Sistemul de operare este copiat de pe SSD în RAM. De acum, procesorul poate lucra cu el.'},
+{f:'cpu',t:'gpu',p:[['dat','🎨 desktopul']],x:'Sistemul de operare îi spune plăcii grafice să deseneze desktopul.'},
+{f:'gpu',t:'mon',p:[['dat','🖼️ desktop']],x:'Apare desktopul pe monitor. Calculatorul a pornit! 🎉'}]}];
+let bi=0,bj=0;
+BS.forEach((c,i)=>{const b=mk('button','chip',c.n);b.onclick=()=>{bi=i;bj=0;br()};$('bcmds').appendChild(b)});
+function br(){
+ const c=BS[bi],s=c.s[bj];bgen++;const g=bgen;
+ document.querySelectorAll('#bsvg .pk').forEach(e=>e.remove());
+ [...$('bcmds').children].forEach((b,k)=>b.classList.toggle('sel',k===bi));
+ Object.keys(BN).forEach(id=>$('bn_'+id).classList.toggle('on',id===s.f||id===s.t));
+ $('bnum').textContent='Pasul '+(bj+1)+' din '+c.s.length;$('btxt').textContent=s.x;
+ $('bprev').disabled=bj===0;$('bnext').textContent=bj===c.s.length-1?'↺ De la început':'Pasul următor ➜';$('bdn').hidden=bj!==c.s.length-1;
+ s.p.forEach((p,k)=>bfly(bpts(s.f,s.t,p[0]),p[1],p[0],k*350,g));
+}
+$('bnext').onclick=()=>{bj=bj===BS[bi].s.length-1?0:bj+1;br()};
+$('bprev').onclick=()=>{if(bj>0){bj--;br()}};
+br();
+const BQ=[['Procesorul vrea să scrie litera A în RAM. Pe ce magistrală trimite „în ce loc” din RAM?',['📮 Adrese','📦 Date','🚦 Control'],0,'Adresele spun UNDE, ca adresa de pe un plic.'],
+['Pe ce magistrală călătorește litera A, ca un colet?',['📮 Adrese','📦 Date','🚦 Control'],1,'Datele sunt „coletele”: litere, programe, imagini.'],
+['Care magistrală spune dacă se CITEȘTE sau se SCRIE?',['📮 Adrese','📦 Date','🚦 Control'],2,'Controlul este ca un semafor care dă ordine.']];
+let bqi=0;
+function bqs(){
+ $('mw').hidden=true;$('mn').hidden=true;const o=$('mo');o.innerHTML='';
+ if(bqi>=BQ.length){$('mq').textContent='🏆 Bravo! Acum știi cum circulă informația prin calculator.';$('mn').hidden=false;$('mn').textContent='🔄 De la capăt';return}
+ const q=BQ[bqi];$('mq').textContent=q[0];
+ q[1].forEach((t,k)=>{const b=mk('button','opt',t);b.onclick=()=>{const bs=[...o.children];if(bs[0].disabled)return;bs.forEach((x,i)=>{x.disabled=true;if(i===q[2])x.classList.add('good');else if(i===k)x.classList.add('bad')});
+  $('mw').hidden=false;$('mw').textContent=(k===q[2]?'✅ Corect! ':'❌ Nu chiar. ')+q[3];bqi++;$('mn').hidden=false;$('mn').textContent=bqi>=BQ.length?'Vezi rezultatul ➜':'Următoarea ➜'};o.appendChild(b)});
+}
+$('mn').onclick=()=>{if(bqi>=BQ.length&&$('mq').textContent.startsWith('🏆'))bqi=0;bqs()};
+bqs();
+</script>
+
+</body></html>
