@@ -1,0 +1,132 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Grila Isteților</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* O singură coloană: alegi categoria, răspunzi, vezi scorul */
+:root{--bg:#eef4ff;--card:#fff;--fg:#17213f;--muted:#55607f;--accent:#3346c4;--on:#fff;--ok:#137a43;--okbg:#d8f5e3;--no:#b3261e;--nobg:#fde0dd;--line:#c9d4f0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11162b;--card:#1c2340;--fg:#eef1ff;--muted:#aab4d8;--accent:#9eacff;--on:#11162b;--ok:#7ee2a8;--okbg:#133d29;--no:#ff9d94;--nobg:#4a1c1a;--line:#36406b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11162b;--card:#1c2340;--fg:#eef1ff;--muted:#aab4d8;--accent:#9eacff;--on:#11162b;--ok:#7ee2a8;--okbg:#133d29;--no:#ff9d94;--nobg:#4a1c1a;--line:#36406b;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:500 17px/1.5 Nunito,system-ui,sans-serif}
+main{max-width:620px;margin:0 auto;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:"Baloo 2",Nunito,sans-serif;line-height:1.2;text-wrap:balance;margin:0 0 8px}
+h1{font-size:2.4rem;color:var(--accent)} h2{font-size:1.45rem}
+p{margin:0 0 16px;color:var(--muted)}
+.list{display:grid;gap:10px}
+button{font:800 1rem Nunito,system-ui,sans-serif;color:var(--fg);background:var(--card);border:2px solid var(--line);border-bottom-width:5px;border-radius:12px;padding:13px 16px;text-align:left;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button:disabled{cursor:default}
+button.main{background:var(--accent);border-color:var(--accent);color:var(--on);text-align:center;width:100%;margin-top:14px}
+button.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+button.no{background:var(--nobg);border-color:var(--no);color:var(--no)}
+.top{display:flex;justify-content:space-between;gap:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.bar{height:10px;background:var(--line);border-radius:9px;margin:8px 0 22px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+#msg{font-weight:800;margin:14px 0 0;color:var(--fg);min-height:1.5em}
+</style>
+<main id="app"></main>
+<script>
+// La fiecare întrebare, primul răspuns din listă este cel corect.
+const C = {
+"Cultură generală":[
+["Care este capitala României?","București","Cluj-Napoca","Iași","Brașov"],
+["Care este cel mai înalt vârf din România?","Moldoveanu","Omu","Negoiu","Toaca"],
+["Care fluviu se varsă în Marea Neagră prin Deltă, în România?","Dunărea","Mureș","Olt","Siret"],
+["Cine a scris „Amintiri din copilărie”?","Ion Creangă","Mihai Eminescu","I. L. Caragiale","George Coșbuc"],
+["Cine a scris poezia „Luceafărul”?","Mihai Eminescu","Vasile Alecsandri","Tudor Arghezi","Ion Creangă"],
+["Care planetă este cea mai apropiată de Soare?","Mercur","Venus","Marte","Pământ"],
+["Care este cel mai mare ocean?","Pacific","Atlantic","Indian","Arctic"],
+["Cât fac 7 × 8?","56","54","48","64"],
+["Când este Ziua Națională a României?","1 Decembrie","24 Ianuarie","1 Iunie","9 Mai"],
+["La câte grade Celsius fierbe apa la nivelul mării?","100","50","90","200"],
+["Câte continente sunt, în modelul învățat de obicei în România?","7","4","9","10"],
+["Ce este Soarele?","O stea","O planetă","Un satelit","O cometă"]],
+"Roblox":[
+["Cum se numește moneda din Roblox?","Robux","V-Bucks","Minecoins","Gems"],
+["Cu ce program se creează jocuri Roblox?","Roblox Studio","Roblox Paint","Roblox Maker","Roblox Office"],
+["Ce limbaj de programare se folosește în Roblox?","Luau (derivat din Lua)","Scratch","HTML","Pascal"],
+["Ce este un „obby”?","Un traseu cu obstacole","Un animal de companie","O monedă","Un tip de tricou"],
+["În ce joc cunoscut adopți și crești animăluțe?","Adopt Me!","Arsenal","Natural Disaster Survival","Tower of Hell"],
+["Cum se numește personajul care te reprezintă în joc?","Avatar","Server","Script","Badge"],
+["Ce NU trebuie să dai niciodată altcuiva?","Parola contului","Numele jocului preferat","Părerea despre un joc","Culoarea avatarului"],
+["Ce faci dacă un necunoscut îți cere adresa în chat?","Nu i-o dau și anunț un adult","I-o scriu","I-o dau dacă îmi promite Robux","Îi trimit o poză cu casa"]],
+"Fotbal":[
+["Câți jucători are o echipă pe teren la începutul meciului?","11","9","10","12"],
+["Cât durează un meci, fără prelungiri?","90 de minute","60 de minute","45 de minute","120 de minute"],
+["Cine are voie să prindă mingea cu mâna în careul său?","Portarul","Căpitanul","Atacantul","Fundașul"],
+["Ce înseamnă un cartonaș roșu?","Jucătorul este eliminat","Gol anulat","Pauză","Schimbare de teren"],
+["De la ce distanță se bate un penalty?","11 metri","5 metri","16 metri","20 de metri"],
+["Cine este supranumit „Regele” fotbalului românesc?","Gheorghe Hagi","Adrian Mutu","Cristian Chivu","Gică Popescu"],
+["Din câți în câți ani se joacă Campionatul Mondial?","4","2","3","5"],
+["Ce țară a câștigat Campionatul Mondial din 2022?","Argentina","Franța","Brazilia","Croația"],
+["Cum se numește lovitura din colțul terenului?","Corner","Ofsaid","Fault","Henț"]],
+"Crăciun":[
+["Care ren al lui Moș Crăciun are nasul roșu?","Rudolph","Comet","Dasher","Cupid"],
+["Câți reni sunt cu tot cu Rudolph, în povestea cunoscută?","9","6","8","12"],
+["Care dintre acestea este un ren al Moșului?","Blitzen","Max","Olaf","Bambi"],
+["Ce culoare are Grinch?","Verde","Albastru","Mov","Portocaliu"],
+["Cum îl cheamă pe câinele lui Grinch?","Max","Rex","Azorel","Bruno"],
+["Ce vrea Grinch să fure?","Crăciunul","Sania cu totul pentru o cursă","Luna","Un campionat"],
+["Cine l-a creat pe Grinch?","Dr. Seuss","Ion Creangă","Walt Disney","Frații Grimm"],
+["Cu ce călătorește Moș Crăciun?","Cu sania trasă de reni","Cu trenul","Cu bicicleta","Cu vaporul"],
+["Când este prima zi de Crăciun?","25 decembrie","1 decembrie","6 decembrie","31 decembrie"],
+["Cum se numesc cântecele tradiționale de Crăciun?","Colinde","Doine","Balade","Imnuri sportive"]]
+};
+const IO=["Intrare","Ieșire","Intrare-ieșire"];
+C["Componente periferice"]=[
+["Tastatura",0],["Mouse-ul",0],["Microfonul",0],["Scanerul",0],["Camera web",0],["Joystick-ul",0],
+["Monitorul obișnuit (fără ecran tactil)",1],["Imprimanta simplă",1],["Boxele",1],["Videoproiectorul",1],["Căștile fără microfon",1],
+["Ecranul tactil",2],["Stick-ul USB",2],["Căștile cu microfon",2],["Multifuncționala (printează și scanează)",2],["Hard disk-ul extern",2],["Modemul",2]
+].map(([n,k])=>[n+": ce fel de periferic este?",IO[k]]);
+
+const app=document.getElementById("app");
+const mix=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function el(tag,text,parent,cls){const e=document.createElement(tag);if(text)e.textContent=text;if(cls)e.className=cls;parent.appendChild(e);return e}
+let Q,n,score,cat;
+
+function home(){
+  app.textContent="";
+  el("h1","Grila Isteților",app);
+  el("p","Alege o categorie. Primești până la 10 întrebări, amestecate de fiecare dată.",app);
+  const l=el("div","",app,"list");
+  [...Object.keys(C),"Amestecate din toate"].forEach(k=>el("button",k,l).onclick=()=>start(k));
+}
+function start(k){
+  cat=k;
+  const names=C[k]?[k]:Object.keys(C);
+  // la mix luăm câte 2 din fiecare categorie
+  const pool=names.flatMap(c=>mix(C[c]).slice(0,C[k]?10:2).map(q=>({q,c})));
+  Q=mix(pool);n=0;score=0;show();
+}
+function show(){
+  const {q,c}=Q[n],[text,good,...bad]=q;
+  app.textContent="";
+  const t=el("div","",app,"top");el("span",`Întrebarea ${n+1} din ${Q.length}`,t);const s=el("span",`Puncte: ${score}`,t);
+  el("i","",el("div","",app,"bar")).style.width=(n/Q.length*100)+"%";
+  el("p",c,app);el("h2",text,app);
+  const l=el("div","",app,"list");
+  const opts=c==="Componente periferice"?IO:mix([good,...bad]);
+  const btns=opts.map(o=>{const b=el("button",o,l);b.onclick=()=>answer(o);return b});
+  const msg=el("div","",app);msg.id="msg";msg.setAttribute("aria-live","polite");
+  function answer(o){
+    btns.forEach(b=>{b.disabled=true;if(b.textContent===good){b.className="ok";b.textContent="✓ "+good}else if(b.textContent===o)b.className="no"});
+    if(o===good){score++;s.textContent=`Puncte: ${score}`;msg.textContent="Bravo, e corect!"}
+    else msg.textContent=`Nu e corect. Răspunsul bun este: ${good}.`;
+    const next=el("button",n+1<Q.length?"Următoarea întrebare":"Vezi rezultatul",app,"main");
+    next.onclick=()=>{n++;n<Q.length?show():end()};next.focus();
+  }
+}
+function end(){
+  app.textContent="";
+  const r=score/Q.length;
+  el("h1",`${score} din ${Q.length}`,app);
+  el("h2",r===1?"Perfect! Ești campion!":r>=.7?"Foarte bine!":r>=.5?"Bine, mai poți!":"Mai încearcă, o să reușești!",app);
+  el("p",`Categoria: ${cat}`,app);
+  el("button","Joacă din nou",app,"main").onclick=()=>start(cat);
+  el("button","Alege altă categorie",app,"main").onclick=home;
+}
+home();
+</script>
+
+</body></html>
